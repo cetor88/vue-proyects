@@ -1,15 +1,19 @@
       <template>
         <div>
-          <persona> </persona>
+          <login> </login>
           <persona> </persona>
           <persona>                     </persona>
         </div>      
       </template>
 
       <script>
+      
       import persona from './components/persona.vue';
+      import login from './components/login/login.vue';
+      
       export default {
-        components : { persona },
+        components : { persona, login },
+        
         data () {
           return {}
         }
