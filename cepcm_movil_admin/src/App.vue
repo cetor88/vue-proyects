@@ -1,24 +1,30 @@
-      <template>
-        <div>
-          <login> </login>
-          <persona> </persona>
-          <persona>                     </persona>
-        </div>      
-      </template>
+<template>
+  <section>
+    <menus></menus>
+      <!--authe></authe-->
+      <!--p>
+        {{contar}} numero de click´s
+      </p-->
+      <router-view> </router-view>
+    <myfooter> Terminos y condiciones</myfooter>
+  </section>
+</template>
 
-      <script>
-      
-      import persona from './components/persona.vue';
-      import login from './components/login/login.vue';
-      
-      export default {
-        components : { persona, login },
-        
-        data () {
-          return {}
+<script>
+
+      import menus from './components/menu/menu.vue'
+      import authe from './components/auth/auth.vue'
+      import myfooter from './components/footer.vue'
+      export default{
+        components:{menus, authe, myfooter},
+        computed:{
+          contar(){
+            return this.$store.state.cantidad;
+            
+          }
         }
       }
-      </script>
+</script>
 
-      <style>
-      </style>
+<style>
+</style>

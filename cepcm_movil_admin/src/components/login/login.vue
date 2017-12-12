@@ -9,12 +9,12 @@
       </form>
     </div>
   </div>
+  
 </template>
 
 
 <script type="text/javascript">
-import Vue from 'vue';
-import {auth} from './firebase'
+  import Vue from 'vue';
       
 	export default{
     name:'login',
@@ -27,39 +27,25 @@ import {auth} from './firebase'
           },
 				}
 		},
+    
     methods: {
         loginUser:function() {  
              const authUser = {}
              var loginComp = this;
-            auth.signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
-            .then(function (res) {
-                resolve(res);
-                debugger;
+             debugger;
+            this.$store.state.auth.createUserWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)//signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
+            .catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              // [START_EXCLUDE]
+              if (errorCode === 'auth/wrong-password') {
+                alert('Wrong password.');
+              } else {
+                alert(errorMessage);
+              }
+              console.log(error);
             })
-            .catch(function (err) {
-              console.log(err);
-                reject(err)
-            })
-            /*.then(function(res) {
-              console.log(res);
-              debugger;*/
-                /*if(res.status === "success") {
-                    authUser.data = res.data;
-                    authUser.token = res.token;
-                    app.$store.state.isLoggedIn = true
-                    window.localStorage.setItem('lbUser',JSON.stringify(authUser));
-                    if(authUser.data.role_id === 'ADMIN') {
-                     app.$router.push('/admin');
-                    }else {
-                      app.$router.push('/resident');
-                    }
-                }else {
-                      app.$store.state.isLoggedIn = false;
-                }*/
-            /*})
-            .catch(function (err){
-                console.log(err.data)
-            })*/
         }
     }
 	}
@@ -119,51 +105,4 @@ import {auth} from './firebase'
   color: #4CAF50;
   text-decoration: none;
 }
-/*.form .register-form {
-  display: none;
-}
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 300px;
-  margin: 0 auto;
-}
-.container:before, .container:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-.container .info {
-  margin: 50px auto;
-  text-align: center;
-}
-.container .info h1 {
-  margin: 0 0 15px;
-  padding: 0;
-  font-size: 36px;
-  font-weight: 300;
-  color: #1a1a1a;
-}
-.container .info span {
-  color: #4d4d4d;
-  font-size: 12px;
-}
-.container .info span a {
-  color: #000000;
-  text-decoration: none;
-}
-.container .info span .fa {
-  color: #EF3B3A;
-}
-body {
-  background: #76b852; 
-  background: -webkit-linear-gradient(right, #76b852, #8DC26F);
-  background: -moz-linear-gradient(right, #76b852, #8DC26F);
-  background: -o-linear-gradient(right, #76b852, #8DC26F);
-  background: linear-gradient(to left, #76b852, #8DC26F);
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;      
-}	
-*/
 </style>

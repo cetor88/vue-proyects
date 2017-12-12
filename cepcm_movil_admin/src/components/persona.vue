@@ -19,13 +19,11 @@
 				this.persona = resp.data.results[0];
 			})
 		}, 
-
 		data(){
 			return {
 					persona : null,
 				}
 		},
-
 		computed:{
 			datosPersona(){
 				return{
