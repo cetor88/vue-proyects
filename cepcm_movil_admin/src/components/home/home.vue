@@ -1,5 +1,6 @@
 <template>
     <section>
+    <menus></menus>
     <h1> Home</h1>
     <persona> </persona>
     <div class="container">
@@ -16,8 +17,9 @@
 
 <script>
      import persona from '../persona.vue';
+     import menus from '../menu/menu.vue'
       export default {
-        components : { persona },
+        components : {menus, persona },
         
         data () {
           return {}

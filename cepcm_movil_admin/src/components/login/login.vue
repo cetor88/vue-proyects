@@ -15,7 +15,7 @@
               </form>
             </div>
           </div-->
-          <b-form  >
+          <b-form v-on:submit.prevent="sinIn"  >
               <b-form-group>
                 <span v-text="mensaje"> </span>
               </b-form-group>
@@ -37,7 +37,7 @@
                               placeholder="Enter name">
                 </b-form-input>
               </b-form-group>
-              <b-button type="submit" variant="primary">Enviar</b-button>
+              <b-button type="submit"  variant="primary">Enviar</b-button>
             </b-form>
         </b-col>
         <b-col>
@@ -67,25 +67,34 @@
 		},
     
     methods: {
-        loginUser:function() {  
+        createUser:function() {
              const authUser = {}
              var loginComp = this;
              debugger;
             this.$store.state.auth.createUserWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)//signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
-            .catch(function(error) {
-              // Handle Errors here.
-              var errorCode = error.code;
-              var errorMessage = error.message;
-              // [START_EXCLUDE]
-              if (errorCode === 'auth/wrong-password') {
-                alert('Wrong password.');
-              } else {
-                alert(errorMessage);
-              }
-              console.log(error);
-            })
+            
+            .then(function(user){
+              alert("cuenta creada");
+            },
+            function(err){
+              alert("ups !!" + err);
+            });
+        },
+        sinIn:function() {
+             const authUser = {}
+             var loginComp = this;
+             debugger;
+            let cotininuar = this.$router;
+            this.$store.state.auth.signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
+            .then(function(user){
+              alert("usuario logeado!!" + user);
+              cotininuar.replace("home");
+            },
+            function(err){
+              alert("ups !!" + err);
+            });
         }
-    }
+    } 
 	}
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <menus></menus>
+    
     <router-view> </router-view>
     
       <!--authe></authe-->
@@ -14,7 +14,7 @@
 
 <script>
 
-      import menus from './components/menu/menu.vue'
+      
       import authe from './components/auth/auth.vue'
       import myfooter from './components/footer.vue'
       import Vue from 'vue'
@@ -24,7 +24,7 @@
       Vue.use(BootstrapVue);    
 
       export default{
-        components:{menus, authe, myfooter},
+        components:{authe, myfooter},
         computed:{
           contar(){
             return this.$store.state.cantidad;
