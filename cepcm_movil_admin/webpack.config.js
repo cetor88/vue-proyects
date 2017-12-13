@@ -10,13 +10,25 @@ module.exports = {
   },
   module: {
     rules: [
+      {test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, loader: 'url-loader?limit=100000' },
       {
         test: /\.css$/,
         use: [
-          'vue-style-loader',
+          'style-loader',
           'css-loader'
-        ],
-      },      {
+        ]
+      },        
+      {
+          test: require.resolve('jquery'),
+          use: [{
+              loader: 'expose-loader',
+              options: 'jQuery'
+          }, {
+              loader: 'expose-loader',
+              options: '$'
+          }]
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {

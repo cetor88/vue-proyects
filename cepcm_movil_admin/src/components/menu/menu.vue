@@ -1,10 +1,15 @@
 <template>
 <div class="menu">
-      <ul class="navbar-nav mr-auto">
+    <b-nav tabs>
+        <b-nav-item v-for="item in menuData" >
+            <router-link :to="{ path: item.path }" >{{item.label}}</router-link>
+        </b-nav-item>
+    </b-nav>
+    <!--ul class="navbar-nav mr-auto">
             <li class="nav-item" v-for="item in menuData">
                 <router-link :to="{ path: item.path }" >{{item.label}}</router-link>
             </li>
-        </ul>
+        </ul-->
 
 </div>
 </template>
@@ -20,7 +25,7 @@
 		}
 	},
     created(){
-        debugger;
+           
         this.$store.state.db.ref("menu").on('value', snapshot => this.obtenerMenu(snapshot.val()))
     },
     methods: {
@@ -39,7 +44,7 @@
 </script>
 
 <style type="text/css" modules>
-    .menu li{
+    /*.menu li{
         display:inline;
-    }
+    }*/
 </style>

@@ -1,13 +1,15 @@
 <template>
-  <section>
+  <div class="container">
     <menus></menus>
+    <router-view> </router-view>
+    
       <!--authe></authe-->
       <!--p>
         {{contar}} numero de click´s
       </p-->
-      <router-view> </router-view>
+      
     <myfooter> Terminos y condiciones</myfooter>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -15,6 +17,12 @@
       import menus from './components/menu/menu.vue'
       import authe from './components/auth/auth.vue'
       import myfooter from './components/footer.vue'
+      import Vue from 'vue'
+      
+      import BootstrapVue from 'bootstrap-vue'
+
+      Vue.use(BootstrapVue);    
+
       export default{
         components:{menus, authe, myfooter},
         computed:{
@@ -26,5 +34,5 @@
       }
 </script>
 
-<style>
+<style >
 </style>

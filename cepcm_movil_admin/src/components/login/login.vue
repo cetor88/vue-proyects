@@ -1,21 +1,59 @@
 <template>
-  <div class="login-page">
-    <div class="form">
-      <span v-text="mensaje"> </span>
-      <form class="register-form">
-        <input type="email" placeholder="email" v-model="loginDetails.email"/>
-        <input type="password" placeholder="password" v-model="loginDetails.password"/>
-        <button v-on:click="loginUser">Entrar</button>
-      </form>
-    </div>
-  </div>
-  
+  <b-container class="bv-example-row">
+    <b-row>
+        <b-col></b-col>
+        <b-col>
+          <!--div class="login-page">
+            <div class="form">
+              <span v-text="mensaje"> </span>
+              <form class="register-form">
+                <input type="email" placeholder="email" 
+                  v-model="loginDetails.email"/>
+                <input type="password" placeholder="password" 
+                  v-model="loginDetails.password"/>
+                <button v-on:click="loginUser">Entrar</button>
+              </form>
+            </div>
+          </div-->
+          <b-form  >
+              <b-form-group>
+                <span v-text="mensaje"> </span>
+              </b-form-group>
+              <b-form-group id="exampleInputGroup1"
+                            label="Email address:"
+                            description="We'll never share your email with anyone else.">
+                <b-form-input id="exampleInput1"
+                              type="email"
+                              v-model="loginDetails.email"
+                              required
+                              placeholder="Enter email">
+                </b-form-input>
+              </b-form-group>
+              <b-form-group id="exampleInputGroup2" label="Your Name:">
+                <b-form-input id="exampleInput2"
+                              type="text"
+                              v-model="loginDetails.password"
+                              required
+                              placeholder="Enter name">
+                </b-form-input>
+              </b-form-group>
+              <b-button type="submit" variant="primary">Enviar</b-button>
+            </b-form>
+        </b-col>
+        <b-col>
+          
+        </b-col>
+    </b-row>
+  </b-container> 
 </template>
 
 
 <script type="text/javascript">
   import Vue from 'vue';
-      
+
+  import 'bootstrap/dist/css/bootstrap.css'
+  import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 	export default{
     name:'login',
 		data(){
@@ -53,7 +91,7 @@
 
 <style type="text/css">
 
-.login-page {
+/*.login-page {
   width: 360px;
   padding: 8% 0 0;
   margin: auto;
@@ -104,5 +142,5 @@
 .form .message a {
   color: #4CAF50;
   text-decoration: none;
-}
+}*/
 </style>
