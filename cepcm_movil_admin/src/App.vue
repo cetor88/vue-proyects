@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <menus v-show="userInOut"></menus>
     <myHeader></myHeader>
+    <menus v-show="userInOut"></menus>
     <myCarrusel v-show="!userInOut"></myCarrusel>
     <router-view> </router-view>
     

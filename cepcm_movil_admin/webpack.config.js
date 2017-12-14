@@ -10,7 +10,7 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, loader: 'url-loader?limit=100000' },
+      //{test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, loader: 'url-loader?limit=100000' },
       {
         test: /\.css$/,
         use: [
@@ -43,6 +43,14 @@ module.exports = {
         exclude: /node_modules/
       },
       {
+        test: /\.(?:png|jpg|svg)$/,
+        loader: 'url-loader',
+        query: {
+          // Inline images smaller than 10kb as data URIs
+          limit: 10000
+        }
+      },
+      { 
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {

@@ -4,20 +4,17 @@
             
         </b-row>
         <b-row class="header">
-            <b-col class="logo">logo</b-col>
+            <b-col class="logo">
+                
+            </b-col>
             <b-col class="institucion">
                 <div>
-                    <b-btn  v-b-modal.modalLogin variant="outline-success" >Iniciar sesión</b-btn>
+                    <login></login>
                 </div>
             </b-col>
             
         </b-row>
-        <b-row class="spacio">
-            <b-modal id="modalLogin" hide-footer title="Login" v-on:cerrar="hideModal">
-                <login ></login>
-            </b-container>
-            </b-modal>
-        </b-row>
+        
     
     </section>
 </template>
@@ -26,34 +23,28 @@
 
 import login from "./login/login.vue";
     import Vue from 'vue';
-    export default {
     
+    
+    export default {
         name: "myHeader",
         components:{login},
-        methods:{
-            hideModal(demo){
-                this.$ref.modalLogin.hide();
-
-            }
-        },
-    
     };
 </script>
 
 <style scoped>
+
 .spacio{
     padding-top: 5px;
     background:#FFF;
 }
 .header{
-    position: relative;
-    height: 100px;
-    background: lightgray;
-}
-.header .logo{
-    border: solid 1px lightblue;
-    border-style: dashed;
+    border: solid 1px #822246;
+    background: #F0F0F0;
     border-radius: 10%;
+    height: 200px;
 }
+.logo{
+    background-image: url('/src/assets/images/s5_logo.png');
 
+}
 </style>

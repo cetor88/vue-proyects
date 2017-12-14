@@ -1,46 +1,56 @@
 <template>
   <b-container class="bv-example-row">
-    <b-row>
-        
-        <b-col>
-          <!--div class="login-page">
-            <div class="form">
-              <span v-text="mensaje"> </span>
-              <form class="register-form">
-                <input type="email" placeholder="email" 
-                  v-model="loginDetails.email"/>
-                <input type="password" placeholder="password" 
-                  v-model="loginDetails.password"/>
-                <button v-on:click="loginUser">Entrar</button>
-              </form>
-            </div>
-          </div-->
-          <b-form v-on:submit.prevent="sinIn"  >
-              <b-form-group>
-                <span v-text="mensaje"> </span>
-              </b-form-group>
-              <b-form-group id="exampleInputGroup1"
-                            label="Correo electrónico:"
-                            description="Ingresa con tu correo electrónico.">
-                <b-form-input id="exampleInput1"
-                              type="email"
-                              v-model="loginDetails.email"
-                              required
-                              placeholder="Correo electrónico">
-                </b-form-input>
-              </b-form-group>
-              <b-form-group id="exampleInputGroup2" label="Tu contraseña:">
-                <b-form-input id="exampleInput2"
-                              type="password"
-                              v-model="loginDetails.password"
-                              required
-                              placeholder="Tu contraseña">
-                </b-form-input>
-              </b-form-group>
-              <b-button type="submit" v-on:click="cerrar"  variant="primary lg">Iniciar sesión</b-button>
-            </b-form>
-        </b-col>
+    <b-row >
+      <b-col >
+        <b-button v-on:click="showModal" v-show="!userInOut" > Iniciar sesión
+        <!--button id="show-modal" @click="showModal = true">Show Modal</button-->
+        </b-button>
+      </b-col>
     </b-row>
+
+    <b-modal ref="myModal" hide-footer title="Login" v-if="showModal" v-on:close="showModal = false">
+      <transition name="modal">
+        
+            <!--div class="login-page">
+              <div class="form">
+                <span v-text="mensaje"> </span>
+                <form class="register-form">
+                  <input type="email" placeholder="email" 
+                    v-model="loginDetails.email"/>
+                  <input type="password" placeholder="password" 
+                    v-model="loginDetails.password"/>
+                  <button v-on:click="loginUser">Entrar</button>
+                </form>
+              </div>
+            </div-->
+            
+        <b-form v-on:submit.prevent="sinIn"  >
+          <b-form-group>
+            <span v-text="mensaje"> </span>
+          </b-form-group>
+            <b-form-group id="exampleInputGroup1"
+                  label="Correo electrónico:"
+                  description="Ingresa con tu correo electrónico.">
+              <b-form-input id="exampleInput1"
+                  type="email"
+                  v-model="loginDetails.email"
+                  required
+                  placeholder="Correo electrónico">
+              </b-form-input>
+            </b-form-group>
+            <b-form-group id="exampleInputGroup2" label="Tu contraseña:">
+              <b-form-input id="exampleInput2"
+                  type="password"
+                  v-model="loginDetails.password"
+                  required
+                  placeholder="Tu contraseña">
+              </b-form-input>
+            </b-form-group>
+          <b-button type="submit"   variant="primary lg">Iniciar sesión</b-button>
+        </b-form>
+      </transition>
+    </b-modal>
+    
   </b-container> 
 </template>
 
@@ -58,8 +68,8 @@ export default {
       loginDetails: {
         email: "",
         password: ""
-      }
-    };
+      },
+    }
   },
 
   methods: {
@@ -84,7 +94,7 @@ export default {
     sinIn: function() {
       const authUser = {};
       var loginComp = this;
-
+      var comp = this;
       let cotininuar = this.$router;
       let control = this.$store.state;
       this.$store.state.auth
@@ -94,7 +104,8 @@ export default {
         )
         .then(
           function(user) {
-            //closeModal();
+            debugger
+            comp.hideModal();
             control.autenticado = true;
             cotininuar.replace("home");
 
@@ -104,71 +115,36 @@ export default {
           }
         );
     },
-    /*closeModal: function(){
-      this.$emit('cerrar');
+    showModal() {
+      this.$refs.myModal.show()
     },
-    computed:{
-      closeModal(){
-        this.$emit('cerrar');
-        return true;
-      }
-    }*/
-    
+    hideModal() {
+      this.$refs.myModal.hide()
+    },
+  },
+  
+  computed:{
+    userInOut(){
+      return this.$store.state.autenticado;      
+    }
   }
 };
 </script>
 
 <style type="text/css">
-/*.login-page {
-  width: 360px;
-  padding: 8% 0 0;
-  margin: auto;
+.modal-enter{
+  opacity: 0;
 }
-.form {
-  position: relative;
-  z-index: 1;
-  background: #FFFFFF;
-  max-width: 360px;
-  margin: 0 auto 100px;
-  padding: 45px;
-  text-align: center;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+
+.modal-enter-active{
+  transition :opacity 5s;
 }
-.form input {
-  font-family: "Roboto", sans-serif;
-  outline: 0;
-  background: #f2f2f2;
-  width: 100%;
-  border: 0;
-  margin: 0 0 15px;
-  padding: 15px;
-  box-sizing: border-box;
-  font-size: 14px;
+
+.modal-leave-to{
+  opacity: 0;
 }
-.form button {
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  outline: 0;
-  background: #4CAF50;
-  width: 100%;
-  border: 0;
-  padding: 15px;
-  color: #FFFFFF;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
+.modal-leave-active{
+  transition: opacity 1s;  
 }
-.form button:hover,.form button:active,.form button:focus {
-  background: #43A047;
-}
-.form .message {
-  margin: 15px 0 0;
-  color: #b3b3b3;
-  font-size: 12px;
-}
-.form .message a {
-  color: #4CAF50;
-  text-decoration: none;
-}*/
+
 </style>
