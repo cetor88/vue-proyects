@@ -1,7 +1,7 @@
 <template>
   <b-container class="bv-example-row">
     <b-row>
-        <b-col></b-col>
+        
         <b-col>
           <!--div class="login-page">
             <div class="form">
@@ -20,28 +20,25 @@
                 <span v-text="mensaje"> </span>
               </b-form-group>
               <b-form-group id="exampleInputGroup1"
-                            label="Email address:"
-                            description="We'll never share your email with anyone else.">
+                            label="Correo electrónico:"
+                            description="Ingresa con tu correo electrónico.">
                 <b-form-input id="exampleInput1"
                               type="email"
                               v-model="loginDetails.email"
                               required
-                              placeholder="Enter email">
+                              placeholder="Correo electrónico">
                 </b-form-input>
               </b-form-group>
-              <b-form-group id="exampleInputGroup2" label="Your Name:">
+              <b-form-group id="exampleInputGroup2" label="Tu contraseña:">
                 <b-form-input id="exampleInput2"
-                              type="text"
+                              type="password"
                               v-model="loginDetails.password"
                               required
-                              placeholder="Enter name">
+                              placeholder="Tu contraseña">
                 </b-form-input>
               </b-form-group>
-              <b-button type="submit"  variant="primary">Enviar</b-button>
+              <b-button type="submit" v-on:click="cerrar"  variant="primary lg">Iniciar sesión</b-button>
             </b-form>
-        </b-col>
-        <b-col>
-          
         </b-col>
     </b-row>
   </b-container> 
@@ -49,57 +46,79 @@
 
 
 <script type="text/javascript">
-  import Vue from 'vue';
+import Vue from "vue";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
-  import 'bootstrap/dist/css/bootstrap.css'
-  import 'bootstrap-vue/dist/bootstrap-vue.css'
+export default {
+  name: "login",
+  data() {
+    return {
+      mensaje: "Inicia session con tu emails y contraseña",
+      loginDetails: {
+        email: "",
+        password: ""
+      }
+    };
+  },
 
-	export default{
-    name:'login',
-		data(){
-			return {
-					mensaje:'Inicia session con tu emails y contraseña',
-          loginDetails : {
-                email : '',
-                password : ''
+  methods: {
+    createUser: function() {
+      const authUser = {};
+      var loginComp = this;
+      debugger;
+      this.$store.state.auth
+        .createUserWithEmailAndPassword(
+          this.loginDetails.email,
+          this.loginDetails.password
+        ) //signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
+        .then(
+          function(user) {
+            alert("cuenta creada");
           },
-				}
-		},
+          function(err) {
+            alert("ups !!" + err);
+          }
+        );
+    },
+    sinIn: function() {
+      const authUser = {};
+      var loginComp = this;
+
+      let cotininuar = this.$router;
+      let control = this.$store.state;
+      this.$store.state.auth
+        .signInWithEmailAndPassword(
+          this.loginDetails.email,
+          this.loginDetails.password
+        )
+        .then(
+          function(user) {
+            //closeModal();
+            control.autenticado = true;
+            cotininuar.replace("home");
+
+          },
+          function(err) {
+            alert("ups !!" + err);
+          }
+        );
+    },
+    /*closeModal: function(){
+      this.$emit('cerrar');
+    },
+    computed:{
+      closeModal(){
+        this.$emit('cerrar');
+        return true;
+      }
+    }*/
     
-    methods: {
-        createUser:function() {
-             const authUser = {}
-             var loginComp = this;
-             debugger;
-            this.$store.state.auth.createUserWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)//signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
-            
-            .then(function(user){
-              alert("cuenta creada");
-            },
-            function(err){
-              alert("ups !!" + err);
-            });
-        },
-        sinIn:function() {
-             const authUser = {}
-             var loginComp = this;
-             debugger;
-            let cotininuar = this.$router;
-            this.$store.state.auth.signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
-            .then(function(user){
-              alert("usuario logeado!!" + user);
-              cotininuar.replace("home");
-            },
-            function(err){
-              alert("ups !!" + err);
-            });
-        }
-    } 
-	}
+  }
+};
 </script>
 
 <style type="text/css">
-
 /*.login-page {
   width: 360px;
   padding: 8% 0 0;

@@ -1,7 +1,7 @@
 <template>
 <div class="menu">
     <b-nav tabs>
-        <b-nav-item v-for="item in menuData" >
+        <b-nav-item v-for = "item in menuData" >
             <router-link :to="{ path: item.path }" >{{item.label}}</router-link>
         </b-nav-item>
     </b-nav>

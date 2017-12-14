@@ -23,6 +23,7 @@ export const store = new Vuex.Store({
         cantidad:0,
         db:firebase.database(),
         auth:firebase.auth(),
+        autenticado:false,
         //provide:firebase.auth().GoogleAuthProvider(),
     }
 })

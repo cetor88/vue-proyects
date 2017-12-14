@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    
+    <menus v-show="userInOut"></menus>
+    <myHeader></myHeader>
+    <myCarrusel v-show="!userInOut"></myCarrusel>
     <router-view> </router-view>
     
       <!--authe></authe-->
@@ -14,7 +16,9 @@
 
 <script>
 
-      
+      import menus from "./components/menu/menu.vue";
+      import myHeader from  "./components/header.vue";
+      import myCarrusel from "./components/carrusel.vue";
       import authe from './components/auth/auth.vue'
       import myfooter from './components/footer.vue'
       import Vue from 'vue'
@@ -24,10 +28,14 @@
       Vue.use(BootstrapVue);    
 
       export default{
-        components:{authe, myfooter},
+        components:{menus, myHeader, myCarrusel, authe, myfooter},
         computed:{
           contar(){
             return this.$store.state.cantidad;
+            
+          },
+          userInOut(){
+            return this.$store.state.autenticado;
             
           }
         }

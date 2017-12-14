@@ -3,6 +3,7 @@ import Vue from 'vue';
 import home from './components/home/home.vue';
 import contacto from './components/contacto/contacto.vue';
 import login from "./components/login/login.vue";
+import logout from "./components/logout/logout.vue";
 
 
 export const routes = [
@@ -20,9 +21,13 @@ export const routes = [
         requiresAuth:true
       }
     },
-    {
+    /*{
       path:'/',
       component:login
+    },*/
+    {
+      path:'/logout',
+      component:logout
     }
 ]/*
 routes.beforeEach( (to, from, next) =>{
