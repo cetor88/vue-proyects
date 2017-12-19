@@ -2,7 +2,7 @@
 <div class="menu">
     <b-nav tabs>
         <b-nav-item v-for = "item in menuData" >
-            <router-link :to="{ path: item.path }" >{{item.label}}</router-link>
+            <router-link :to="{ path: item.path }" exac>{{item.label}}</router-link>
         </b-nav-item>
     </b-nav>
     <!--ul class="navbar-nav mr-auto">
@@ -44,7 +44,10 @@
 </script>
 
 <style type="text/css" modules>
-    /*.menu li{
-        display:inline;
-    }*/
+    a.router-link-active{
+        color:#f66;
+    }
+    li.router-link-active{
+        color:#f66;
+    }
 </style>

@@ -1,28 +1,10 @@
 <template>
   <b-container class="bv-example-row">
-    <b-row >
-      <b-col >
-        <b-button v-on:click="showModal" v-show="!userInOut" > Iniciar sesión
-        <!--button id="show-modal" @click="showModal = true">Show Modal</button-->
-        </b-button>
-      </b-col>
-    </b-row>
+    <b-button v-on:click="showModal" v-show="!userInOut" variant="primary"> Iniciar sesión
+    </b-button>
 
     <b-modal ref="myModal" hide-footer title="Login" v-if="showModal" v-on:close="showModal = false">
       <transition name="modal">
-        
-            <!--div class="login-page">
-              <div class="form">
-                <span v-text="mensaje"> </span>
-                <form class="register-form">
-                  <input type="email" placeholder="email" 
-                    v-model="loginDetails.email"/>
-                  <input type="password" placeholder="password" 
-                    v-model="loginDetails.password"/>
-                  <button v-on:click="loginUser">Entrar</button>
-                </form>
-              </div>
-            </div-->
             
         <b-form v-on:submit.prevent="sinIn"  >
           <b-form-group>
@@ -46,7 +28,7 @@
                   placeholder="Tu contraseña">
               </b-form-input>
             </b-form-group>
-          <b-button type="submit"   variant="primary lg">Iniciar sesión</b-button>
+          <b-button type="submit"   variant="primary lg">Entrar</b-button>
         </b-form>
       </transition>
     </b-modal>
@@ -59,6 +41,7 @@
 import Vue from "vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import  {router} from '../../routes';
 
 export default {
   name: "login",
@@ -97,6 +80,7 @@ export default {
       var comp = this;
       let cotininuar = this.$router;
       let control = this.$store.state;
+      
       this.$store.state.auth
         .signInWithEmailAndPassword(
           this.loginDetails.email,
@@ -106,7 +90,9 @@ export default {
           function(user) {
             debugger
             comp.hideModal();
+            //router.push(cotininuar.query.redirect);
             control.autenticado = true;
+            control.currentUser = user;
             cotininuar.replace("home");
 
           },

@@ -20,10 +20,11 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     state:{
-        cantidad:0,
-        db:firebase.database(),
-        auth:firebase.auth(),
-        autenticado:false,
+        cantidad : 0,
+        db : firebase.database(),
+        auth : firebase.auth(),
+        autenticado : false,
+        currentUser : null,
         //provide:firebase.auth().GoogleAuthProvider(),
     }
 })

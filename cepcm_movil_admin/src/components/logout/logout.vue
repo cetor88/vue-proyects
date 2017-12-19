@@ -19,6 +19,7 @@ export default {
         .then(function() {
             console.log("usuario cerro session !!");
             control.autenticado = false;
+            control.currentUser = null;
             cotininuar.replace("/");
         }).catch(function(error) {
             console.log("no se pudo cerrar la session !!");

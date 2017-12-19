@@ -7,15 +7,13 @@
             <b-col class="logo">
                 
             </b-col>
+        </b-row>
+        <b-row>
             <b-col class="institucion">
-                <div>
-                    <login></login>
-                </div>
+                <login></login>
             </b-col>
-            
         </b-row>
         
-    
     </section>
 </template>
 
@@ -40,11 +38,11 @@ import login from "./login/login.vue";
 .header{
     border: solid 1px #822246;
     background: #F0F0F0;
-    border-radius: 10%;
     height: 200px;
+    background-color:lightcoral;
 }
 .logo{
     background-image: url('/src/assets/images/s5_logo.png');
-
+    background-repeat:no-repeat;
 }
 </style>

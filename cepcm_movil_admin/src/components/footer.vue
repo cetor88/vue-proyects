@@ -1,20 +1,12 @@
 <template>
   <div class="footer">
-    This footer will always be positioned at the bottom of the page, but 
-      <strong>not fixed</strong>
-       <h6>Example heading <b-badge>New</b-badge></h6>
-  .</div>
-    <!--footer class="page-footer">
-      <div class="container footer">
-        <div class="row">
-          <div class="col l6 s12">
-            <h5 class="white-text">Footer Content</h5>
-            <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
-            <h1> © 2014 Copyright Text </>
-          </div>
-        </div>
+      <div class="footer-copyright">
+        <div class="container">
+          Copyright © 2018 Colposgrado
+        </div> 
       </div>
-    </footer-->
+
+  </div>
 </template>
 
 <script>
@@ -71,8 +63,8 @@ body {
   bottom: 0;
   left: 0;
   padding: 1rem;
-  background-color: #efefef;
+  background-color: lightblue;
   text-align: center;
-  height: 80px;
+  
 }
 </style>
