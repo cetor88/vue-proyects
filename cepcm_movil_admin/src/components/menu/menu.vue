@@ -17,29 +17,29 @@
 <script type="text/javascript">
   import Vue from 'vue';
     export default{
-    name:'menu',
-	data(){
-		return {
-	        mensaje:'Menu palabra reservada',
-            menuData:[],
-		}
-	},
-    created(){
-           
-        this.$store.state.db.ref("menu").on('value', snapshot => this.obtenerMenu(snapshot.val()))
-    },
-    methods: {
-            obtenerMenu(dataMenu) {  
-                this.menuData=[];
-                for(let item in dataMenu){
-                    this.menuData.push({
-                        label : dataMenu[item].label,
-                        path  : dataMenu[item].path
-                    }) ;
-                }
-                
+        name:'menu',
+        data(){
+            return {
+                mensaje:'Menu palabra reservada',
+                menuData:[],
+            }
+        },
+        mounted(){
+            
+            this.$store.state.db.ref("menu").on('value', snapshot => this.obtenerMenu(snapshot.val()))
+        },
+        methods: {
+                obtenerMenu(dataMenu) {  
+                    this.menuData=[];
+                    for(let item in dataMenu){
+                        this.menuData.push({
+                            label : dataMenu[item].label,
+                            path  : dataMenu[item].path
+                        }) ;
+                    }
+                    
+            }
         }
-    }
 	}
 </script>
 

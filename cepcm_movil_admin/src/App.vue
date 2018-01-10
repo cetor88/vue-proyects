@@ -5,11 +5,6 @@
     <myCarrusel v-show="!userInOut"></myCarrusel>
     <router-view> </router-view>
     
-      <!--authe></authe-->
-      <!--p>
-        {{contar}} numero de click´s
-      </p-->
-      
     <myfooter> Terminos y condiciones</myfooter>
   </div>
 </template>

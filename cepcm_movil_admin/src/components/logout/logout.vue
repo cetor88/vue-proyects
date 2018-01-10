@@ -1,35 +1,41 @@
-<template></template>
+<template>
+  
+    <button v-on:click="logOut" v-show="autenticado"> Cerrar sesión
+    </button>
 
-<script>
-import Vue from 'vue';
 
-export default {
-    name:'logout',
-    data(){
-		return {
-	    	mensaje:'',
-		}
-    },
-    
-    created(){       
-        let cotininuar = this.$router;
-        debugger;
-        let control    = this.$store.state;
-        this.$store.state.auth.signOut()
-        .then(function() {
-            console.log("usuario cerro session !!");
-            control.autenticado = false;
-            control.currentUser = null;
-            cotininuar.replace("/");
-        }).catch(function(error) {
-            console.log("no se pudo cerrar la session !!");
-        });
-    },
-    
-}
+</template>
+
+<script type="text/javascript">
+import Vue from 'vue'
+import {mapState, } from 'vuex'
+
+    export default {
+        name:'logout',
+        methods: {
+            logOut(){
+                let cotininuar = this.$router;
+                let control    = this.$store.state;
+                this.$store.state.auth.signOut()
+                .then(() =>{
+                    console.log("usuario cerro session !!");
+                    control.autenticado = false;
+                    this.$store.getters.cerrarSession;
+                    control.currentUser = null;
+                    cotininuar.replace("/");
+                }).catch((error)=> {
+                    console.log("no se pudo cerrar la session !!");
+                    this.$store.getters.cerrarSession;
+                });
+            }
+            
+        },
+        computed: mapState(['autenticado', 'token']),
+        
+    }
 </script>
 
 
-<<style scoped>
+<style scoped>
 
 </style>

@@ -11,6 +11,7 @@
         <b-row>
             <b-col class="institucion">
                 <login></login>
+                <logout></logout>
             </b-col>
         </b-row>
         
@@ -20,12 +21,13 @@
 <script>
 
 import login from "./login/login.vue";
-    import Vue from 'vue';
+import logout from "./logout/logout.vue";
+import Vue from 'vue';
     
     
     export default {
         name: "myHeader",
-        components:{login},
+        components:{login, logout},
     };
 </script>
 

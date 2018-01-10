@@ -1,8 +1,8 @@
 <template>
     <section>    
         <h1> Home</h1>
-
-        <button v-on:click="obtenerToken"> Consultar token </button
+        <pre>{{tokn}}</pre>
+        <button v-on:click="obtenerToken"> Consultar token </button>
         <persona> </persona>
         <div class="container">
             Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó
@@ -20,7 +20,8 @@
 
 <script>
     import persona from "../persona.vue";
-    import utilsServices from '../..//utils/services';
+    //import utilsServices from '../..//utils/services';
+    import {mapState, mapGetters} from 'vuex'
        
     export default {
     
@@ -28,17 +29,39 @@
             persona
         }, 
         data() {
-    
-            return {};
+            return {
+                tokenEstatus:null
+            };
     
         },
         methods:{
             obtenerToken:function(){
-                console.log("obtenerToken");
-                let token = utilsServices.generarToken();
-                console.log(token);
-            }
-        }
+                console.log("refrescaToken");
+                var expiro = this.$store.getters.validarToken(new Date().getTime() );
+                var tokenRefresh = this.$store.getters.obtenerTokenRefresh;
+                //var tokenRefresh = '8aec8bdc-86c1-4a45-97c6-ce5817d76185';
+                if(expiro){
+                    this.$store.dispatch('refrescaToken', tokenRefresh).then( (response) =>{
+                        debugger;
+                        if(response == null ){
+                            console.log("ocurrio un error al refrescar el token")
+                            alert("ocurrio un error!!!.  Se manda a llamar al refresh");
+                        //"Ocurrio un error al refrescar el token, desea volver a intentar"
+                            this.$store.dispatch('obtenerToken');
+                            console.log("obtenerToken");
+                        }else{
+                            console.log("Token refresh valido");
+                        }
+                    });
+                    //let tokenActual = this.$store.getters. obtenerTokenActual;
+                    
+                }
+                
+            },
+        },
+        computed:
+            mapState(['tokn']),
+            ...mapGetters(['validarToken']),
     
     };
 </script>

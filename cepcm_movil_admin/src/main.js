@@ -1,23 +1,23 @@
+import Vue from 'vue'
+import App from './App.vue'
 
+import VueRouter from 'vue-router'
+import {router} from './routes'
+import {store} from './store/store'
+import firebase from 'firebase'
 
-import Vue from 'vue';
-import App from './App.vue';
+Vue.config.productionTip = false
 
-import VueRouter from 'vue-router';
-import  {router} from './routes';
-import {store} from './store/store';
-
-//Vue.use(VueRouter);
-
-
-
-/*const router = new VueRouter(
-  {routes, mode:'history'}
-) */ 
-
-new Vue({
-  el: '#app',
-  router : router,
-  store:store,
-  render : h => h(App)
-})
+let app;
+firebase.auth().onAuthStateChanged(function (user) {
+  if (!app) {
+    app = new Vue({
+      el: '#app',
+      router: router,
+      store: store,
+      //render: h => h(App)
+      template : '<App/>',
+      components : {App}
+    })
+  }
+});

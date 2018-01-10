@@ -1,6 +1,6 @@
 <template>
   <b-container class="bv-example-row">
-    <b-button v-on:click="showModal" v-show="!userInOut" variant="primary"> Iniciar sesión
+    <b-button v-on:click="showModal" v-show="!autenticado" variant="primary"> Iniciar sesión
     </b-button>
 
     <b-modal ref="myModal" hide-footer title="Login" v-if="showModal" v-on:close="showModal = false">
@@ -42,9 +42,12 @@ import Vue from "vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import  {router} from '../../routes';
+//import utilsServices from '../..//utils/services';
+import {mapState, } from 'vuex'
 
 export default {
   name: "login",
+
   data() {
     return {
       mensaje: "Inicia session con tu emails y contraseña",
@@ -59,12 +62,12 @@ export default {
     createUser: function() {
       const authUser = {};
       var loginComp = this;
-      debugger;
+      
       this.$store.state.auth
         .createUserWithEmailAndPassword(
           this.loginDetails.email,
           this.loginDetails.password
-        ) //signInWithEmailAndPassword(this.loginDetails.email, this.loginDetails.password)
+        )
         .then(
           function(user) {
             alert("cuenta creada");
@@ -82,24 +85,23 @@ export default {
       let control = this.$store.state;
       
       this.$store.state.auth
-        .signInWithEmailAndPassword(
-          this.loginDetails.email,
-          this.loginDetails.password
-        )
+        .signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
         .then(
           function(user) {
-            debugger
             comp.hideModal();
             //router.push(cotininuar.query.redirect);
-            control.autenticado = true;
+            //control.autenticado = true;
             control.currentUser = user;
-            cotininuar.replace("home");
-
           },
           function(err) {
             alert("ups !!" + err);
           }
-        );
+        )
+        .then(()=>{
+          this.$store.dispatch('obtenerToken');
+          cotininuar.replace("home");
+        })
+       
     },
     showModal() {
       this.$refs.myModal.show()
@@ -109,11 +111,8 @@ export default {
     },
   },
   
-  computed:{
-    userInOut(){
-      return this.$store.state.autenticado;      
-    }
-  }
+  computed: mapState(['autenticado', 'token']),
+  
 };
 </script>
 
