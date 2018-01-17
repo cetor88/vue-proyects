@@ -1,4 +1,4 @@
-<template>
+<!--template>
   <b-container class="bv-example-row">
     <b-button v-on:click="showModal" v-show="!autenticado" variant="primary"> Iniciar sesión
     </b-button>
@@ -34,15 +34,72 @@
     </b-modal>
     
   </b-container> 
+</template-->
+<template>
+  <v-container>
+    <v-layout row v-if="error">
+      <v-flex xs12 sm6 offset-sm3>
+        <!--app-alert @dismissed="onDismissed" :text="error.message"></app-alert-->
+      </v-flex>
+    </v-layout>
+    <v-layout row >
+      <v-flex xs12 sm6 offset-sm3>
+        <h2  v-text="mensaje"></h2>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex xs12 sm6 offset-sm3>
+        <v-card>
+          <v-card-text>
+            <v-container>
+              <form @submit.prevent="onSignin">
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-text-field
+                      name="email"
+                      label="Mail"
+                      id="email"
+                      v-model="loginDetails.email"
+                      type="email"
+                      required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-text-field
+                      name="password"
+                      label="Password"
+                      id="password"
+                      v-model="loginDetails.password"
+                      type="password"
+                      required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-btn type="submit" dark class="pink accent-4">
+                      Aceptar
+                       <span slot="loader" class="custom-loader">
+                        <v-icon light>cached</v-icon>
+                       </span>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </form>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 
+
+
 <script type="text/javascript">
-import Vue from "vue";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css";
-import  {router} from '../../routes';
-//import utilsServices from '../..//utils/services';
+import Vue from "vue"
+import  {router} from '../../routes'
 import {mapState, } from 'vuex'
 
 export default {
@@ -50,11 +107,13 @@ export default {
 
   data() {
     return {
-      mensaje: "Inicia session con tu emails y contraseña",
+      mensaje: "Inicia session con tu email y contraseña",
       loginDetails: {
         email: "",
         password: ""
       },
+      dialog: false,
+      error:false,
     }
   },
 
@@ -77,59 +136,28 @@ export default {
           }
         );
     },
-    sinIn: function() {
+    onSignin: function() {
       const authUser = {};
       var loginComp = this;
       var comp = this;
       let cotininuar = this.$router;
-      let control = this.$store.state;
-      
-      this.$store.state.auth
-        .signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
+      let control = this.$store;
+      debugger;
+      this.$store.state.auth.signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
         .then(
           function(user) {
-            comp.hideModal();
-            //router.push(cotininuar.query.redirect);
-            //control.autenticado = true;
-            control.currentUser = user;
+            control.dispatch('iniciarUsuario', user);
+            control.dispatch('obtenerToken');
+            cotininuar.replace("home");
           },
           function(err) {
             alert("ups !!" + err);
           }
         )
-        .then(()=>{
-          this.$store.dispatch('obtenerToken');
-          cotininuar.replace("home");
-        })
        
     },
-    showModal() {
-      this.$refs.myModal.show()
-    },
-    hideModal() {
-      this.$refs.myModal.hide()
-    },
-  },
-  
-  computed: mapState(['autenticado', 'token']),
+  },  
+  computed: mapState(['autenticado', 'tokn']),
   
 };
 </script>
-
-<style type="text/css">
-.modal-enter{
-  opacity: 0;
-}
-
-.modal-enter-active{
-  transition :opacity 5s;
-}
-
-.modal-leave-to{
-  opacity: 0;
-}
-.modal-leave-active{
-  transition: opacity 1s;  
-}
-
-</style>

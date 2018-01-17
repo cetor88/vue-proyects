@@ -13,7 +13,7 @@ export const store = new Vuex.Store({
     db: CONSTANTES.db,
     auth: CONSTANTES.auth, 
     autenticado:  loadState('autenticado') ,
-    currentUser: null,
+    currentUser: loadState('currentUser') || null,
     tokn: loadState('token') || {value:null, refresh:null, expiraEn:null},
   },
   mutations: {
@@ -24,10 +24,31 @@ export const store = new Vuex.Store({
         state.tokn.expiraEn = Math.floor(new Date().getTime() + (tokenResp.expiresIn * 1000))
         saveState('token',state.tokn);
     },
-    setSuccess: (state) => {
-      state.autenticado = true;
+
+    setSuccess: (state, esAutenticado) => {
+      state.autenticado = esAutenticado;
       saveState('autenticado', state.autenticado);
     },
+
+    setLogout: (state) =>{
+      
+      state.auth.signOut()
+      .then(() =>{
+        removeState('autenticado');
+        removeState('token')
+        removeState('currentUser')
+  
+        state.currentUser = null;
+      }).catch((error)=> {
+        console.log("no se pudo cerrar la session !!");
+      })
+    },
+
+    setCurrentUser:(state, user)=>{
+      debugger;
+      state.currentUser = user;
+      saveState('currentUser', user);
+    }
     
   },
   actions: {
@@ -37,7 +58,7 @@ export const store = new Vuex.Store({
         .then((tokenResp) => {
           if (tokenResp.data != undefined){
             context.commit('setToken', tokenResp.data);
-            context.commit('setSuccess');
+            context.commit('setSuccess', true);
             resolve("ok");
           }else
             context.commit('setToken', null);
@@ -45,6 +66,7 @@ export const store = new Vuex.Store({
         })
       })
     },
+
     refrescaToken: (context, token) => {
       return new Promise((resolve, reject) =>{
         axios.get(CONSTANTES.urlRefreshToken + token)
@@ -59,8 +81,16 @@ export const store = new Vuex.Store({
         })
 
       })
-    }
+    },
 
+    cerrarSesion: (context) =>{
+      context.commit('setLogout');
+    },
+
+    iniciarUsuario: (context, user)=>{
+      context.commit('setCurrentUser', user);
+    }
+    
   },
   getters: {
     validarToken: (state) => (time) => {
@@ -73,16 +103,18 @@ export const store = new Vuex.Store({
       console.log("caducado el token: " + salida);
       return salida;
     },
+
     obtenerTokenRefresh: (state) => {
       return state.tokn.refresh.value;
     },
+
     obtenerTokenActual: (state) => {
       return state.tokn.value;
     },
-    cerrarSession: (state) => {
-      return  removeState('autenticado')
+    
+    obtenerCurrentUser: (state)=>{
+      return state.currentUser;
     }
-
 
   }
 

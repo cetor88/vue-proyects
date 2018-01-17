@@ -10,7 +10,18 @@ import logout from "./components/logout/logout.vue";
 import firebase from "firebase";
 Vue.use(VueRouter);
 
-var routes = [{
+var routes = [
+  {
+    path: '/login',
+    component: login,
+   
+  },
+  {
+    path: '/singUp',
+    component: login,
+   
+  },
+  {
     path: '/home',
     component: home,
     meta: {

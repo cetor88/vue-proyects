@@ -1,21 +1,10 @@
 <template>
-    <section>    
-        <b-row class="spacio">
-            
-        </b-row>
-        <b-row class="header">
-            <b-col class="logo">
-                
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col class="institucion">
+    <div>    
+        
                 <login></login>
                 <logout></logout>
-            </b-col>
-        </b-row>
         
-    </section>
+    </div>
 </template>
 
 <script>
