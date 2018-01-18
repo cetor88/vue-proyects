@@ -22,24 +22,25 @@
                 </v-text-field>
             </v-flex  xs4>
 
-            <v-flex xs6 offset-xs3>
+            <v-flex xs3 offset-xs3>
                 <v-subheader v-text="'Buscar alumno'"></v-subheader>
                 <v-select v-bind:items="states" v-model="notificacion.alumno"  autocomplete >
                 </v-select>    
             </v-flex>
 
-            <v-flex xs6 offset-xs3>
-                <v-card tile flat v-for="item in catImges">
-                    <v-avatar :tile="true" class="lighten-4 imagen-avatar"  >
-                        <img v-bind:src="item.imagen" alt="avatar" >
-                        <v-flex xs6>
-                            <v-card class="input-img"> 
-                                <input type="radio" v-bind:value="item.id" v-model="notificacion.img">
-                                </input>
+            <v-flex xs3>
+                <v-radio-group v-model="notificacion.img" column>
+                    <v-card tile flat v-for="item in catImges">
+                        <v-avatar :tile="true" class="lighten-4 imagen-avatar"  >
+                            <img v-bind:src="item.imagen" alt="avatar" >
+                            <v-card class="input-img">
+                                <v-radio color="pink"  dark v-bind:value="item.id">
+                                </v-radio> 
                             </v-card>
-                        </v-flex>
-                    </v-avatar>        
-                </v-card>
+                            
+                        </v-avatar>        
+                    </v-card>
+                </v-radio-group>
                     
             </v-flex>
 
@@ -134,7 +135,8 @@
 
     }
     .input-img{
-        position:absolute;
+        /*position:absolute;*/
         bottom:0px;
+        left:10px;
     }
 </style>
