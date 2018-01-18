@@ -45,7 +45,6 @@ export const store = new Vuex.Store({
     },
 
     setCurrentUser:(state, user)=>{
-      debugger;
       state.currentUser = user;
       saveState('currentUser', user);
     }

@@ -142,7 +142,7 @@ export default {
       var comp = this;
       let cotininuar = this.$router;
       let control = this.$store;
-      debugger;
+      
       this.$store.state.auth.signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
         .then(
           function(user) {
