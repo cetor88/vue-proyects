@@ -3,50 +3,50 @@
   <v-container  grid-list-md text-xs-center>
     <v-form >
 
-        <v-layout row >
+        <v-layout row wrap>
             <v-flex xs12 >
                 <v-card class="pink accent-4" dark>
                     <v-card-text>Notificaciones por Alumno</v-card-text>
                 </v-card>
             </v-flex>
-        </v-layout row>
-        <v-layout row>
-            <v-flex xs8>
+        
+            <v-flex xs6  offset-xs3>
                 <v-flex>
                     <v-text-field label="Titulo" v-model="notificacion.titulo" required >
                     </v-text-field>
                 </v-flex>
             </v-flex>
-        </v-layout>
         
-        <v-layout row>
-            <v-flex xs8>
+            <v-flex xs6 offset-xs3>
                 <v-text-field name="contenido" rows="2" label="Contenido" multi-line maxlength="100" v-model="notificacion.contenido">
                 </v-text-field>
             </v-flex  xs4>
-        </v-layout>
 
-        <v-layout row>
-            <v-flex xs6>
+            <v-flex xs6 offset-xs3>
                 <v-subheader v-text="'Buscar alumno'"></v-subheader>
                 <v-select v-bind:items="states" v-model="notificacion.alumno"  autocomplete >
                 </v-select>    
             </v-flex>
-        </v-layout>
 
-        <v-layout row>
-            <v-flex xs6>
-                <div v-for="item in catImges">
+            <v-flex xs6 offset-xs3>
+                <v-card tile flat v-for="item in catImges">
+                    <v-avatar :tile="true" class="lighten-4 imagen-avatar"  >
+                        <img v-bind:src="item.imagen" alt="avatar" >
+                        <v-flex xs6>
+                            <v-card class="input-img"> 
+                                <input type="radio" v-bind:value="item.id" v-model="notificacion.img">
+                                </input>
+                            </v-card>
+                        </v-flex>
+                    </v-avatar>        
+                </v-card>
                     
-                    <v-avatar :tile="false" class="grey lighten-4">
-                        <img v-bind:src="item.imagen"  alt="avatar">
-                    </v-avatar>
-                    
-                </div> 
             </v-flex>
-        </v-layout>
 
-        <v-layout row>
+            <v-flex xs12>
+            <pre> {{notificacion}}</pre>
+            </v-flex>
+        
             <v-flex xs12>
                 <v-btn @click="enviarNotificacion" >
                     Enviar
@@ -87,6 +87,7 @@
                 notificacion:{
                     titulo:'',
                     contenido:'',
+                    img:'',
                     alumno:''
                 }
             }
@@ -124,3 +125,16 @@
     
     };
 </script>
+
+<style >
+    .imagen-avatar{
+        
+        cursor:pointer;
+        padding: 30px;
+
+    }
+    .input-img{
+        position:absolute;
+        bottom:0px;
+    }
+</style>
