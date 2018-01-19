@@ -82,6 +82,30 @@ export const store = new Vuex.Store({
       })
     },
 
+    validarToken2:(context) => {
+      
+      return new Promise((resolve, reject) =>{
+
+      let time = new Date().getTime();
+      let expiro = time > context.state.tokn.expiraEn //si la fecha actual es mayor que expiraEn 
+      if(expiro){
+        let tokenRefresh = context.getters.obtenerTokenRefresh;
+        context.dispatch('refrescaToken', tokenRefresh).then( (response) =>{
+          if(response == null ){
+            console.log("ocurrio un error al refrescar el token");
+            context.dispatch('obtenerToken');
+            resolve(context.getters.obtenerTokenActual);
+          } else {
+                  console.log("Token refresh valido");
+                  resolve(context.getters.obtenerTokenActual);
+          }
+        })
+      } else {
+        resolve(context.getters.obtenerTokenActual);
+      }
+    })
+    },
+
     cerrarSesion: (context) =>{
       context.commit('setLogout');
     },
@@ -92,6 +116,7 @@ export const store = new Vuex.Store({
     
   },
   getters: {
+    
     validarToken: (state) => (time) => {
       let salida;
       if (state.tokn != null) {
@@ -108,6 +133,7 @@ export const store = new Vuex.Store({
     },
 
     obtenerTokenActual: (state) => {
+      
       return state.tokn.value;
     },
     
