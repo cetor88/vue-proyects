@@ -33,7 +33,7 @@ export default {
                 )
                 .then((tokenResp) => {
                     if (tokenResp.data != undefined){
-                      resolve("ok");
+                      resolve(tokenResp.data );
                     }else
                       reject(null);
                   })
@@ -54,7 +54,7 @@ export default {
                 )
                 .then((tokenResp) => {
                     if (tokenResp.data != undefined){
-                      resolve("ok");
+                      resolve(tokenResp.data );
                     }else
                       reject(null);
                   })
@@ -75,7 +75,7 @@ export default {
                 )
                 .then((tokenResp) => {
                     if (tokenResp.data != undefined){
-                      resolve("ok");
+                      resolve(tokenResp.data );
                     }else
                       reject(null);
                   })
