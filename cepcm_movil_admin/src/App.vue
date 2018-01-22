@@ -56,6 +56,12 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-container>
+      
+       <autocomplete :suggestions="cities" :selection.sync="value"></autocomplete>
+
+    </v-container>
+    
+    <v-container>
       <router-view></router-view>
     </v-container>
   </v-app>
@@ -63,8 +69,7 @@
 
 
 <script>
-
-      /*
+/*
       import menus from "./components/menu/menu.vue";
       import myHeader from  "./components/header.vue";
       import myCarrusel from "./components/carrusel.vue";
@@ -90,45 +95,50 @@
         }
       }*/
 
-  //import myfooter from './components/footer.vue'
-  import {mapState, mapGetters} from 'vuex'
-  export default {
-    data () {
-      return {
-        sideNav: true
-      }
-    },
-    computed: {
-      menuItems () {
-        let menuItems = [
-          {icon: 'face', title: 'Registro', link: '/singUp'},
-          {icon: 'lock_open', title: 'Login', link: '/login'}
-        ]
-        if (this.userIsAuthenticated) {
-          menuItems = [
-            {icon: 'room', title: 'Ubicación', link: '/meetup/new'},
-            {icon: 'person', title: 'Perfil', link: '/profile'}
-          ]
-        }
-        return menuItems
-      },
+//import myfooter from './components/footer.vue'
+import autocomplete from "./components/autoComplete/autocomplete.vue";
 
-      userIsAuthenticated () {
-
-        return this.$store.getters.obtenerCurrentUser !== null && this.$store.getters.obtenerCurrentUser !== undefined
-      },
-      
-      
-    },
-    methods: {
-      onLogout () {
-        this.$store.dispatch('cerrarSesion');
-        this.$router.replace("login");
+import { mapState, mapGetters } from "vuex";
+export default {
+  components: { autocomplete },
+  data() {
+    return {
+      sideNav: true,
+      cities : ['Bangalore','Chennai','Cochin','Delhi','Kolkata','Mumbai'],
+      value: '',
+    }
+  },
+  computed: {
+    menuItems() {
+      let menuItems = [
+        { icon: "face", title: "Registro", link: "/singUp" },
+        { icon: "lock_open", title: "Login", link: "/login" }
+      ];
+      if (this.userIsAuthenticated) {
+        menuItems = [
+          { icon: "room", title: "Ubicación", link: "/meetup/new" },
+          { icon: "person", title: "Perfil", link: "/profile" }
+        ];
       }
+      return menuItems;
+    },
+
+    userIsAuthenticated() {
+      return (
+        this.$store.getters.obtenerCurrentUser !== null &&
+        this.$store.getters.obtenerCurrentUser !== undefined
+      );
+    }
+  },
+  methods: {
+    onLogout() {
+      this.$store.dispatch("cerrarSesion");
+      this.$router.replace("login");
     }
   }
+};
 </script>
 
 <style lang="stylus">
-  @import './stylus/main'
+@import './stylus/main';
 </style>
