@@ -13,7 +13,7 @@
                         :hide-selected="true"	 required :items="items" :open-on-clear="true"
                         :rules="[() => select.length > 0 || 'Debes seleccionar al menos un alumno']"
                         :search-input.sync="search"
-                        v-model="select"
+                        v-model="select" 
                     ></v-select>
                     </v-flex>
                 </v-layout>
