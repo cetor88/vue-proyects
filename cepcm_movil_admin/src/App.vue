@@ -106,7 +106,7 @@ export default {
   computed: {
     menuItems() {
       let menuItems = [
-        { icon: "face", title: "Registro", link: "/singUp" },
+        
         { icon: "lock_open", title: "Login", link: "/login" }
       ];
       if (this.userIsAuthenticated) {
