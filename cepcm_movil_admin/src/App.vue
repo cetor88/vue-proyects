@@ -55,11 +55,6 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <v-container>
-      
-       <autocomplete :suggestions="cities" :selection.sync="value"></autocomplete>
-
-    </v-container>
     
     <v-container>
       <router-view></router-view>

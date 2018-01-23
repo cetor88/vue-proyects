@@ -10,7 +10,7 @@
                 <v-layout>
                     <v-flex>
                     <v-select label="Buscar alumno" autocomplete :loading="loading" color="pink"                           multiple
-                        :hide-selected="true"	 required :items="items" :open-on-clear="true"
+                        :hide-selected="true" required :items="items" :open-on-clear="true"
                         :rules="[() => select.length > 0 || 'Debes seleccionar al menos un alumno']"
                         :search-input.sync="search"
                         v-model="select" 

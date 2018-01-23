@@ -23,10 +23,18 @@
             </v-flex  xs4>
 
             <v-flex xs3 offset-xs3>
-                <v-subheader v-text="'Buscar alumno'"></v-subheader>
-                <v-select v-bind:items="alumnosFiltro" v-model="notificacion.alumnoStr"  autocomplete >
-                </v-select>    
+                <!--v-container >
+                    <v-layout-->
+                        <v-flex>
+                            <v-select label="Buscar alumno" autocomplete :loading="loading" multiple color="pink" 
+                                chips required :items="items.alumnoFiltro" :rules="[() => select.length > 0 || 'Elige al menos a un alumno']"
+                                :search-input.sync="search" v-model="select"> </v-select>
+                        </v-flex>
+                    <!--/v-layout>
+                </v-container-->
+                
             </v-flex>
+            
 
             <v-flex xs3>
                 <v-radio-group v-model="notificacion.img">
@@ -49,7 +57,7 @@
             </v-flex>
         
             <v-flex xs12>
-                <v-btn @click="enviarNotificacion" >
+                <v-btn @click="enviarNotificacion"  color="pink" dark>
                     Enviar
                 </v-btn>
             </v-flex>
@@ -62,10 +70,11 @@
     import persona from "../persona.vue";
     import {mapState, mapGetters} from 'vuex'
     import homeServices from './home.services'   
+    import autocomplete from "../autoComplete/autocomplete.vue";
     export default {
     
         components: { 
-            persona
+            persona,autocomplete
         },
         mounted(){
             this.$store.dispatch('validarToken2')
@@ -95,9 +104,6 @@
         data() {
             return {
                 catImges :[],
-                states: [
-                            'Alabama','Alaska','American Samoa','Arizon'
-                        ],
                 notificacion:{
                     titulo:'',
                     contenido:'',
@@ -106,12 +112,55 @@
                     alumnoStr :''
                 },
                 token:'',
-                alumnosFiltro:[],
+                loading: false,
+                items: [],
+                search: null,
+                select: [],
+                alumnos: []
                 
             }
     
         },
+        watch: {
+            search (val) {
+                if(val.length > 3){
+                    val && this.querySelections(val)
+                }/*else{
+                    this.items=[];
+                }*/
+            }
+        },
         methods:{
+            querySelections (strFiltro) {
+                this.loading = true
+                
+                let req = {};
+                this.$store.dispatch('validarToken2')
+                .then((data)=>{
+                    this.token = data;
+                })
+                .then(() =>{
+                    req = {filtro : strFiltro, access_token : this.token};
+                    homeServices.obtenerAlumnosPorFiltro(req)
+                    .then((data) =>{
+                        this.alumnos=[];
+                        data.respuesta.forEach((item, key) =>{
+                            this.alumnos.push({'id':item.id, 'alumnoFiltro': item.nombres + ' '+ item.apaterno + ' ' + item.amaterno})
+                        });
+                        
+                        //{"codigo":0,"mensaje":"","respuesta":[{"id":7956,"nombres":"ERIKA ARELI","apaterno":"ABURTO","amaterno":"CASTRO","matricula":"0923112201"},{"id":13015,"nombres":"CLAUDIA CAROLINA","apaterno":"AGUIÑAGA","amaterno":"CASTRO","matricula":"03012601"},{"id":15008,"nombres":"CYNTHIA","apaterno":"ALVARADO","amaterno":"CASTRO","matricula":"133619001"},{"id":414,"nombres":"CYNTHIA","apaterno":"ALVARADO","amaterno":"CASTRO","matricula":"1033115502"},{"id":19743,"nombres":"ANTONIO","apaterno":"ALVAREZ ","amaterno":"CASTRO ","matricula":"04018102"},{"id":19861,"nombres":"ALEJANDRA","apaterno":"APARICIO","amaterno":"CASTRO","matricula":"154319701"},{"id":5958,"nombres":"ADRIANA","apaterno":"BAUTISTA","amaterno":"CASTRO","matricula":"1231410703"},{"id":1951,"nombres":"LORENA MARCELA","apaterno":"BECERRIL","amaterno":"CASTRO","matricula":"113615301"},{"id":17811,"nombres":"JONATHAN","apaterno":"BELLO","amaterno":"CASTRO","matricula":"145410202"},{"id":15122,"nombres":"JOSE ROBERTO","apaterno":"BUENDIA","amaterno":"CASTRO","matricula":"1241410705"},{"id":26318,"nombres":"JAZMIN","apaterno":"CABRERA","amaterno":"CASTRO","matricula":"17331111N05"},{"id":12633,"nombres":"ELIZABETH","apaterno":"CALDERON","amaterno":"CASTRO","matricula":"1336167A03"},{"id":13440,"nombres":"SANDRA","apaterno":"CALDERON","amaterno":"CASTRO","matricula":"132318602"},{"id":5726,"nombres":"MARIA FERNANDA","apaterno":"CASADO","amaterno":"CASTRO","matricula":"122317722"},{"id":21478,"nombres":" MA. DE LA LUZ ","apaterno":"CASTREJÓN","amaterno":" GUTIÉRREZ","matricula":"04017603"},{"id":6744,"nombres":"KARIME","apaterno":"CASTREJON","amaterno":"BELTRAN","matricula":"082317306"},{"id":11694,"nombres":"NANCY NORMA","apaterno":"CASTREJON","amaterno":"CRUZ","matricula":"0611111802"},{"id":5134,"nombres":"ERICK DE JESUS","apaterno":"CASTREJON","amaterno":"ESTRADA","matricula":"114314327"},{"id":9282,"nombres":"ELIA MINERVA","apaterno":"CASTREJON","amaterno":"MEJIA","matricula":"087110129"},{"id":20953,"nombres":" MELINA","apaterno":"CASTRILLO","amaterno":" SALAZAR","matricula":"04135501"}]}
+                    })
+                })
+                .then(()=>{
+                    this.items = this.alumnos.filter(e => {
+                        if((e.alumnoFiltro || '').toLowerCase().indexOf((strFiltro || '').toLowerCase()) > -1)
+                            console.log(e.alumnoFiltro);
+                        return (e.alumnoFiltro || '').toLowerCase().indexOf((strFiltro || '').toLowerCase()) > -1
+                    })
+                })
+                this.loading = false
+            },
+
             enviarNotificacion: function(){
                 console.log("se ha  enviado el formulario");
             },
@@ -120,18 +169,9 @@
                 console.log(filtro);
                 if(filtro.legth > 5){
                     return new Promise((resolve, reject) =>{
-                        this.alumnosFiltro=['Alabama','Alaska','American Samoa','Arizon'];
-                        resolve(this.alumnosFiltro );
-                    
+                                           
                     })
-                }else{
-                     return new Promise((resolve, reject) =>{
-                        this.alumnosFiltro=[];
-                        resolve(this.alumnosFiltro );
-                    
-                    })
-                }
-               
+                }               
             }
 
         },
