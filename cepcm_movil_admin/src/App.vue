@@ -55,7 +55,9 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    
+    <v-container>
+      <autocomplete> </autocomplete>
+    </v-container>      
     <v-container>
       <router-view></router-view>
     </v-container>
@@ -92,6 +94,7 @@
 
 //import myfooter from './components/footer.vue'
 import autocomplete from "./components/autoComplete/autocomplete.vue";
+
 
 import { mapState, mapGetters } from "vuex";
 export default {
