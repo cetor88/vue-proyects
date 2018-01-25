@@ -1,38 +1,7 @@
-<!--template>
-  <div class="container">
-    <myHeader></myHeader>
-    <menus v-show="userInOut"></menus>
-    <myCarrusel v-show="!userInOut"></myCarrusel>
-    <router-view> </router-view>
-    
-    <myfooter> Terminos y condiciones</myfooter>
-  </div>
-</template-->
 <template>
-  <v-app>    
-    <!--v-navigation-drawer temporary v-model="sideNav" >
-      <v-list>
-        <v-list-tile
-          v-for="item in menuItems"
-          :key="item.title"
-          :to="item.link">
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>{{ item.title }}</v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile
-          v-if="userIsAuthenticated"
-          @click="onLogout">
-          <v-list-tile-action>
-            <v-icon>exit_to_app</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>Cerar sesiòn</v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer-->
-
-    <v-toolbar dark class="pink accent-4" >
+  <v-app>
+    <!--v-toolbar dark class="pink accent-4" -->
+    <v-toolbar class="accent-4" >
       <v-toolbar-side-icon
         @click.stop="sideNav = !sideNav"
         class="hidden-sm-and-up "></v-toolbar-side-icon>
@@ -66,33 +35,6 @@
 
 
 <script>
-/*
-      import menus from "./components/menu/menu.vue";
-      import myHeader from  "./components/header.vue";
-      import myCarrusel from "./components/carrusel.vue";
-      import authe from './components/auth/auth.vue'
-      import myfooter from './components/footer.vue'
-      import Vue from 'vue'
-      
-      import BootstrapVue from 'bootstrap-vue'
-
-      Vue.use(BootstrapVue);    
-
-      export default{
-        components:{menus, myHeader, myCarrusel, authe, myfooter},
-        computed:{
-          contar(){
-            return this.$store.state.cantidad;
-            
-          },
-          userInOut(){
-            return this.$store.state.autenticado;
-            
-          }
-        }
-      }*/
-
-//import myfooter from './components/footer.vue'
 import autocomplete from "./components/autoComplete/autocomplete.vue";
 
 

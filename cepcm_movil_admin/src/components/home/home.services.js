@@ -54,7 +54,7 @@ export default {
                 )
                 .then((tokenResp) => {
                     if (tokenResp.data != undefined){
-                      resolve(tokenResp.data.respuesta );
+                      resolve(tokenResp.data );
                     }else
                       reject(null);
                   })

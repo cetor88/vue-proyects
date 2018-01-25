@@ -34,7 +34,7 @@
                         <v-card-text>Alumnos </v-card-text>
                     </v-card>
                     <v-select label="Buscar alumno" autocomplete 
-                        @selected='alumnoSeleccionado'
+                        @change='alumnoSeleccionado'
                         :loading="loading" multiple color="pink" 
                         required 
                         :items="alumnos" 
@@ -183,9 +183,9 @@
                 this.loading = false
             },
 
-            alumnoSeleccionado: function(event, item){
+            alumnoSeleccionado: function(event){
                 let idAlumno = event[event.length-1] ;
-                let req = {id_tipo: idAlumno, access_token: this.token};
+                let req = {id: idAlumno, access_token: this.token};
 
                 this.$store.dispatch('validarToken2')
                 .then((data)=>{
