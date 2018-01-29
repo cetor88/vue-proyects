@@ -5,16 +5,31 @@
                 <v-text-field label="Buscar alumno" v-model="queryString" required   v-on:keyup="search(queryString)">
                 </v-text-field>
                 <div v-if="alumnos.length" transition="slide-x-transition" class="contentPerson">
-                    <v-list slot="activator" class="content-person">
-                        <div class="action persona" v-for="persona in alumnos">
-                            <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true" >
-                            <v-list-tile-title v-text="persona.text" @click="personaSeleccionada(persona)"></v-list-tile-title>
-                            </i>
-                        </div>                        
+                    <v-list slot="activator" class="content-person" two-line >
+                        
+                        <template v-for="persona  in getAlumnos" >                            
+                            <v-list-tile avatar  v-bind:key="persona.text"  @click="personaSeleccionada(persona)">
+                            <v-list-tile-avatar>
+                                <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true" ></i>
+                            </v-list-tile-avatar>
+                            <v-list-tile-content>
+                                <v-list-tile-title v-html="persona.text"></v-list-tile-title>
+                                <v-list-tile-sub-title v-html="persona.value"></v-list-tile-sub-title>
+                            </v-list-tile-content>
+                            </v-list-tile>
+                            <v-divider v-bind:inset="true"></v-divider>
+                        </template>
                     </v-list>
                 </div>
             </v-flex>
-        </v-layout>    
+        </v-layout>
+        <v-layout  row wrap>
+            <v-flex>
+                <v-alert outline color="error" icon="warning" :value="alerta">
+                    {{msgError}}
+                </v-alert>
+            </v-flex>
+        </v-layout> 
         <v-layout row wrap>
             <v-flex>
                 <v-card class="accent-4" >
@@ -25,12 +40,21 @@
                         </div>
                     </v-card-text>
                 </v-card>                
-                <v-list class="contentPerson" v-if="personasSeleccionadas.length">
-                    <v-list-tile v-for="persona in personasSeleccionadas">
-                        <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true"></i>
-                        <v-list-tile-title v-text="persona.text + ' ' + persona.value"> </v-list-tile-title>
-                        <i class="fa fa-trash-o fa-pull-left fa-border" aria-hidden="true" alt="Eliminar" @click="eliminarPersona(persona, personasSeleccionadas)"></i>
-                    </v-list-tile>
+                <v-list class="contentPerson" v-if="getPersonasSeleccionadas.length" two-line>
+                    <template v-for="persona  in getPersonasSeleccionadas">                            
+                            <v-list-tile avatar  v-bind:key="persona.text"  class="action persona" >
+                            <v-list-tile-avatar>
+                                <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true" ></i>
+                            </v-list-tile-avatar>
+                            <v-list-tile-content>
+                                <v-list-tile-title v-text="persona.text + ' - ' + persona.value"> </v-list-tile-title>
+                            </v-list-tile-content>
+                            <v-list-tile-avatar>
+                                <i class="fa fa-trash-o fa-pull-left fa-border" aria-hidden="true" alt="Eliminar" @click="eliminaDispositivo(persona, personasSeleccionadas, dispositivos)"></i>
+                            </v-list-tile-avatar>
+                            </v-list-tile>
+                            <v-divider v-bind:inset="true"></v-divider>
+                        </template>
                 </v-list>    
             </v-flex>
         </v-layout>
@@ -46,104 +70,138 @@
     data () {
         return{
             queryString:'',
-            items: [],
-            personas:[],
+            alerta:false,
+            msgError:"",
             personasSeleccionadas:[],
             loading:false,
             alumnos: [],
+            //dispositivos:[],
         }
     },
-    //watch: {
-       
-    //},
+    props:['dispositivos'],
     methods: {
         search (val) {
-            //debugger
             if(val)
-
                 if(val.length > 3){
                     val && this.querySelections(val)
-                }else{
-                    this.items=[];
                 }
         },
         querySelections (strFiltro) {
-                this.loading = true
-                let req = {};
-                this.$store.dispatch('validarToken2')
-                .then((data)=>{
-                    this.token = data;
+            this.loading = true
+            let req = {};
+            this.$store.dispatch('validarToken2')
+            .then((data)=>{
+                this.token = data;
+            })
+            .then(() =>{
+                req = {filtro : strFiltro, access_token : this.token};
+                homeServices.obtenerAlumnosPorFiltro(req)
+                .then((data) =>{
+                    if(data.respuesta != undefined){
+                        this.alumnos=[];
+                        data.respuesta.forEach((item, key) =>{
+                            this.alumnos.push({text: item.nombres +" "+ item.apaterno +" "+ item.amaterno , value: item.id})
+                        });
+                    }
+                    this.loading = false
                 })
-                .then(() =>{
-                    req = {filtro : strFiltro, access_token : this.token};
-                    homeServices.obtenerAlumnosPorFiltro(req)
-                    .then((data) =>{
-                        if(data.respuesta != undefined){
-                            this.alumnos=[];
-                            data.respuesta.forEach((item, key) =>{
-                                this.alumnos.push({text: item.nombres +" "+ item.apaterno +" "+ item.amaterno , value: item.id})
-                            });
-                        }
-                        this.loading = false
-                    })
-                })
-                .catch(function(err){
-                    console.log(err);
-                })
+            })
+            .catch(function(err){
+                console.log(err);
+            })
         },
 
-        alumnoSeleccionado: function(event){
-                let idAlumno = event[event.length-1] ;
-                let req = {id: idAlumno, access_token: this.token};
-
+        personaSeleccionada(persona){
+            this.loading = true;
+            let req = {};
+            if(!this.existeUsuario(persona, this.personasSeleccionadas)){
                 this.$store.dispatch('validarToken2')
                 .then((data)=>{
                     this.token = data;
-                }).then(()=>{
+                    req = {id: persona.value, access_token: this.token};
                     homeServices.obtenerAlumnosPorId(req)
                     .then((data) =>{
-                        console.log(data)
                         if(data.respuesta != undefined){
-                            this.dispositivos = data.respuesta;
+                            //if(data.respuesta.dispositivo != null){
+                            if(data.respuesta != null){
+                                //this.dispositivos.push(data.respuesta.dispositivo);
+                                this.dispositivos.push(persona);
+                                this.personasSeleccionadas.push(persona);
+                                this.eliminarPersona(persona, this.alumnos);
+                                
+                                //this.eliminarPersona(persona, this.dispositivos);
+                                this.loading = false;
+                            
+                            }else{
+                               throw  "Lo sentimos, la personada seleccionada no cuenta con disposito.";
+                            }
+
                         }
                     })
+                    .catch((error)=>{
+                        console.log(error);
+                        this.loading = false;
+                        this.alerta= true;
+                        this.msgError= error;
+                        setTimeout(() => {
+                                this.alerta= false;
+                        }, 2000);
+                    })
                 })
-        },
-        personaSeleccionada(persona){
-                if(!this.existeUsuario(persona, this.personasSeleccionadas)){
-                    this.personasSeleccionadas.push(persona);
-                    this.eliminarPersona(persona, this.alumnos);
-                }
+                .catch((error)=>{
+                    console.log(error);
+                    this.loading = false;
+                    this.alerta= true;
+                        setTimeout(() => {
+                            this.alerta= false;
+                    }, 2000);
+                })
+                
+            }else{
+                console.log("Persona ya seleccionada");
+                this.loading = false;
+            }
+            
         },
         existeUsuario(persona, array){
-            let salida=false;
+            let bander= false;
             array.forEach(item => {
-                if(persona.value != item.value){
-                    salida = false;
-                }else{
-                    salida = true;
-                    console.log("usuario ya ha sido agregado anterriomente");
+                if(persona.value == item.value){
+                    bander = true;
                 }
             });
-            return salida;
+            return bander;
         },
-        eliminarPersona(persona, arreglo){
-                let idDelete = undefined;
-                arreglo.forEach( (element, index) => {
-                    if (element.value == persona.value){
-                        idDelete = index;
-                    }
-                });
-                if(idDelete!=undefined){
-                    arreglo.pop(idDelete);
+      eliminarPersona(persona, arreglo){
+          debugger;
+            arreglo.forEach( (element, index) => {
+                if (element.value == persona.value){
+                     arreglo.splice(index,1 );
+                     return;
                 }
-        }
-  },
-  computed:{
-      loader(){
+            });
+            
+        },
+        eliminaDispositivo(persona, arreglo1, arreglo2 ){
+          debugger;
+            this.eliminarPersona(persona, arreglo1);
+            this.eliminarPersona(persona, arreglo2);
+           
+            
+        },
+    },
+    computed:{
+        loader(){
           return this.loading;
-      }
-  }
+        },
+        getAlumnos(){
+            return this.alumnos;
+        },
+        getPersonasSeleccionadas(){
+            return this.personasSeleccionadas;
+        }
+
+    }
     
 }
 </script>
@@ -153,10 +211,12 @@
         cursor:pointer;
 
     }
-    .action.persona .fa-border {
-        border: solid 0.08em #e61313;
-        margin:10px;
+    i.fa.fa-trash-o.fa-pull-left.fa-border{
+        color: red; 
+        font-size: 20px;
+        font-weight: bold;
     }
+   
     
     .contentPerson {
         height: 150px;

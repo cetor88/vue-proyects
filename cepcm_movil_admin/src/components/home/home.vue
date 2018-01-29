@@ -5,7 +5,7 @@
 
         <v-layout row wrap>
             <v-flex xs12 >
-                <v-card class="  accent-4"   >
+                <v-card class="accent-4"  dark>
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
@@ -30,38 +30,12 @@
 
             <v-flex xs6 offset-xs3>
                 <v-flex>
-                    <v-card class="  accent-4"  >
-                        <v-card-text>Buscar Persona </v-card-text>
-                    </v-card>
-                    <autocomplete> </autocomplete>
-                    <!--v-select label="Buscar alumno" autocomplete 
-                        @change='alumnoSeleccionado'
-                        :loading="loading" multiple color=" " 
-                        required 
-                        :items="alumnos" 
-                        :rules="[() => alumnosSeleted.length > 0 || 'Elige al menos a un alumno']"
-                        :search-input.sync="search" 
-                        clearable
-                        cache-items
-                        
-                        
-                        light
-                        open-on-clear
-                        persistent-hint
-                        
-                        solo 
-                        chips
-                        deletable-chips
-                        no-data-text="No se encontraron resultados"
-                        v-model="alumnosSeleted"> </v-select-->
+                    <autocomplete :dispositivos="dispositivos"> </autocomplete>
                 </v-flex>
                 
             </v-flex>
 
             <v-flex xs6 offset-xs3>
-                <v-card class="  accent-4"  >
-                        <v-card-text>Selecciona una imagen </v-card-text>
-                </v-card>
                 <v-radio-group v-model="notificacion.img">
                     <v-card tile flat v-for="item in catImges">
                         <v-avatar :tile="false" class="lighten-4 imagen-avatar"  >
@@ -76,13 +50,11 @@
                 </v-radio-group>
                     
             </v-flex>
-
-            <!--v-flex xs12>
-                <pre> {{notificacion}}</pre>
-            </v-flex-->
-        
             <v-flex xs12>
-                <v-btn @click="enviarNotificacion"  color=" "  >
+                <pre>{{dispositivos}}</pre>
+            </v-flex>
+            <v-flex xs12>
+                <v-btn @click="enviarNotificacion"  class="" dark >
                     Enviar
                 </v-btn>
             </v-flex>
