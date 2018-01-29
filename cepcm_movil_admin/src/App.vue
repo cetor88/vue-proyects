@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <!--v-toolbar dark class="pink accent-4" -->
-    <v-toolbar class="accent-4" >
+    <v-toolbar dark class="accent-4" >
+    <!--v-toolbar class="accent-4" -->
       <v-toolbar-side-icon
         @click.stop="sideNav = !sideNav"
         class="hidden-sm-and-up "></v-toolbar-side-icon>
