@@ -2,13 +2,14 @@
     <v-container grid-list-md text-xs-center>
         <v-layout row wrap>
             <v-flex>
-                <v-text-field label="Buscar alumno" v-model="queryString" required   v-on:keyup="search(queryString)">
+                <v-text-field label="Buscar alumno" v-model="queryString" required v-on:keyup="search(queryString)">
                 </v-text-field>
                 <div v-if="alumnos.length" transition="slide-x-transition" class="contentPerson">
                     <v-list slot="activator" class="content-person" two-line >
                         
                         <template v-for="persona  in getAlumnos" >                            
-                            <v-list-tile avatar  v-bind:key="persona.text"  @click="personaSeleccionada(persona)">
+                            <v-list-tile avatar  v-bind:key="persona.value"  @click="(persona.dispositivo != 0 ? personaSeleccionada(persona) :'')" :disabled="persona.dispositivo == 0">
+
                             <v-list-tile-avatar>
                                 <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true" ></i>
                             </v-list-tile-avatar>
@@ -16,6 +17,11 @@
                                 <v-list-tile-title v-html="persona.text"></v-list-tile-title>
                                 <v-list-tile-sub-title v-html="persona.value"></v-list-tile-sub-title>
                             </v-list-tile-content>
+                            <v-list-tile-action>
+                                <v-list-tile-action-text>Matricula: {{ persona.matricula }}</v-list-tile-action-text>
+                                <v-icon color="pink  lighten-1" v-if="persona.dispositivo != 0" >star</v-icon>
+                                <v-icon color="grey darken-2" v-else >star_border</v-icon>
+                            </v-list-tile-action>
                             </v-list-tile>
                             <v-divider v-bind:inset="true"></v-divider>
                         </template>
@@ -36,11 +42,11 @@
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <h2>Personas seleccionadas</h2>
+                            <h2>Alumnos a los que se les enviará la norificación</h2>
                         </div>
                     </v-card-text>
                 </v-card>                
-                <v-list class="contentPerson" v-if="getPersonasSeleccionadas.length" two-line>
+                <v-list class="contentPerson" v-if="getPersonasSeleccionadas.length" two-line >
                     <template v-for="persona  in getPersonasSeleccionadas">                            
                             <v-list-tile avatar  v-bind:key="persona.text"  class="action persona" >
                             <v-list-tile-avatar>
@@ -53,7 +59,7 @@
                                 <i class="fa fa-trash-o fa-pull-left fa-border" aria-hidden="true" alt="Eliminar" @click="eliminaDispositivo(persona, personasSeleccionadas, dispositivos)"></i>
                             </v-list-tile-avatar>
                             </v-list-tile>
-                            <v-divider v-bind:inset="true"></v-divider>
+                            <v-divider ></v-divider>
                         </template>
                 </v-list>    
             </v-flex>
@@ -69,16 +75,24 @@
     export default{
     data () {
         return{
+            valid: false,
             queryString:'',
             alerta:false,
             msgError:"",
-            personasSeleccionadas:[],
             loading:false,
             alumnos: [],
-            //dispositivos:[],
+            personasRules:[(v) => !!v || 'Elige al menos una persona'],
         }
     },
-    props:['dispositivos'],
+    props:{
+        dispositivos:{
+
+        },
+        personasSeleccionadas:{
+            required: true
+        }
+    },
+    
     methods: {
         search (val) {
             if(val)
@@ -100,7 +114,7 @@
                     if(data.respuesta != undefined){
                         this.alumnos=[];
                         data.respuesta.forEach((item, key) =>{
-                            this.alumnos.push({text: item.nombres +" "+ item.apaterno +" "+ item.amaterno , value: item.id})
+                            this.alumnos.push({text: item.nombres +" "+ item.apaterno +" "+ item.amaterno , value: item.id, dispositivo: item.idDispositivoUsuario, matricula: item.matricula})
                         });
                     }
                     this.loading = false
@@ -115,48 +129,12 @@
             this.loading = true;
             let req = {};
             if(!this.existeUsuario(persona, this.personasSeleccionadas)){
-                this.$store.dispatch('validarToken2')
-                .then((data)=>{
-                    this.token = data;
-                    req = {id: persona.value, access_token: this.token};
-                    homeServices.obtenerAlumnosPorId(req)
-                    .then((data) =>{
-                        if(data.respuesta != undefined){
-                            //if(data.respuesta.dispositivo != null){
-                            if(data.respuesta != null){
-                                //this.dispositivos.push(data.respuesta.dispositivo);
-                                this.dispositivos.push(persona);
-                                this.personasSeleccionadas.push(persona);
-                                this.eliminarPersona(persona, this.alumnos);
-                                
-                                //this.eliminarPersona(persona, this.dispositivos);
-                                this.loading = false;
-                            
-                            }else{
-                               throw  "Lo sentimos, la personada seleccionada no cuenta con disposito.";
-                            }
-
-                        }
-                    })
-                    .catch((error)=>{
-                        console.log(error);
-                        this.loading = false;
-                        this.alerta= true;
-                        this.msgError= error;
-                        setTimeout(() => {
-                                this.alerta= false;
-                        }, 2000);
-                    })
-                })
-                .catch((error)=>{
-                    console.log(error);
-                    this.loading = false;
-                    this.alerta= true;
-                        setTimeout(() => {
-                            this.alerta= false;
-                    }, 2000);
-                })
-                
+                this.dispositivos.push(persona.dispositivo);
+                this.personasSeleccionadas.push(persona);
+                this.eliminarPersona(persona, this.alumnos);
+                this.loading = false;
+                this.alumnos=[];
+                this.queryString=' ';
             }else{
                 console.log("Persona ya seleccionada");
                 this.loading = false;
@@ -173,7 +151,6 @@
             return bander;
         },
       eliminarPersona(persona, arreglo){
-          debugger;
             arreglo.forEach( (element, index) => {
                 if (element.value == persona.value){
                      arreglo.splice(index,1 );
@@ -183,7 +160,6 @@
             
         },
         eliminaDispositivo(persona, arreglo1, arreglo2 ){
-          debugger;
             this.eliminarPersona(persona, arreglo1);
             this.eliminarPersona(persona, arreglo2);
            
