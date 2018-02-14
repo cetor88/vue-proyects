@@ -165,7 +165,7 @@ export default {
 
   methods: {
     enviarNotificacion() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate() && this.dispositivos.length > 0) {
         this.$store
         .dispatch("validarToken2")
         .then(data => {
