@@ -3,6 +3,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import home from './components/home/home.vue';
+import adeudo from './components/home/notificacionAdeudoPersona.vue';
+
 import contacto from './components/contacto/contacto.vue';
 import login from "./components/login/login.vue";
 import logout from "./components/logout/logout.vue";
@@ -24,6 +26,13 @@ var routes = [
   {
     path: '/home',
     component: home,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/adeudo',
+    component: adeudo,
     meta: {
       requiresAuth: true
     }

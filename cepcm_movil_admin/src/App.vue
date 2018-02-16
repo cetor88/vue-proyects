@@ -13,13 +13,13 @@
         <v-btn flat v-for="item in menuItems"
           :key="item.title"
           :to="item.link">
-          <v-icon left dark>{{ item.icon }}</v-icon>
+          <v-icon left dark :class="item.icon"></v-icon>
           {{ item.title }}
 
         </v-btn>
         <v-btn
           v-if="userIsAuthenticated" flat @click="onLogout">
-          <v-icon left dark>exit_to_app</v-icon>
+          <v-icon left dark class="fas fa-sign-out-alt"></v-icon>
           Cerrar sesiòn
         </v-btn>
       </v-toolbar-items>
@@ -33,16 +33,14 @@
 
 
 <script>
-import autocomplete from "./components/autoComplete/autocomplete.vue";
 
 
 import { mapState, mapGetters } from "vuex";
 export default {
-  components: { autocomplete },
+  
   data() {
     return {
       sideNav: true,
-      cities : ['Bangalore','Chennai','Cochin','Delhi','Kolkata','Mumbai'],
       value: '',
     }
   },
@@ -50,12 +48,14 @@ export default {
     menuItems() {
       let menuItems = [
         
-        { icon: "lock_open", title: "Login", link: "/login" }
+        { icon: "fas fa-lock", title: "Login", link: "/login" }
       ];
       if (this.userIsAuthenticated) {
         menuItems = [
-          { icon: "room", title: "Ubicación", link: "/meetup/new" },
-          { icon: "person", title: "Perfil", link: "/profile" }
+          { icon: "far fa-comment-alt", title: "Avisos generales", link: "/home" },
+          { icon: "far fa-money-bill-alt", title: "Deudores", link: "/adeudo" },
+          { icon: "fas fa-map-marker", title: "Ubicación", link: "/meetup/new" },
+          { icon: "fas fa-user", title: "Perfil", link: "/profile" }
         ];
       }
       return menuItems;

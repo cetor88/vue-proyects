@@ -8,7 +8,7 @@
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <h2>Envio de notificaciones a alumnos</h2>
+                            <span>Envio de notificaciones a alumnos</span>
                         </div>
                         
                     </v-card-text>
