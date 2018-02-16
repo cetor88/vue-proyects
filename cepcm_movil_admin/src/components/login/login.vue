@@ -77,7 +77,7 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn type="submit" dark class="pink accent-4">
+                    <v-btn type="submit" dark color="primary">
                       Aceptar
                        <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>

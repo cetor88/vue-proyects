@@ -4,7 +4,7 @@
     <v-form v-model="valid" ref="form" lazy-validation>
         <v-layout row wrap>
             <v-flex xs12 >
-                <v-card class=" pink accent-4"  dark>
+                <v-card color="primary" dark>
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
@@ -41,7 +41,7 @@
             <v-flex xs6 offset-xs3>
                 <v-radio-group v-model="notificacion.img"  :rules="[v => !!v || 'Selecciona una imagen']">
                             <v-card>
-                                <v-toolbar color="pink" dark>
+                                <v-toolbar color="primary" dark>
                                     <v-toolbar-title class="text-xs-center">Imagen para la notificación:</v-toolbar-title>
                                     <v-spacer></v-spacer>
                                 </v-toolbar>
@@ -76,10 +76,10 @@
                 <pre>{{notificacion}} </pre>
             </v-flex>
             <v-flex xs12>
-                <v-btn @click="limpiarNotificacion"  class="pink" dark >
+                <v-btn @click="limpiarNotificacion"  color="primary" dark >
                     Limpiar
                 </v-btn>
-                <v-btn @click="enviarNotificacion" class="pink" dark >
+                <v-btn @click="enviarNotificacion" color="primary" dark >
                     Enviar
                 </v-btn>
             </v-flex>

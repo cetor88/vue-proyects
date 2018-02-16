@@ -6,7 +6,18 @@ import {router} from './routes'
 import {store} from './store/store'
 import firebase from 'firebase'
 
-Vue.use(Vuetify) 
+import colors from 'vuetify/es5/util/colors'
+
+Vue.use(Vuetify, {
+  theme: {
+    accent: colors.pink.accent4,
+    primary: colors.black,
+    secondary: colors.indigo.base
+  },
+  options: {
+    themeVariations: ['primary', 'secondary']
+  }
+})
 
 Vue.config.productionTip = false
 
