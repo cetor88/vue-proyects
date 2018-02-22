@@ -38,14 +38,14 @@
                 </v-select>  
             </v-flex -->
             <v-flex xs6  offset-xs3>
-            <v-select :value.sync="plantelSelected" :options="options" ></v-select>
+            <v-select :value.sync="plantelSelected" :options="getCatalogos[0]" label="text" ></v-select>
+            <v-select :value.sync="nivelAcademicoSelected" :options="getCatalogos[1]" label="text" ></v-select>
             </v-flex >
         </v-layout>
     </v-form>
-     <v-flex>
-                
-                <pre>{{getCatalogos}}</pre>
-            </v-flex>
+    <v-flex>
+                <pre>{{getPlantelSelected}}</pre>
+    </v-flex>
   </v-container>  
 
 </template>
@@ -55,7 +55,7 @@ import notificacionServices from "./notificacion.grupo.adeudo.services"
 import vSelect from 'vue-select'
 
 export default {
-    created() {
+    mounted() {
         //this.$store.dispatch('setLoading', true);
         /*this.$store
         .dispatch("validarToken2")
@@ -63,7 +63,15 @@ export default {
             this.token = data;
         })
         .then(() => {*/
-        
+        let params = {catalogos:[{cveCatalogo:'PLT'}]};
+        let cat = this.catalogs;
+        notificacionServices.getCatalogoGenerico(params,this.token )
+            .then((data) => {
+                data.respuesta.forEach((item, index) => {
+                    this.catalogs.push(item.respuesta);
+                    
+                })
+            })
         //this.$store.dispatch('setLoading', false);    
         /*})
         .catch((error)=>{
@@ -75,9 +83,9 @@ export default {
   data() {
     return {
         token: "",
-        catalogos:[],
+        catalogs:[],
         plantel: [],
-            plantelSelected: undefined,
+            plantelSelected: "",
         nivelAcademico: [],
             nivelAcademicoSelected: undefined,
         carrera: [],
@@ -120,8 +128,11 @@ export default {
   computed:{
     getCatalogos: function(){
           
-          this.catalogos = this.cargaCatalogos('PLT');
-          return this.catalogos;
+          //this.catalogos = this.cargaCatalogos('PLT');
+          return this.catalogs;
+    },
+    getPlantelSelected : function(){
+        return this.plantelSelected + " demo";
     }
 
   }

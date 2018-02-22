@@ -12,8 +12,8 @@ export default {
             catalogos.mensaje="exito"
             catalogos.respuesta=[];
             
-            let plantel = [{value:'ABA', label:'Abandono'},{value:'ABE', label:'Abeja'},{value:'ABO', label:'Abordado'},{value:'ABU', label:'Aburrido'}];
-            let nvlAcademico=[{value:1, label:'Basico'},{value:2, label:'Intermedio'},{value:3, label:'Avanzado'},{value:4, label:'Experto'}];
+            let plantel = [{id:'ABA', text:'Abandono'},{id:'ABE', text:'Abeja'},{id:'ABO', text:'Abordado'},{id:'ABU', text:'Aburrido'}];
+            let nvlAcademico=[{id:1, text:'Basico'},{id:2, text:'Intermedio'},{id:3, text:'Avanzado'},{id:4, text:'Experto'}];
             setTimeout(() => {
                 catalogos.respuesta.push({code: 0, mensaje: "PLT", respuesta : plantel})
                 catalogos.respuesta.push({code: 0, mensaje: "NVL", respuesta : nvlAcademico})
