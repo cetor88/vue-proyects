@@ -55,7 +55,7 @@
                                                 <v-list-tile-title>{{item.descripcion}}</v-list-tile-title>
                                             </v-list-tile-content>
                                             <v-list-tile-action>
-                                                <v-icon>keyboard_arrow_down</v-icon>
+                                                <v-icon>far fa-angle-down</v-icon>
                                             </v-list-tile-action>
                                         </v-list-tile>
                                         <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id}" v-bind:key="subItem.id" @click="notificacion.img=subItem.id">

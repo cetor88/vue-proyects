@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-toolbar dark color="primary">
-    <!--v-toolbar class="accent-4" -->
       <v-toolbar-side-icon
         @click.stop="sideNav = !sideNav"
         class="hidden-sm-and-up "></v-toolbar-side-icon>
@@ -25,7 +24,13 @@
       </v-toolbar-items>
     </v-toolbar>
                                   
-    <v-container>
+    <v-container grid-list-md text-xs-center>
+      <v-layout row wrap>
+        <v-flex xs12 >
+          <v-progress-circular indeterminate v-bind:size="100" v-bind:width="5" color="red" v-if="getLoaing"></v-progress-circular> 
+        </v-flex>
+      </v-layout>
+
       <router-view></router-view>
     </v-container>
   </v-app>
@@ -42,6 +47,7 @@ export default {
     return {
       sideNav: true,
       value: '',
+      loading:false
     }
   },
   computed: {
@@ -66,6 +72,10 @@ export default {
         this.$store.getters.obtenerCurrentUser !== null &&
         this.$store.getters.obtenerCurrentUser !== undefined
       );
+    },
+
+    getLoaing(){
+      return this.$store.getters.getLoadiong;
     }
   },
   methods: {
@@ -79,4 +89,10 @@ export default {
 
 <style lang="stylus">
 @import './stylus/main';
+
+  .progress-circular {
+      position: absolute;
+      display: inline-flex;
+      z-index: 1;
+    }
 </style>

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import CONSTANTES from '../components/utils/constantes'
 
-import {loadState, saveState, removeState} from '../utils/localStorage'
+import { loadState, saveState, removeState } from '../utils/localStorage'
 Vue.use(Vuex);
 
 import axios from 'axios';
@@ -11,18 +11,19 @@ export const store = new Vuex.Store({
   state: {
     cantidad: 0,
     db: CONSTANTES.db,
-    auth: CONSTANTES.auth, 
-    autenticado:  loadState('autenticado') ,
+    auth: CONSTANTES.auth,
+    autenticado: loadState('autenticado'),
     currentUser: loadState('currentUser') || null,
-    tokn: loadState('token') || {value:null, refresh:null, expiraEn:null},
+    tokn: loadState('token') || { value: null, refresh: null, expiraEn: null },
+    loading: false,
   },
   mutations: {
     setToken: (state, tokenResp) => {
 
-        state.tokn.value = tokenResp.value,
+      state.tokn.value = tokenResp.value,
         state.tokn.refresh = tokenResp.refreshToken,
         state.tokn.expiraEn = Math.floor(new Date().getTime() + (tokenResp.expiresIn * 1000))
-        saveState('token',state.tokn);
+      saveState('token', state.tokn);
     },
 
     setSuccess: (state, esAutenticado) => {
@@ -30,93 +31,101 @@ export const store = new Vuex.Store({
       saveState('autenticado', state.autenticado);
     },
 
-    setLogout: (state) =>{
-      
+    setLogout: (state) => {
+
       state.auth.signOut()
-      .then(() =>{
-        removeState('autenticado');
-        removeState('token')
-        removeState('currentUser')
-  
-        state.currentUser = null;
-      }).catch((error)=> {
-        console.log("no se pudo cerrar la session !!");
-      })
+        .then(() => {
+          removeState('autenticado');
+          removeState('token')
+          removeState('currentUser')
+
+          state.currentUser = null;
+        }).catch((error) => {
+          console.log("no se pudo cerrar la session !!");
+        })
     },
 
-    setCurrentUser:(state, user)=>{
+    setCurrentUser: (state, user) => {
       state.currentUser = user;
       saveState('currentUser', user);
+    },
+
+    setLoading: (state, bandera) => {
+      state.loading = bandera;
     }
-    
+
   },
   actions: {
     obtenerToken: (context) => {
-      return new Promise((resolve, reject) =>{
-      axios.get(CONSTANTES.urlGetToken)
-        .then((tokenResp) => {
-          if (tokenResp.data != undefined){
-            context.commit('setToken', tokenResp.data);
-            context.commit('setSuccess', true);
-            resolve("ok");
-          }else
-            context.commit('setToken', null);
+      return new Promise((resolve, reject) => {
+        axios.get(CONSTANTES.urlGetToken)
+          .then((tokenResp) => {
+            if (tokenResp.data != undefined) {
+              context.commit('setToken', tokenResp.data);
+              context.commit('setSuccess', true);
+              resolve("ok");
+            } else
+              context.commit('setToken', null);
             resolve(null);
-        })
+          })
       })
     },
 
     refrescaToken: (context, token) => {
-      return new Promise((resolve, reject) =>{
+      return new Promise((resolve, reject) => {
         axios.get(CONSTANTES.urlRefreshToken + token)
-        .then( (response) => {
-          if (response.data != undefined){
-            context.commit('setToken', response.data);
-            resolve("ok");
-          }else{
-            context.commit('setToken', null);
-            resolve(null);
-          }
-        })
+          .then((response) => {
+            if (response.data != undefined) {
+              context.commit('setToken', response.data);
+              resolve("ok");
+            } else {
+              context.commit('setToken', null);
+              resolve(null);
+            }
+          })
 
       })
     },
 
-    validarToken2:(context) => {
-      
-      return new Promise((resolve, reject) =>{
+    validarToken2: (context) => {
 
-      let time = new Date().getTime();
-      let expiro = time > context.state.tokn.expiraEn //si la fecha actual es mayor que expiraEn 
-      if(expiro){
-        let tokenRefresh = context.getters.obtenerTokenRefresh;
-        context.dispatch('refrescaToken', tokenRefresh).then( (response) =>{
-          if(response == null ){
-            console.log("ocurrio un error al refrescar el token");
-            context.dispatch('obtenerToken');
-            resolve(context.getters.obtenerTokenActual);
-          } else {
-                  console.log("Token refresh valido");
-                  resolve(context.getters.obtenerTokenActual);
-          }
-        })
-      } else {
-        resolve(context.getters.obtenerTokenActual);
-      }
-    })
+      return new Promise((resolve, reject) => {
+
+        let time = new Date().getTime();
+        let expiro = time > context.state.tokn.expiraEn //si la fecha actual es mayor que expiraEn 
+        if (expiro) {
+          let tokenRefresh = context.getters.obtenerTokenRefresh;
+          context.dispatch('refrescaToken', tokenRefresh).then((response) => {
+            if (response == null) {
+              console.log("ocurrio un error al refrescar el token");
+              context.dispatch('obtenerToken');
+              resolve(context.getters.obtenerTokenActual);
+            } else {
+              console.log("Token refresh valido");
+              resolve(context.getters.obtenerTokenActual);
+            }
+          })
+        } else {
+          resolve(context.getters.obtenerTokenActual);
+        }
+      })
     },
 
-    cerrarSesion: (context) =>{
+    cerrarSesion: (context) => {
       context.commit('setLogout');
     },
 
-    iniciarUsuario: (context, user)=>{
+    iniciarUsuario: (context, user) => {
       context.commit('setCurrentUser', user);
+    },
+
+    setLoading: (context, bandera) => {
+      context.commit('setLoading', bandera);
     }
-    
+
   },
   getters: {
-    
+
     validarToken: (state) => (time) => {
       let salida;
       if (state.tokn != null) {
@@ -133,12 +142,16 @@ export const store = new Vuex.Store({
     },
 
     obtenerTokenActual: (state) => {
-      
+
       return state.tokn.value;
     },
-    
-    obtenerCurrentUser: (state)=>{
+
+    obtenerCurrentUser: (state) => {
       return state.currentUser;
+    },
+
+    getLoadiong: (state) => {
+      return state.loading;
     }
 
   }

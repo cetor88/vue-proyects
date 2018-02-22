@@ -22,6 +22,8 @@ export default {
     
     urlNotificacionaDispositivos: ipOrigen + 'CEPCM_MOVIL/api/notificacionController/enviarNotificaciones',
 
+    urlConsultaCatalogos: ipOrigen + 'CEPCM_MOVIL/api/catalogosController/obtenerMultiplesCatalogosSimples',//?access_token=b4c5d55a-8d95-4b04-b237-0621044f7d5c', POST
+
     firebaseApp : firebase.initializeApp({
                     apiKey: "AIzaSyCh5fyrqt_djN4OTAI2Rrsej1gdZdI6OII",
                     authDomain: "colposgrado-edu-mx.firebaseapp.com",
