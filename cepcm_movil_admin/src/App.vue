@@ -25,10 +25,10 @@
     </v-toolbar>
                                   
     <v-container grid-list-md text-xs-center>
-      <v-layout row wrap>
-        <v-flex xs12 >
-          <v-progress-circular indeterminate v-bind:size="100" v-bind:width="5" color="red" v-if="getLoaing"></v-progress-circular> 
-        </v-flex>
+      <v-layout row wrap  v-if="getLoaing">
+        <div class="modela-mask">
+          <orbit-spinner indeterminate :size="100" color="#ff1d5e" />
+        </div>
       </v-layout>
 
       <router-view></router-view>
@@ -40,9 +40,12 @@
 <script>
 
 
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex"
+import { OrbitSpinner } from 'epic-spinners'
 export default {
-  
+  components: {
+      OrbitSpinner
+  },
   data() {
     return {
       sideNav: true,
@@ -91,8 +94,34 @@ export default {
 @import './stylus/main';
 
   .progress-circular {
-      position: absolute;
-      display: inline-flex;
-      z-index: 1;
-    }
+    position: fixed;
+    display: inline-flex;
+    z-index: 1;
+    left: 50%;
+    margin-left: -4em;
+    top: 50%;
+    margin-top: -4em;
+  }
+
+.orbit-spinner{
+    cursor: default;
+    position: fixed;
+    display: inline-flex;
+    z-index: 1;
+    left: 50%;
+    margin-left: -4em;
+    top: 50%;
+    margin-top: -4em;
+}
+.modela-mask{
+  cursor: default;
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.5);
+    transition: opacity .3s ease;
+}
 </style>
