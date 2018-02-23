@@ -13,38 +13,35 @@
                     </v-card-text>
                 </v-card>
             </v-flex>
-            <!--v-flex xs6  offset-xs3>
-                <v-select  v-bind:items="getCatalogos.PLT" append-icon="far fa-angle-down" item-text="descripcion"
+            <v-flex xs6  offset-xs3>
+                <v-select  v-bind:items="getCatalogos[0]" append-icon="far fa-angle-down" item-text="text"
                 item-value="id" v-model="plantelSelected" label="Plantel:" 
                      v-on:change="consultarCatalogo(plantelSelected, 'nivelAcademico')">
                 </v-select>  
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select  v-bind:items="getCatalogos.NVL" append-icon="far fa-angle-down" item-text="descripcion"
+                <v-select  v-bind:items="getCatalogos[1]" append-icon="far fa-angle-down" item-text="text"
                 item-value="id" v-model="nivelAcademicoSelected" label="Nivel academico:"
                     v-on:change="consultarCatalogo(nivelAcademicoSelected, 'carrera')" >
                 </v-select>
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select :items="carrera" append-icon="far fa-angle-down"
-                    v-model="carreraSelected" label="Carrera:" :disabled="nivelAcademicoSelected==undefined"
+                <v-select :items="getCatalogos[0]" append-icon="far fa-angle-down" item-text="text"
+                item-value="id"  v-model="carreraSelected" label="Carrera:" :disabled="nivelAcademicoSelected==undefined"
                     v-on:change="consultarCatalogo(carreraSelected, 'grupo')" >
                 </v-select>  
             </v-flex>            
             <v-flex xs6  offset-xs3>
-                <v-select :items="grupo" append-icon="far fa-angle-down"
-                    v-model="grupoSelected" label="Grupo:" :disabled="carreraSelected==undefined"
+                <v-select :items="getCatalogos[1]" append-icon="far fa-angle-down" item-text="text"
+                item-value="id" v-model="grupoSelected" label="Grupo:" :disabled="carreraSelected==undefined"
                     v-on:change="consultarCatalogo(grupoSelected, 'nothing')" progress >
-                </v-select>  
-            </v-flex -->
-            <v-flex xs6  offset-xs3>
-            <v-select :value.sync="plantelSelected" :options="getCatalogos[0]" label="text" ></v-select>
-            <v-select :value.sync="nivelAcademicoSelected" :options="getCatalogos[1]" label="text" ></v-select>
-            </v-flex >
+                </v-select>
+            </v-flex>
+          
         </v-layout>
     </v-form>
     <v-flex>
-                <pre>{{getPlantelSelected}}</pre>
+
     </v-flex>
   </v-container>  
 
@@ -52,11 +49,14 @@
 <script>
 import { mapState, mapGetters } from "vuex"
 import notificacionServices from "./notificacion.grupo.adeudo.services"
-import vSelect from 'vue-select'
+//import vSelect from 'vue-select'
 
 export default {
+    created(){
+        this.$store.dispatch('setLoading', true);
+    },
     mounted() {
-        //this.$store.dispatch('setLoading', true);
+        
         /*this.$store
         .dispatch("validarToken2")
         .then(data => {
@@ -72,20 +72,20 @@ export default {
                     
                 })
             })
-        //this.$store.dispatch('setLoading', false);    
+        this.$store.dispatch('setLoading', false);    
         /*})
         .catch((error)=>{
             console.log(error);
             this.$store.dispatch('setLoading', false);
         })*/
     },
-  components: {vSelect,},
+  //components: {vSelect,},
   data() {
     return {
         token: "",
         catalogs:[],
         plantel: [],
-            plantelSelected: "",
+            plantelSelected: undefined,
         nivelAcademico: [],
             nivelAcademicoSelected: undefined,
         carrera: [],
@@ -96,13 +96,8 @@ export default {
         selected: null,
         options: [{label:'foo', value:1},{label:'bar', value:2},{label:'baz', value:3}]
     };
-  },/*
-  watch: {
-    catalogos: function (val) {
-        debugger;
-      this.catalogos = val;
-    },
-  },*/
+  },
+
   methods: {
     consultarCatalogo(filtro, catalogo) {
         this.$store.dispatch('setLoading', true);
@@ -123,18 +118,14 @@ export default {
             }).then(()=>{
                 return cat;
             })
-    }
+    },
+    
   },
   computed:{
     getCatalogos: function(){
-          
-          //this.catalogos = this.cargaCatalogos('PLT');
-          return this.catalogs;
+        return this.catalogs;
     },
-    getPlantelSelected : function(){
-        return this.plantelSelected + " demo";
-    }
-
+    
   }
 };
 </script>

@@ -18,7 +18,7 @@ export default {
                 catalogos.respuesta.push({code: 0, mensaje: "PLT", respuesta : plantel})
                 catalogos.respuesta.push({code: 0, mensaje: "NVL", respuesta : nvlAcademico})
                 resolve(catalogos );
-            }, 500);
+            }, 3500);
         })
             /*axios.post(CONS.urlConsultaCatalogos + "?access_token=" + token,
                 parametros
