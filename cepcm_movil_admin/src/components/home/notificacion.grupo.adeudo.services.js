@@ -7,7 +7,7 @@ export default {
         
         const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
-            let catalogos=[];
+            /*let catalogos=[];
             catalogos.code=0;
             catalogos.mensaje="exito"
             catalogos.respuesta=[];
@@ -19,8 +19,8 @@ export default {
                 catalogos.respuesta.push({code: 0, mensaje: "NVL", respuesta : nvlAcademico})
                 resolve(catalogos );
             }, 3500);
-        })
-            /*axios.post(CONS.urlConsultaCatalogos + "?access_token=" + token,
+        })*/
+            axios.post(CONS.urlConsultaCatalogos + "?access_token=" + token,
                 parametros
             )
             .then((tokenResp) => {
@@ -33,8 +33,49 @@ export default {
             .catch(function(err){
                 console.log("Ocurrio un error!!");
                 reject(null);
-            })*/
+            })
             
     },
+    getCatalogoDependiente(parametros, url) {
+        const params = new URLSearchParams()
+        return new Promise((resolve, reject) =>{
+            axios.get(url, 
+                {   params: parametros,
+                    responseType: 'json'
+                }
+            )
+            .then((tokenResp) => {
+                if (tokenResp.data.codigo == 0 ){
+                  resolve(tokenResp.data );
+                }else
+                  reject(null);
+              })
+            })
+            .catch(function(err){
+                console.log("Ocurrio un error!!");
+                reject(null);
+            })
+    },
+
+    /*getGrupoPorCarrera(parametros, url) {
+        const params = new URLSearchParams()
+        return new Promise((resolve, reject) =>{
+            axios.get(CONS.urlConsultaGrupo,
+                {   params: parametros,
+                    responseType: 'json'
+                }
+            )
+            .then((tokenResp) => {
+                if (tokenResp.data.codigo == 0 ){
+                  resolve(tokenResp.data );
+                }else
+                  reject(null);
+              })
+            })
+            .catch(function(err){
+                console.log("Ocurrio un error!!");
+                reject(null);
+            })
+    },*/
 
 }

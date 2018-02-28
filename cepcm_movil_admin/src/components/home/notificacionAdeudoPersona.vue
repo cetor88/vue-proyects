@@ -14,30 +14,33 @@
                 </v-card>
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select  v-bind:items="getCatalogos[0]" append-icon="far fa-angle-down" item-text="text"
-                item-value="id" v-model="plantelSelected" label="Plantel:" 
-                    >
+                <v-select  v-bind:items="getCatalogos[0]" append-icon="far fa-angle-down" item-text="descripcion"
+                item-value="id" v-model="plantelSelected" label="Plantel:" required>
                 </v-select>  
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select  v-bind:items="getCatalogos[1]" append-icon="far fa-angle-down" item-text="text"
-                item-value="id" v-model="nivelAcademicoSelected" label="Nivel academico:"
-                    >
+                <v-select  v-bind:items="getCatalogos[1]" append-icon="far fa-angle-down" item-text="descripcion"
+                item-value="id" v-model="nivelAcademicoSelected" label="Nivel academico:" required>
                 </v-select>
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select :items="getCatalogos[0]" append-icon="far fa-angle-down" item-text="text"
-                item-value="id"  v-model="carreraSelected" label="Carrera:" :disabled="nivelAcademicoSelected==undefined"
-                    v-on:change="consultarCatalogo(carreraSelected, 'grupo')" >
-                </v-select>  
+                <v-select label="Selecciona una carrera" autocomplete item-text="descripcion" item-value="id"
+                    required :items="carrera" :rules="[(value) => !!value || 'Selecciona al menos una carrera']" 
+                    :search-input.sync="buscarCarrera" :value="carreraSelected" v-on:change="carreraSeleccionada($event.target.value)"
+                    :disabled="nivelAcademicoSelected==undefined"
+                    :clearable="true"  ></v-select> 
+                    <!--v-on:select="carreraSeleccionada"-->
+
             </v-flex>            
             <v-flex xs6  offset-xs3>
-                <v-select :items="getCatalogos[1]" append-icon="far fa-angle-down" item-text="text"
-                item-value="id" v-model="grupoSelected" label="Grupo:" :disabled="carreraSelected==undefined"
-                    v-on:change="consultarCatalogo(grupoSelected, 'nothing')" progress >
+                <v-select label="Selecciona una grupo"  item-text="descripcion" item-value="id"
+                    required :items="grupo" :rules="[(value) => !!value || 'Selecciona al menos un grupo']" 
+                    v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
                 </v-select>
             </v-flex>
-          
+            <v-flex>
+                <pre>{{ carreraSelected }}</pre>
+            </v-flex>
         </v-layout>
         <v-layout>
             <v-flex xs12 >
@@ -153,7 +156,7 @@
 <script>
 import { mapState, mapGetters } from "vuex"
 import notificacionServices from "./notificacion.grupo.adeudo.services"
-//import vSelect from 'vue-select'
+import CONS from '../utils/constantes.js'
 
 export default {
     created(){
@@ -161,43 +164,71 @@ export default {
     },
     mounted() {
         
-        /*this.$store
+        this.$store
         .dispatch("validarToken2")
         .then(data => {
             this.token = data;
         })
-        .then(() => {*/
-        let params = {catalogos:[{cveCatalogo:'PLT'}]};
+        .then(() => {
+        let params = {catalogos:[{cveCatalogo:'PLT'}, {cveCatalogo: 'NVL'}]};
         let cat = this.catalogs;
         notificacionServices.getCatalogoGenerico(params,this.token )
             .then((data) => {
                 data.respuesta.forEach((item, index) => {
                     this.catalogs.push(item.respuesta);
+                    /*console.log(item);
+                    this.catalogs[item.mensaje] = item.respuesta;
+                    console.log(this.catalogos);*/
                     
                 })
             })
         this.$store.dispatch('setLoading', false);    
-        /*})
+        })
         .catch((error)=>{
             console.log(error);
             this.$store.dispatch('setLoading', false);
-        })*/
+        })
     },
   //components: {vSelect,},
   data() {
     return {
         token: "",
         catalogs:[],
+
+
+        
         plantel: [],
             plantelSelected: undefined,
         nivelAcademico: [],
             nivelAcademicoSelected: undefined,
         carrera: [],
-            carreraSelected: undefined,
+            carreraSelected: '',
         grupo: [],
-            grupoSelected: undefined,
-        
-          search: '',
+            grupoSelected: '',
+
+        queryString:null,
+        a1: null,
+        states: [
+          { name: 'Florida', abbr: 'FL', id: 1 },
+          { name: 'Georgia', abbr: 'GA', id: 2 },
+          { name: 'Nebraska', abbr: 'NE', id: 3 },
+          { name: 'California', abbr: 'CA', id: 4 },
+          { name: 'New York', abbr: 'NY', id: 5 }
+        ],
+        customFilter (item, queryText, itemText) {
+            console.log(item)
+            console.log(queryText)
+            console.log(itemText)
+            const hasValue = val => val != null ? val : ''
+            const text = hasValue(item.name)
+            const query = hasValue(queryText)
+            return text.toString()
+              .toLowerCase()
+              .indexOf(query.toString().toLowerCase()) > -1
+        },
+        buscarCarrera : null,
+        disparaBuscarGrupo:null,
+        search: '',
         pagination: {},
         selected: [],
         headers: [
@@ -313,39 +344,84 @@ export default {
   },
 
    watch: {
-      loader () {
-        const l = this.loader
-        this[l] = !this[l]
+        loader () {
+            const l = this.loader
+            this[l] = !this[l]
+            setTimeout(() => (this[l] = false), 3000)
 
-        setTimeout(() => (this[l] = false), 3000)
+            this.loader = null
+        },
 
-        this.loader = null
-      }
+        buscarCarrera (val) {
+            if(val)
+                if(val.length > 3){
+                    this.$store.dispatch('setLoading', true);
+                    this.$store.dispatch('validarToken2')
+                    .then((data)=>{
+                        this.token = data;
+                        let req = {idNivel : this.nivelAcademicoSelected, filtro : val, access_token : this.token};
+                        val && this.querySelections(req, CONS.urlConsultaCarrera)
+                        this.$store.dispatch('setLoading', false);
+                    })
+                    
+                }
+        },
+        disparaBuscarGrupo(){
+            console.log(this.plantelSelected);
+            console.log(this.carreraSelected);
+        }
+       
     },
 
-  methods: {
-    consultarCatalogo(filtro, catalogo) {
-        this.$store.dispatch('setLoading', true);
-        setTimeout(() => {
-            console.log("se ha ejecutado por completo el filtro " + filtro + " por el catalogo " + catalogo );
-            this.$store.dispatch('setLoading', false);
-      }, 3500);
-    },
-    cargaCatalogos(catalogo){
-        let params = {catalogos:[{cveCatalogo:catalogo}]};
-        let cat = this.catalogos;
-        notificacionServices.getCatalogoGenerico(params,this.token )
-            .then((data) => {
-                data.respuesta.forEach((item, index) => {
-                    cat[item.mensaje] = item.respuesta;
+    methods: {
+        querySelections (req, url) {
+            //req = {idNivel : this.nivelAcademicoSelected, filtro : strFiltro, access_token : this.token};
+            console.log(req);
+            notificacionServices.getCatalogoDependiente(req, url)
+                .then((data) =>{
+                    console.log(data);
+                    if(data.respuesta != undefined){
+                      this.carrera = data.respuesta;
+                      this.$store.dispatch('setLoading', false);
+                    }
                     
                 })
-            }).then(()=>{
-                return cat;
+        },
+        buscarGrupo(val){
+            return new Promise((resolve, reject) =>{
+                this.$store.dispatch('validarToken2')
+                .then((data)=>{
+                    this.token = data;
+                    
+                    let req = {idPlantel : this.plantelSelected, idCarrera : this.carreraSelected, access_token : this.token};
+                    console.log(req);
+                    notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaGrupo)
+                    .then((data) =>{
+                        if(data.respuesta != undefined){
+                            resolve(data.respuesta);          
+                        }
+                    }).catch(()=>{
+                        reject(null);  
+                    })
+                }).catch(()=>{
+                    reject(null);  
+                })
             })
+        },
+        carreraSeleccionada(){
+            console.log("entre a carrera seleccionada");
+            debugger;
+            if( this.carreraSelected!=''){
+                this.$store.dispatch('setLoading', true);
+                this.buscarGrupo().then((data)=>{
+                    console.log(data);
+                    this.grupo = data;    
+                    this.$store.dispatch('setLoading', false);
+                })
+            }
+        }
     },
     
-  },
   computed:{
     getCatalogos: function(){
         return this.catalogs;
@@ -357,7 +433,20 @@ export default {
 
         return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
     },
-    
+    getLoaing(){
+      return this.$store.getters.getLoadiong;
+    },
+    getGrupos(){
+        debugger;
+        this.$store.dispatch('setLoading', true);
+        this.buscarGrupo().then((data)=>{
+            console.log(data);
+            this.grupo = data;    
+        })
+        this.$store.dispatch('setLoading', false);
+        
+        return this.grupo;
+    }
   }
 };
 </script>
