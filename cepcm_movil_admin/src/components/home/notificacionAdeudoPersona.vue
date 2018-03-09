@@ -14,49 +14,60 @@
                 </v-card>
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select  v-bind:items="getCatalogos[0]" append-icon="far fa-angle-down" item-text="descripcion"
-                item-value="id" v-model="plantelSelected" label="Plantel:" required>
+                <h2>Plantel</h2>
+                <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
+                v-model="plantelSelected" >
                 </v-select>  
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select  v-bind:items="getCatalogos[1]" append-icon="far fa-angle-down" item-text="descripcion"
-                item-value="id" v-model="nivelAcademicoSelected" label="Nivel academico:" required>
+                <h2>Nivel academico</h2>
+                <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
+                 v-model="nivelAcademicoSelected" required>
                 </v-select>
             </v-flex>
             <v-flex xs6  offset-xs3>
-                <v-select label="Selecciona una carrera" autocomplete item-text="descripcion" item-value="id"
-                    required :items="carrera" :rules="[(value) => !!value || 'Selecciona al menos una carrera']" 
-                    :search-input.sync="buscarCarrera" :value="carreraSelected" v-on:change="carreraSeleccionada($event.target.value)"
-                    :disabled="nivelAcademicoSelected==undefined"
-                    :clearable="true"  ></v-select> 
-                    <!--v-on:select="carreraSeleccionada"-->
-
+                <h2>Carrera</h2>
+                <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" v-model="carreraSelected" required="">
+                    <template slot="no-options">
+                    Escribe una carrera
+                    </template>
+                    <template slot="option" slot-scope="option">
+                        <div class="d-center">
+                        
+                        {{ option.descripcion }}
+                        </div>
+                    </template>
+                    <template slot="selected-option" scope="option">
+                        <div class="selected d-center">
+                            
+                            {{ option.descripcion }}
+                        </div>
+                    </template>
+                </v-select>
             </v-flex>            
             <v-flex xs6  offset-xs3>
-                <v-select label="Selecciona una grupo"  item-text="descripcion" item-value="id"
-                    required :items="grupo" :rules="[(value) => !!value || 'Selecciona al menos un grupo']" 
+                <h2>Grupo</h2>
+                <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
                     v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
                 </v-select>
+
             </v-flex>
             <v-flex>
-                <pre>{{ carreraSelected }}</pre>
+                <!--pre>{{ grupo}}</pre -->
             </v-flex>
         </v-layout>
         <v-layout>
             <v-flex xs12 >
-                <v-btn :loading="loading3" @click.native="loader = 'loading3'" :disabled="loading3"
-                    color="primary" class="white--text" >
+                <v-btn :loading="loading3" color="primary" class="white--text" >
                     Exportar
                     <v-icon right dark>fal fa-file-pdf</v-icon>
                 </v-btn>
 
-                <v-btn :loading="loading3" @click.native="loader = 'loading3'" :disabled="loading3"
-                    color="primary" class="white--text" >
-                    Enviar notificación
+                <v-btn :loading="loading3" color="primary" class="black--text" @click="generarNorificacion">
+                    Generar notificación
                     <v-icon right dark>far fa-share-square</v-icon>
                 </v-btn>
-                <v-btn :loading="loading3" @click.native="loader = 'loading3'" :disabled="loading3"
-                    color="primary" class="white--text" >
+                <v-btn :loading="loading3" color="primary" class="white--text" >
                     Limpiar
                     <v-icon right dark>far fa-eraser</v-icon>
                 </v-btn>
@@ -65,7 +76,7 @@
         <v-layout>    
             <v-flex xs12 >
                 <div>
-                    <v-data-table :headers="headers" :items="items" :search="search" :pagination.sync="pagination"
+                    <v-data-table :headers="headers" :items="dataTable" :search="search" :pagination.sync="pagination"
                     hide-actions class="elevation-1">
                         <template slot="headerCell" slot-scope="props">
                             <v-tooltip bottom>
@@ -77,64 +88,85 @@
                                 </span>
                             </v-tooltip>
                         </template>
+
                         <template slot="items" slot-scope="props">
                             <td>
                                 <v-tooltip bottom>
                                     <span slot="activator">
-                                        {{ props.item.name }}
+                                        {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}}
                                     </span>
                                     <span>
-                                        {{ props.item.name }}
+                                        {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}}
                                     </span>
                                 </v-tooltip >
                             </td>
                             <td class="text-xs-right">
                                 <v-tooltip bottom>
                                     <span slot="activator">
-                                        {{ props.item.calories  }}
+                                        {{ props.item.colegiaturas  }}
                                     </span>
                                     <span>
-                                        {{ props.item.calories }}
+                                        {{ props.item.colegiaturas }}
                                     </span>
                                 </v-tooltip >
                             </td>
                             <td class="text-xs-right">
                                 <v-tooltip bottom>
                                     <span slot="activator">
-                                        {{ props.item.fat }}
+                                        {{ props.item.recargos }}
                                     </span>
                                     <span>
-                                        {{ props.item.fat }}
+                                        {{ props.item.recargos }}
                                     </span>
                                 </v-tooltip >
                             </td>
                             <td class="text-xs-right">
                                 <v-tooltip bottom>
                                     <span slot="activator">
-                                        {{ props.item.carbs }}
+                                        {{ props.item.importeRecargosColegiaturas }}
                                     </span>
                                     <span>
-                                        {{ props.item.carbs }}
+                                        {{ props.item.importeRecargosColegiaturas }}
                                     </span>
                                 </v-tooltip >
                             </td>
                             <td class="text-xs-right">
                                 <v-tooltip bottom>
                                     <span slot="activator">
-                                        {{ props.item.protein }}
+                                        {{ props.item.importeColegiaturas }}
                                     </span>
                                     <span>
-                                        {{ props.item.protein }}
+                                        {{ props.item.importeColegiaturas }}
                                     </span>
                                 </v-tooltip >
                             </td>
                             <td class="text-xs-right">
                                 <v-tooltip bottom>
                                     <span slot="activator">
-                                        {{ props.item.iron }}
+                                        {{ props.item.reinscripcionesAdeudadas }}
                                     </span>
                                     <span>
-                                        {{ props.item.iron }}
+                                        {{ props.item.reinscripcionesAdeudadas }}
+                                    </span>
+                                </v-tooltip >
+                            </td>
+                            <td class="text-xs-right">
+                                <v-tooltip bottom>
+                                    <span slot="activator">
+                                        {{ props.item.importeReinscripciones }}
+                                    </span>
+                                    <span>
+                                        {{ props.item.importeReinscripciones }}
+                                    </span>
+                                </v-tooltip >
+                            </td>
+                            <td class="text-xs-right">
+                                <v-tooltip bottom>
+                                    <span slot="activator">
+                                        {{ props.item.adeudoTotal }}
+                                    </span>
+                                    <span>
+                                        {{ props.item.adeudoTotal }}
                                     </span>
                                 </v-tooltip >
                             </td>
@@ -154,11 +186,14 @@
 
 </template>
 <script>
+import Vue from 'vue'
+    import vSelect from 'vue-select'
 import { mapState, mapGetters } from "vuex"
 import notificacionServices from "./notificacion.grupo.adeudo.services"
 import CONS from '../utils/constantes.js'
 
 export default {
+    
     created(){
         this.$store.dispatch('setLoading', true);
     },
@@ -189,14 +224,12 @@ export default {
             this.$store.dispatch('setLoading', false);
         })
     },
-  //components: {vSelect,},
+        components: {vSelect},
   data() {
     return {
         token: "",
         catalogs:[],
 
-
-        
         plantel: [],
             plantelSelected: undefined,
         nivelAcademico: [],
@@ -207,43 +240,22 @@ export default {
             grupoSelected: '',
 
         queryString:null,
-        a1: null,
-        states: [
-          { name: 'Florida', abbr: 'FL', id: 1 },
-          { name: 'Georgia', abbr: 'GA', id: 2 },
-          { name: 'Nebraska', abbr: 'NE', id: 3 },
-          { name: 'California', abbr: 'CA', id: 4 },
-          { name: 'New York', abbr: 'NY', id: 5 }
-        ],
-        customFilter (item, queryText, itemText) {
-            console.log(item)
-            console.log(queryText)
-            console.log(itemText)
-            const hasValue = val => val != null ? val : ''
-            const text = hasValue(item.name)
-            const query = hasValue(queryText)
-            return text.toString()
-              .toLowerCase()
-              .indexOf(query.toString().toLowerCase()) > -1
-        },
-        buscarCarrera : null,
+        
         disparaBuscarGrupo:null,
         search: '',
         pagination: {},
         selected: [],
         headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'left',
-            sortable: false,
-            value: 'name'
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' }
+          {text: 'Alumno', value: 'alumno'},
+          { text: '# Colegiaturas', value: 'colegiaturas' },
+          { text: 'Recargos %', value: 'recargos' },
+          { text: 'Importe de recargos', value: 'importeRecargosColegiaturas' },
+          { text: 'Importe', value: 'importeColegiaturas' },
+          { text: '# de reinscripción', value: 'iron' },
+          { text: 'Importe', value: 'importeReinscripciones' },
+          { text: 'Adeudo total', value: 'adeudoTotal' }
         ],
+        dataTable:[],
         items: [
           {
             value: false,
@@ -254,92 +266,9 @@ export default {
             protein: 4.0,
             iron: '1%'
           },
-          {
-            value: false,
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%'
-          },
-          {
-            value: false,
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%'
-          },
-          {
-            value: false,
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%'
-          },
-          {
-            value: false,
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%'
-          },
-          {
-            value: false,
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%'
-          },
-          {
-            value: false,
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%'
-          },
-          {
-            value: false,
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%'
-          },
-          {
-            value: false,
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%'
-          },
-          {
-            value: false,
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%'
-          }
         ],
         loader: null,
         loading3: false,
-    
-
     };
   },
 
@@ -351,49 +280,22 @@ export default {
 
             this.loader = null
         },
-
-        buscarCarrera (val) {
-            if(val)
-                if(val.length > 3){
-                    this.$store.dispatch('setLoading', true);
-                    this.$store.dispatch('validarToken2')
-                    .then((data)=>{
-                        this.token = data;
-                        let req = {idNivel : this.nivelAcademicoSelected, filtro : val, access_token : this.token};
-                        val && this.querySelections(req, CONS.urlConsultaCarrera)
-                        this.$store.dispatch('setLoading', false);
-                    })
-                    
-                }
+        carreraSelected: function (newValue, oldValue) {
+            if(newValue && this.carreraSelected){
+                console.log("disparaBuscarGrupo");
+                this.buscarGrupo().then(data=>{
+                    this.grupo = data;
+                });
+            }
         },
-        disparaBuscarGrupo(){
-            console.log(this.plantelSelected);
-            console.log(this.carreraSelected);
-        }
-       
-    },
-
+   },
     methods: {
-        querySelections (req, url) {
-            //req = {idNivel : this.nivelAcademicoSelected, filtro : strFiltro, access_token : this.token};
-            console.log(req);
-            notificacionServices.getCatalogoDependiente(req, url)
-                .then((data) =>{
-                    console.log(data);
-                    if(data.respuesta != undefined){
-                      this.carrera = data.respuesta;
-                      this.$store.dispatch('setLoading', false);
-                    }
-                    
-                })
-        },
-        buscarGrupo(val){
+        buscarGrupo(){
             return new Promise((resolve, reject) =>{
                 this.$store.dispatch('validarToken2')
                 .then((data)=>{
                     this.token = data;
-                    
-                    let req = {idPlantel : this.plantelSelected, idCarrera : this.carreraSelected, access_token : this.token};
+                    let req = {idPlantel : this.plantelSelected.id, idCarrera : this.carreraSelected.id, access_token : this.token};
                     console.log(req);
                     notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaGrupo)
                     .then((data) =>{
@@ -408,49 +310,79 @@ export default {
                 })
             })
         },
-        carreraSeleccionada(){
-            console.log("entre a carrera seleccionada");
-            debugger;
-            if( this.carreraSelected!=''){
-                this.$store.dispatch('setLoading', true);
-                this.buscarGrupo().then((data)=>{
-                    console.log(data);
-                    this.grupo = data;    
-                    this.$store.dispatch('setLoading', false);
+        onSearch: function onSearch(search, loading) {
+            if(search.length > 3){
+                loading(true);
+                this.$store.dispatch('validarToken2')
+                .then((tooken)=>{
+                    this.token = tooken;
+                    this.search3(loading, search, this);
                 })
             }
+        },
+
+        search3 : function (loading, search, vm) {
+            console.log("search3");
+            let req  = {idNivel: this.nivelAcademicoSelected.id, filtro: search, access_token: this.token};
+            notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaCarrera)
+            .then((data) =>{
+                console.log(data);
+                if(data.respuesta != undefined){
+                    this.carrera = data.respuesta;
+                    loading(false);      
+                }
+                    
+            })
+        },
+        generarNorificacion: function(){
+            debugger;
+            this.$store.dispatch('validarToken2')
+                .then((tooken)=>{
+                    this.token = tooken;
+                }).then(()=>{
+                    let req  = {idGrupo:this.grupoSelected.id, access_token:this.token};
+                    notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaDeudor)
+                        .then((data) =>{
+                            console.log(data);
+                            if(data.respuesta != undefined){
+                                this.dataTable = data.respuesta;
+                                      
+                            }
+                                
+                        })
+                })
+
         }
+
     },
     
-  computed:{
-    getCatalogos: function(){
-        return this.catalogs;
-    },
-    pages () {
-        if (this.pagination.rowsPerPage == null ||
-          this.pagination.totalItems == null
-        ) return 0
+    computed:{
 
-        return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
-    },
-    getLoaing(){
-      return this.$store.getters.getLoadiong;
-    },
-    getGrupos(){
-        debugger;
-        this.$store.dispatch('setLoading', true);
-        this.buscarGrupo().then((data)=>{
-            console.log(data);
-            this.grupo = data;    
-        })
-        this.$store.dispatch('setLoading', false);
+        getCatalogos: function(){
+            return this.catalogs;
+        },
+        pages () {
+            if (this.pagination.rowsPerPage == null ||
+            this.pagination.totalItems == null
+            ) return 0
+
+            return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
+        },
+        getLoaing(){
+        return this.$store.getters.getLoadiong;
+        },
+        getGrupos(){
+            
+            if(this.plantelSelected && this.carreraSelected){
+                console.log("true");
+                return this.grupo;
+            }else{
+                console.log("false");
+                return this.grupo=[];
+            }
+            
+        },
         
-        return this.grupo;
     }
-  }
-};
+}
 </script>
-
-<style>
-
-</style>

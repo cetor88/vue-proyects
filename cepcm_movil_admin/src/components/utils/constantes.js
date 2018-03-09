@@ -7,7 +7,8 @@ var ipOrigen ='http://c022377:8082/';
 export default {
     urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=password&client_id=restapp&client_secret=restapp&username=2&password=yhTo7LRvI2dvFxReUqzAxspzZi02', //GET
     urlRefreshToken :       ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=refresh_token&client_id=restapp&client_secret=restapp&refresh_token=',//GET
-
+    
+    /* notificacion por persona */
     urlImagenesPorTipo:     ipOrigen + 'CEPCM_MOVIL/api/imagenController/obtnerImagenesPorTipo',//?id_tipo=1&access_token=52c18d1f-b7ce-4bc7-8a58-016fff2864eb', GET
 
     urlImagenes:     ipOrigen + 'CEPCM_MOVIL/api/imagenController/obtnerImagenesParaNotificaciones',//?id_tipo=1&access_token=52c18d1f-b7ce-4bc7-8a58-016fff2864eb', GET
@@ -21,12 +22,17 @@ export default {
     urlBusqAlumnoConDispositivo:   ipOrigen + 'CEPCM_MOVIL/api/alumnoController/busquedaPorNombreConDispositivo',
     
     urlNotificacionaDispositivos: ipOrigen + 'CEPCM_MOVIL/api/notificacionController/enviarNotificaciones',
-
+    /* end */
+    /* notificacion por grupos */
+    
     urlConsultaCatalogos: ipOrigen + 'CEPCM_MOVIL/api/catalogosController/obtenerMultiplesCatalogosSimples',//?access_token=b4c5d55a-8d95-4b04-b237-0621044f7d5c', POST
 
     urlConsultaCarrera: ipOrigen + 'CEPCM_MOVIL/api/carreraController/busquedaPorNivelFiltros',//?idNivel=3&filtro=DAES&access_token=40a5036a-11b1-430e-917d-f6ff23fc019b
     
     urlConsultaGrupo: ipOrigen + 'CEPCM_MOVIL/api/grupoController/busquedaPorPlantelCarrera',//?idPlantel=3&idCarrera=1&access_token=59a5fee0-f33e-4da6-b334-5b3141f6a222
+
+    urlConsultaDeudor: ipOrigen + 'CEPCM_MOVIL//api/deudoresController/obtenerDeudoresColegiaturasPorGrupo',//?idGrupo=972&access_token=62f755c0-08c8-4235-a2a3-4f5981f1cae7
+    /* end */
 
     firebaseApp : firebase.initializeApp({
                     apiKey: "AIzaSyCh5fyrqt_djN4OTAI2Rrsej1gdZdI6OII",

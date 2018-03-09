@@ -57,7 +57,7 @@ export default {
             })
     },
 
-    /*getGrupoPorCarrera(parametros, url) {
+    /*getDeudores(parametros, url) {
         const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
             axios.get(CONS.urlConsultaGrupo,
