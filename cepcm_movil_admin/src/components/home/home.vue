@@ -17,7 +17,7 @@
         
             <v-flex xs6  offset-xs3>
                 <v-flex>
-                    <v-text-field label="Titulo de la notificación" v-model="notificacion.titulo" :rules="tituloRules" :counter="50" required >
+                    <v-text-field label="Título de la notificación" v-model="notificacion.titulo" :rules="tituloRules" :counter="50" required >
                     </v-text-field>
                 </v-flex>
             </v-flex>
@@ -40,40 +40,37 @@
 
             <v-flex xs6 offset-xs3>
                 <v-radio-group v-model="notificacion.img"  :rules="[v => !!v || 'Selecciona una imagen']">
-                            <v-card>
-                                <v-toolbar color="primary" dark>
-                                    <v-toolbar-title class="text-xs-center">Imagen para la notificación:</v-toolbar-title>
-                                    <v-spacer></v-spacer>
-                                </v-toolbar>
-                                <v-list>
-                                    <v-list-group v-for="item in catImges" :value="item.id" v-bind:key="item.id">
-                                        <v-list-tile slot="item" @click="">
-                                            <v-list-tile-action>
-                                                <v-icon>{{ item.imagen }}</v-icon>
-                                            </v-list-tile-action>
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>{{item.descripcion}}</v-list-tile-title>
-                                            </v-list-tile-content>
-                                            <v-list-tile-action>
-                                                <v-icon>far fa-angle-down</v-icon>
-                                            </v-list-tile-action>
-                                        </v-list-tile>
-                                        <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id}" v-bind:key="subItem.id" @click="notificacion.img=subItem.id">
-                                            <v-list-tile-content >
-                                                <v-avatar :tile="false" class="lighten-4 imagen-avatar">
-                                                    <img v-bind:src="'data:image/jpg;base64,'+ subItem.imagen" alt="avatar" />
-                                                </v-avatar>
-                                            </v-list-tile-content>
+                    <v-card>
+                        <v-toolbar color="primary" dark>
+                            <v-toolbar-title class="text-xs-center">Imagen para la notificación:</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                        <v-list>
+                            <v-list-group v-for="item in catImges" :value="item.id" v-bind:key="item.id">
+                                <v-list-tile slot="item" @click="">
+                                    <v-list-tile-action>
+                                        <v-icon>{{ item.imagen }}</v-icon>
+                                    </v-list-tile-action>
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>{{item.descripcion}}</v-list-tile-title>
+                                    </v-list-tile-content>
+                                    <v-list-tile-action>
+                                        <v-icon>far fa-angle-down</v-icon>
+                                    </v-list-tile-action>
+                                </v-list-tile>
+                                <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id}" v-bind:key="subItem.id" @click="notificacion.img=subItem.id">
+                                    <v-list-tile-content >
+                                        <v-avatar :tile="false" class="lighten-4 imagen-avatar">
+                                            <img v-bind:src="'data:image/jpg;base64,'+ subItem.imagen" alt="avatar" />
+                                        </v-avatar>
+                                    </v-list-tile-content>
                                             
-                                        </v-list-tile>
-                                    </v-list-group>
-                                </v-list>
-                            </v-card>
-                        </v-radio-group>
+                                </v-list-tile>
+                            </v-list-group>
+                        </v-list>
+                    </v-card>
+                </v-radio-group>
                     
-            </v-flex>
-            <v-flex xs12>
-                <pre>{{notificacion}} </pre>
             </v-flex>
             <v-flex xs12>
                 <v-btn @click="limpiarNotificacion"  color="primary" dark >

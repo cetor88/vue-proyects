@@ -7,19 +7,7 @@ export default {
         
         const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
-            /*let catalogos=[];
-            catalogos.code=0;
-            catalogos.mensaje="exito"
-            catalogos.respuesta=[];
-            
-            let plantel = [{id:'ABA', text:'Abandono'},{id:'ABE', text:'Abeja'},{id:'ABO', text:'Abordado'},{id:'ABU', text:'Aburrido'}];
-            let nvlAcademico=[{id:1, text:'Basico'},{id:2, text:'Intermedio'},{id:3, text:'Avanzado'},{id:4, text:'Experto'}];
-            setTimeout(() => {
-                catalogos.respuesta.push({code: 0, mensaje: "PLT", respuesta : plantel})
-                catalogos.respuesta.push({code: 0, mensaje: "NVL", respuesta : nvlAcademico})
-                resolve(catalogos );
-            }, 3500);
-        })*/
+           
             axios.post(CONS.urlConsultaCatalogos + "?access_token=" + token,
                 parametros
             )
@@ -56,26 +44,24 @@ export default {
                 reject(null);
             })
     },
+    enviarPostGeneric(url, parametros, token){
 
-    /*getDeudores(parametros, url) {
         const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
-            axios.get(CONS.urlConsultaGrupo,
-                {   params: parametros,
-                    responseType: 'json'
-                }
+            axios.post( url + "?access_token=" + token,
+                parametros
             )
             .then((tokenResp) => {
-                if (tokenResp.data.codigo == 0 ){
-                  resolve(tokenResp.data );
+                if (tokenResp.data != undefined){
+                    resolve(tokenResp.data );
                 }else
-                  reject(null);
-              })
+                    reject(null);
+                })
             })
             .catch(function(err){
                 console.log("Ocurrio un error!!");
                 reject(null);
             })
-    },*/
+    },
 
 }

@@ -106,7 +106,7 @@ export default {
                     console.log("Ocurrio un error!!");
                     reject(null);
                 })
-        },
+        }
         
 
 }
