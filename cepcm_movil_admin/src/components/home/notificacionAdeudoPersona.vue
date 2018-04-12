@@ -119,7 +119,7 @@
                                     <v-checkbox hide-details :input-value="props.selected"></v-checkbox>
                                 </td>
                                 <td class="text-xs-center">
-                                    
+                                     
                                     <v-icon v-if="props.item.alumno.dispositivo != null"> phonelink_ring </v-icon>
                                     <v-icon v-if="props.item.alumno.dispositivo == null"> phonelink_erase </v-icon>
                                 </td>
