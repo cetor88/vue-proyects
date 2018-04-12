@@ -32,6 +32,8 @@ export default {
     urlConsultaGrupo: ipOrigen + 'CEPCM_MOVIL/api/grupoController/busquedaPorPlantelCarrera',//?idPlantel=3&idCarrera=1&access_token=59a5fee0-f33e-4da6-b334-5b3141f6a222
 
     urlConsultaDeudor: ipOrigen + 'CEPCM_MOVIL//api/deudoresController/obtenerDeudoresColegiaturasPorGrupo',//?idGrupo=972&access_token=62f755c0-08c8-4235-a2a3-4f5981f1cae7
+
+    urlGenerarReporte: ipOrigen + 'CEPCM_MOVIL/api/reportesJasperController/obtenerReporteDeudoresPorGrupo', //?access_token=b5156dae-5cf7-4530-bcdd-69c95b8d26d9', POST
     /* end */
 
     firebaseApp : firebase.initializeApp({
