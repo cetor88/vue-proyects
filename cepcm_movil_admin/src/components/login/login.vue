@@ -1,40 +1,4 @@
-<!--template>
-  <b-container class="bv-example-row">
-    <b-button v-on:click="showModal" v-show="!autenticado" variant="primary"> Iniciar sesión
-    </b-button>
 
-    <b-modal ref="myModal" hide-footer title="Login" v-if="showModal" v-on:close="showModal = false">
-      <transition name="modal">
-            
-        <b-form v-on:submit.prevent="sinIn"  >
-          <b-form-group>
-            <span v-text="mensaje"> </span>
-          </b-form-group>
-            <b-form-group id="exampleInputGroup1"
-                  label="Correo electrónico:"
-                  description="Ingresa con tu correo electrónico.">
-              <b-form-input id="exampleInput1"
-                  type="email"
-                  v-model="loginDetails.email"
-                  required
-                  placeholder="Correo electrónico">
-              </b-form-input>
-            </b-form-group>
-            <b-form-group id="exampleInputGroup2" label="Tu contraseña:">
-              <b-form-input id="exampleInput2"
-                  type="password"
-                  v-model="loginDetails.password"
-                  required
-                  placeholder="Tu contraseña">
-              </b-form-input>
-            </b-form-group>
-          <b-button type="submit"   variant="primary lg">Entrar</b-button>
-        </b-form>
-      </transition>
-    </b-modal>
-    
-  </b-container> 
-</template-->
 <template>
   <v-container>
     <v-layout row v-if="error">
@@ -97,7 +61,7 @@
 
 
 
-<script type="text/javascript">
+<script >
 import Vue from "vue"
 import  {router} from '../../routes'
 import {mapState, } from 'vuex'
@@ -145,12 +109,15 @@ export default {
       
       this.$store.state.auth.signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
         .then(
-          function(user) {
-            control.dispatch('iniciarUsuario', user);
-            control.dispatch('obtenerToken');
-            cotininuar.replace("home");
+          (user)=> {
+            control.dispatch('obtenerToken')
+            .then(()=>{
+              control.dispatch('iniciarUsuario', user);
+              cotininuar.replace("home");
+            })
+            
           },
-          function(err) {
+          (err)=> {
             alert("ups !!" + err);
           }
         )

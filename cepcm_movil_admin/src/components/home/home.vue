@@ -118,6 +118,7 @@ export default {
     autocomplete
   },
   mounted() {
+      console.log("home")
     this.$store
       .dispatch("validarToken2")
       .then(data => {

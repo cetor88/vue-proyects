@@ -38,33 +38,36 @@
 
 
 <script>
-
-
-import { mapState, mapGetters } from "vuex"
-import { OrbitSpinner } from 'epic-spinners'
+import { mapState, mapGetters } from "vuex";
+import { OrbitSpinner } from "epic-spinners";
 export default {
   components: {
-      OrbitSpinner
+    OrbitSpinner
   },
   data() {
     return {
       sideNav: true,
-      value: '',
-      loading:false
-    }
+      value: "",
+      loading: false
+    };
   },
   computed: {
     menuItems() {
-      let menuItems = [
-        
-        { icon: "fas fa-lock", title: "Login", link: "/login" }
-      ];
+      let menuItems = [{ icon: "fas fa-lock", title: "Login", link: "/login" }];
       if (this.userIsAuthenticated) {
         menuItems = [
-          { icon: "far fa-comment-alt", title: "Avisos generales", link: "/home" },
+          {
+            icon: "far fa-comment-alt",
+            title: "Avisos generales",
+            link: "/home"
+          },
           { icon: "far fa-money-bill-alt", title: "Deudores", link: "/adeudo" },
-          { icon: "fas fa-map-marker", title: "Ubicación", link: "/meetup/new" },
-          { icon: "fas fa-user", title: "Perfil", link: "/profile" }
+          {
+            icon: "fas fa-user",
+            title: "Gestión de modulos",
+            link: "/adminModulos"
+          },
+          { icon: "fas fa-map-marker", title: "Ubicación", link: "/meetup/new" }
         ];
       }
       return menuItems;
@@ -77,7 +80,7 @@ export default {
       );
     },
 
-    getLoaing(){
+    getLoaing() {
       return this.$store.getters.getLoadiong;
     }
   },
@@ -93,35 +96,36 @@ export default {
 <style lang="stylus">
 @import './stylus/main';
 
-  .progress-circular {
-    position: fixed;
-    display: inline-flex;
-    z-index: 1;
-    left: 50%;
-    margin-left: -4em;
-    top: 50%;
-    margin-top: -4em;
-  }
-
-.orbit-spinner{
-    cursor: default;
-    position: fixed;
-    display: inline-flex;
-    z-index: 1;
-    left: 50%;
-    margin-left: -4em;
-    top: 50%;
-    margin-top: -4em;
+.progress-circular {
+  position: fixed;
+  display: inline-flex;
+  z-index: 1;
+  left: 50%;
+  margin-left: -4em;
+  top: 50%;
+  margin-top: -4em;
 }
-.modela-mask{
+
+.orbit-spinner {
   cursor: default;
-    position: fixed;
-    z-index: 9998;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,.5);
-    transition: opacity .3s ease;
+  position: fixed;
+  display: inline-flex;
+  z-index: 1;
+  left: 50%;
+  margin-left: -4em;
+  top: 50%;
+  margin-top: -4em;
+}
+
+.modela-mask {
+  cursor: default;
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
 }
 </style>

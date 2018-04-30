@@ -4,24 +4,23 @@ import VueRouter from 'vue-router';
 
 import home from './components/home/home.vue';
 import adeudo from './components/home/notificacionAdeudoPersona.vue';
-
 import contacto from './components/contacto/contacto.vue';
 import login from "./components/login/login.vue";
 import logout from "./components/logout/logout.vue";
+import adminModulos from './components/home/adminModulos';
 
 import firebase from "firebase";
 Vue.use(VueRouter);
 
-var routes = [
-  {
+var routes = [{
     path: '/login',
     component: login,
-   
+
   },
   {
     path: '/singUp',
     component: login,
-   
+
   },
   {
     path: '/home',
@@ -38,13 +37,20 @@ var routes = [
     }
   },
   {
+    path: '/adminModulos',
+    component: adminModulos,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/contacto',
     component: contacto,
     meta: {
       requiresAuth: true
     }
   },
-  
+
 ]
 export const router = new VueRouter({
   routes: routes,

@@ -7,7 +7,7 @@
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <span>Notificaciones a alumnos deudores</span>
+                            <span>Administración de módulos</span>
                         </div>
                         
                     </v-card-text>
@@ -67,21 +67,12 @@
                 <!--pre>{{ selected}}</pre-->
             </v-flex>
         </v-layout>
+
         <v-layout>
             <v-flex xs12 >
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="probarModal" :disabled="dispositivos.length==0">
-                    Enviar notificación
-                    <v-icon right dark>fal fa-file</v-icon>
-                </v-btn>
-
                 <v-btn :loading="loading3" color="primary" class="black--text" @click="generarBusqueda" :disabled="!grupoSelected">
                     Buscar
                     <v-icon right dark>search</v-icon>
-                </v-btn>
-                
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="generarReporte" :disabled="items.length==0" >
-                    Generar reporte
-                    <v-icon right dark>picture_as_pdf</v-icon>
                 </v-btn>
                 
                 <v-btn :loading="loading3" color="primary" class="black--text" @click="limpiarForma">
@@ -91,46 +82,55 @@
                 
             </v-flex>
         </v-layout>
+
         <v-layout>
-            <v-flex xs12>
+            <!--v-flex xs12>
                 <v-alert type="error"  v-model="alertValidaDsipositivo" dismissible transition="scale-transition">
                     Lo sentimos pero la persona no cuenta con dispositivo para recibir la notificación
                 </v-alert>
-            </v-flex>
+            </v-flex-->
         </v-layout>
         <v-layout>    
             <v-flex xs12 >
                 <div>
-                    <v-data-table  v-model="selected"  ref="dataTable1"   :headers="headers" :items="items"  :pagination.sync="pagination" 
+                    <v-data-table  ref="dataTable1" :headers="headers" :items="items"  :pagination.sync="pagination" 
                         item-key="name"  class="elevation-1" >
                         <template slot="headers" slot-scope="props">
                             <tr>
-                                <th>                                    
-                                </th>
                                 <th v-for="header in props.headers" :key="header.text">
                                     {{ header.text }}
+                                </th>
+                                <th>
+                                    Acceso a modulos
+                                    <tr>
+                                        <td class="text-xs-center">Materias</td>
+                                        <td class="text-xs-center">Calificaciones</td>
+                                        <td class="text-xs-center"> Sessiones</td>
+                                        <td class="text-xs-center">Pagos</td>
+                                        <td class="text-xs-center">Adeudos</td>
+                                        
+                                    </tr>
                                 </th>
                             </tr>
                         </template>
 
                         <template slot="items" slot-scope="props">
-                            <tr :active="props.selected" @click="cambio( props)" >
+                            <tr :active="props.selected" >
+                                
                                 <td class="text-xs-center">
-                                    <v-checkbox hide-details :input-value="props.selected"></v-checkbox>
+                                    {{props.item.dispositivo}}
                                 </td>
-                                <td class="text-xs-center">
-                                     
-                                    <v-icon v-if="props.item.alumno.dispositivo != null"> phonelink_ring </v-icon>
-                                    <v-icon v-if="props.item.alumno.dispositivo == null"> phonelink_erase </v-icon>
-                                </td>
+                                <td class="text-xs-center"> {{ props.item.matricula }} </td>
                                 <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
-                                <td class="text-xs-center"> {{ props.item.colegiaturas }} </td>
-                                <td class="text-xs-center"> {{ props.item.recargos }} </td>
-                                <td class="text-xs-center"> {{ props.item.importeRecargosColegiaturas }} </td>
-                                <td class="text-xs-center"> {{ props.item.importeColegiaturas }} </td>
-                                <td class="text-xs-center"> {{ props.item.reinscripcionesAdeudadas }} </td>
-                                <td class="text-xs-center"> {{ props.item.importeReinscripciones }} </td>
-                                <td class="text-xs-center"> {{ props.item.adeudoTotal }} </td>
+                                
+                                <td class="text-xs-center"> 
+                                    <tr>
+                                        <td div v-for="modulo in props.item.modulos" :key="modulo.id" class="text-xs-center">
+                                            <span v-text="modulo.id" style="visibility:hidden"></span>
+                                            <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.id)" ></v-switch>
+                                        </td>
+                                    </tr>
+                                </td>
                             </tr>
                         </template>
                     </v-data-table>
@@ -142,9 +142,9 @@
         </v-layout>
         <v-layout>
             <v-flex>
-                <myDialog @cerrarModal="cerrarModal" @notificacionEnviada="notificacionEmitida" @notificacionErrada="notificacionErrada"
-                    v-if="getPorps.modelo" :imgs="catImges" :smart="getDispositivos" :propiedades="getPorps">
-                </myDialog>
+                <adminModulesFirebase @cerrarModal="cerrarModal" @succesModal="succesModal" @failModal="failModal" :propiedades="getPorps" v-if="getPorps.modelo" >
+                </adminModulesFirebase>
+
                 <mensajeDlg  @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps" ></mensajeDlg>
             </v-flex>
         </v-layout>
@@ -157,15 +157,20 @@
   </v-container>  
 
 </template>
+
 <script>
 import Vue from "vue";
 import vSelect from "vue-select";
 import { mapState, mapGetters } from "vuex";
 import notificacionServices from "./notificacion.grupo.adeudo.services";
+
 import homeServices from "./home.services";
 import CONS from "../utils/constantes.js";
-import myDialog from '../dialogo/commonDialog';
+
+import adminModulesFirebase from '../dialogo/adminModulesFirebaseDlg';
 import mensajeDlg from '../dialogo/mensajesDlg';
+
+
 export default {
   created() {
     this.$store.dispatch("setLoading", true);
@@ -186,6 +191,7 @@ export default {
             .then(data => {
                 data.respuesta.forEach((item, index) => {
                 this.catalogs.push(item.respuesta);
+
                 });
             })
             .then(()=>{
@@ -197,18 +203,21 @@ export default {
             })
         
       })
+
       .catch(error => {
         this.$store.dispatch("setLoading", false);
       });
   },
-  components: { vSelect, myDialog, mensajeDlg},
+  components: { vSelect, adminModulesFirebase, mensajeDlg},
   data: () => {
     return {
             dlg:{
                 titulo:'Resultado de la operación',
                 contenido:'',
                 tipo:'',
-                modelo:false
+                modelo:false,
+                bloqueo:false,
+                modulo:''
             },
             dialogo:{
                 titulo:'Resultado de la operación',
@@ -227,22 +236,22 @@ export default {
             carreraSelected: "",
             grupo: [],
             grupoSelected: "",
+
             queryString: null,
+
             disparaBuscarGrupo: null,
             search: "",
             pagination: {},
-            selected: [],
+            //selected: [],
+
+           
             headers: [
                 { text: "Dispositivo", value: "dispositivo" },
-                { text: "Alumno", value: "alumno" },
-                { text: "# Colegiaturas", value: "colegiaturas" },
-                { text: "Recargos", value: "recargos" },
-                { text: "Importe de recargos", value: "importeRecargosColegiaturas" },
-                { text: "Importe", value: "importeColegiaturas" },
-                { text: "# de reinscripción", value: "reinscripcionesAdeudadas" },
-                { text: "Importe", value: "importeReinscripciones" },
-                { text: "Adeudo total", value: "adeudoTotal" }
+                { text: "Matricula", value: "matricula" },
+                { text: "Alumno", value: "alumno" }
+                
             ],
+
             items: [],
             loader: null,
             loading3: false,
@@ -254,13 +263,16 @@ export default {
             catImges: [],
             dataBusqueda:[],
             resourcePdf:''
+
     };
   },
+
   watch: {
     loader() {
       const l = this.loader;
       this[l] = !this[l];
       setTimeout(() => (this[l] = false), 3000);
+
       this.loader = null;
     },
     carreraSelected: function(newValue, oldValue) {
@@ -271,9 +283,6 @@ export default {
         });
       }
     }
-    /*selected : function(newValue, oldValue){
-            console.log(newValue);
-        }*/
   },
   methods: {
     notificacionErrada(){
@@ -309,14 +318,34 @@ export default {
         this.dlg.contenido = "";
         this.dlg.tipo = "";
         this.dlg.modelo = !this.dlg.modelo;
+        this.dlg.bloqueo = false;
+        this.dlg.modulo = '';
         this.$store.dispatch("setLoading", false);
     },
-    probarModal(){
-        this.dlg.contenido = "Contenido Generico";
-        this.dlg.tipo = "red lighten-1";
-        this.dlg.modelo = !this.dlg.modelo;
-                
+    probarModal(event, estado, modulo){
+        if( !estado ){
+            debugger;
+            this.dlg.contenido = "Estas apunto de bloquear el acceso";
+            this.dlg.tipo = "red lighten-1";
+            this.dlg.modelo = !this.dlg.modelo;
+            this.dlg.bloqueo = true;
+            this.dlg.modulo = modulo;
+        }else{
+            this.dlg.contenido = "Estas apunto de desbloquear el acceso";
+            this.dlg.tipo = "green lighten-1";
+            this.dlg.modelo = !this.dlg.modelo;
+            this.dlg.bloqueo =false;
+            this.dlg.modulo = modulo;
+        }    
     },
+    succesModal(){
+        this.cerrarModal();
+    },
+    failModal(){
+
+    },
+
+
     limpiarForma(){
         this.plantelSelected = this.nivelAcademicoSelected = undefined;
         this.carreraSelected = this.grupoSelected ="";
@@ -327,6 +356,7 @@ export default {
     cambio(prop) {
     let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;
     if (prop.item.alumno.dispositivo != null) {
+
         prop.selected = !prop.selected;
         if(!prop.selected){
             this.dispositivos.push(dispositivo.id);
@@ -342,6 +372,7 @@ export default {
       }
     },
     
+
     buscarGrupo() {
       return new Promise((resolve, reject) => {
         this.$store
@@ -379,6 +410,7 @@ export default {
         });
       }
     },
+
     search3: function(loading, search, vm) {
       //console.log("search3");
       let req = {
@@ -417,7 +449,20 @@ export default {
             .then(data => {
               
               if (data.respuesta != undefined) {
+
+                data.respuesta.filter((item)=>{
+                    item.dispositivo=24;
+                    item.modulos=[
+                        {id:'Materias', estadoBloqueo:false},
+                        {id:'Calificaciones', estadoBloqueo:true},
+                        {id:'Sessiones', estadoBloqueo:false},
+                        {id:'Pagos', estadoBloqueo:true},
+                        {id:'Adeudos', estadoBloqueo:false}];
+                });
                 this.items = data.respuesta;
+
+                console.log(this.items);
+                debugger;
                 this.$store.dispatch("setLoading", false);
               }
             })
@@ -428,33 +473,9 @@ export default {
         .catch(() => {
           this.$store.dispatch("setLoading", false);
         });
-    },
-    generarReporte:function(){
-        this.$store.dispatch("setLoading", true);
-        this.$store.dispatch("validarToken2")
-            .then(tooken => {
-            this.token = tooken;
-            })
-            .then(() => {
-                let req={
-                    idGrupo:this.grupoSelected.id,
-                    registros:this.items
-                };
-                notificacionServices.enviarPostGeneric(CONS.urlGenerarReporte, req, this.token)
-                .then(data=>{
-                    let a = document.createElement("a");
-                    a.href = "data:application/octet-stream;base64,"+data.respuesta;
-                    a.download = "alumnos_deudores_"+Math.floor((Math.random() * 10) + 1)+".pdf"
-                    a.click();
-                    this.$store.dispatch("setLoading", false);
-                })
-                
-            })
-        .catch(() => {
-          this.$store.dispatch("setLoading", false);
-        });
     }
   },
+
   computed: {
     getPorps() {
        return this.dlg;
@@ -472,6 +493,7 @@ export default {
         this.pagination.totalItems == null
       )
         return 0;
+
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
       );

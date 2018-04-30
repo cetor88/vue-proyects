@@ -14,12 +14,14 @@ export const store = new Vuex.Store({
     auth: CONSTANTES.auth,
     autenticado: loadState('autenticado'),
     currentUser: loadState('currentUser') || null,
-    tokn: loadState('token') || { value: null, refresh: null, expiraEn: null },
+    tokn: loadState('token') || { value: null, refresh: {value:''}, expiraEn: null },
     loading: false,
   },
+
+
   mutations: {
     setToken: (state, tokenResp) => {
-
+      debugger;
       state.tokn.value = tokenResp.value,
         state.tokn.refresh = tokenResp.refreshToken,
         state.tokn.expiraEn = Math.floor(new Date().getTime() + (tokenResp.expiresIn * 1000))
@@ -55,8 +57,11 @@ export const store = new Vuex.Store({
     }
 
   },
+
+
   actions: {
     obtenerToken: (context) => {
+      debugger;
       return new Promise((resolve, reject) => {
         axios.get(CONSTANTES.urlGetToken)
           .then((tokenResp) => {
@@ -124,6 +129,8 @@ export const store = new Vuex.Store({
     }
 
   },
+
+
   getters: {
 
     validarToken: (state) => (time) => {

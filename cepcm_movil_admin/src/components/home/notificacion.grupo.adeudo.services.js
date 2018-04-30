@@ -5,7 +5,7 @@ import CONS from '../utils/constantes.js'
 export default {
     getCatalogoGenerico(parametros, token) {
         
-        const params = new URLSearchParams()
+        //const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
            
             axios.post(CONS.urlConsultaCatalogos + "?access_token=" + token,
@@ -25,7 +25,7 @@ export default {
             
     },
     getCatalogoDependiente(parametros, url) {
-        const params = new URLSearchParams()
+        //const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
             axios.get(url, 
                 {   params: parametros,
@@ -46,7 +46,7 @@ export default {
     },
     enviarPostGeneric(url, parametros, token){
 
-        const params = new URLSearchParams()
+        //const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
             axios.post( url + "?access_token=" + token,
                 parametros
@@ -64,4 +64,20 @@ export default {
             })
     },
 
+    actualizarModuloFirebase(mensaje, modulo, estado){
+        return new Promise((resolve, reject) =>{
+
+            let ref = CONS.db.ref("alumnos/nFD9JOWG3Ab6Br1DkrSZz73AwqK2/configuracion/modulos/" + modulo.toLowerCase() );
+            let update= {bloquear_acceso:estado, mensaje:mensaje};
+            ref.update(update)
+            .then((response)=>{
+                resolve(true );
+                
+            })  
+        })
+        .catch(function(err){
+            console.log("Ocurrio un error!!");
+            reject(null);
+        })
+    }
 }
