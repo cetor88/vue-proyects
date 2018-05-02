@@ -103,11 +103,12 @@
                                 <th>
                                     Acceso a modulos
                                     <tr>
-                                        <td class="text-xs-center">Materias</td>
-                                        <td class="text-xs-center">Calificaciones</td>
-                                        <td class="text-xs-center"> Sessiones</td>
-                                        <td class="text-xs-center">Pagos</td>
                                         <td class="text-xs-center">Adeudos</td>
+                                        <td class="text-xs-center">Calendario</td>
+                                        <td class="text-xs-center">Calificaciones</td>
+                                        <td class="text-xs-center">Login </td>
+                                        <td class="text-xs-center">Materias</td>
+                                        <td class="text-xs-center">Pagos</td>
                                         
                                     </tr>
                                 </th>
@@ -120,14 +121,19 @@
                                 <td class="text-xs-center">
                                     {{props.item.dispositivo}}
                                 </td>
-                                <td class="text-xs-center"> {{ props.item.matricula }} </td>
+                                <td class="text-xs-center"> {{ props.item.uid }} </td>
                                 <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
                                 
                                 <td class="text-xs-center"> 
                                     <tr>
                                         <td div v-for="modulo in props.item.modulos" :key="modulo.id" class="text-xs-center">
-                                            <span v-text="modulo.id" style="visibility:hidden"></span>
-                                            <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.id)" ></v-switch>
+                                            <span style="visibility:hidden"> ver </span>
+                                            <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.id, props.item.uid); listenerFireBase(modulo.id, props.item.uid)" ></v-switch>
+                                            
+                                            <v-tooltip top v-if="modulo.estadoBloqueo">
+                                                <div dark color="primary" slot="activator" > ver más...</div>
+                                                <span v-text="modulo.mensaje"></span>
+                                            </v-tooltip>
                                         </td>
                                     </tr>
                                 </td>
@@ -217,7 +223,8 @@ export default {
                 tipo:'',
                 modelo:false,
                 bloqueo:false,
-                modulo:''
+                modulo:'',
+                uid:''
             },
             dialogo:{
                 titulo:'Resultado de la operación',
@@ -247,7 +254,7 @@ export default {
            
             headers: [
                 { text: "Dispositivo", value: "dispositivo" },
-                { text: "Matricula", value: "matricula" },
+                { text: "Matricula", value: "uid" },
                 { text: "Alumno", value: "alumno" }
                 
             ],
@@ -262,7 +269,8 @@ export default {
             
             catImges: [],
             dataBusqueda:[],
-            resourcePdf:''
+            resourcePdf:'',
+            dataModulos:['adeudos', 'calendario', 'calificaciones', 'login', 'materias', 'pagos']
 
     };
   },
@@ -301,11 +309,6 @@ export default {
         this.dialogo.tipo =  "green lighten-1";;
         this.dialogo.modelo = !this.dialogo.modelo;
         
-        setTimeout(() => {
-            this.limpiarForma();
-            this.cerrarModal();
-            
-        }, 100); 
     },
     cerrarMensajeDlg(){        
         this.dialogo.contenido = "";
@@ -320,26 +323,67 @@ export default {
         this.dlg.modelo = !this.dlg.modelo;
         this.dlg.bloqueo = false;
         this.dlg.modulo = '';
-        this.$store.dispatch("setLoading", false);
+        this.dlg.uid=''
+        /*this.$store.dispatch("setLoading", false);
+         setTimeout(() => {
+             this.notificacionEmitida();
+        }, 100); */
+        
     },
-    probarModal(event, estado, modulo){
+    probarModal(event, estado, modulo, uid){
+        //this.listenerFireBase(modulo, uid);
+
         if( !estado ){
             debugger;
-            this.dlg.contenido = "Estas apunto de bloquear el acceso";
+            this.dlg.contenido = "Estas apunto de bloquear el modulo " + modulo;
             this.dlg.tipo = "red lighten-1";
             this.dlg.modelo = !this.dlg.modelo;
             this.dlg.bloqueo = true;
             this.dlg.modulo = modulo;
+            this.dlg.uid = uid;
         }else{
-            this.dlg.contenido = "Estas apunto de desbloquear el acceso";
-            this.dlg.tipo = "green lighten-1";
+            this.dlg.contenido = "Estas apunto de desbloquear el modulo " + modulo;
+            this.dlg.tipo = "orange lighten-1";
             this.dlg.modelo = !this.dlg.modelo;
-            this.dlg.bloqueo =false;
+            this.dlg.bloqueo = false;
             this.dlg.modulo = modulo;
-        }    
+            this.dlg.uid = uid;
+        }
     },
+    listenerFireBase( modulo, uid ){
+        let ref = CONS.db.ref('alumnos/'+uid+'/configuracion/modulos/'+ modulo.toLowerCase());
+        let index = 0;
+        ref.on('value',snapshot=>{
+            console.log( " snapshot ->" + snapshot.val());
+            if(index > 0){
+                this.items.filter((item)=>{
+                    if(item.uid === uid){
+                        for(var i = 0; i < item.modulos.length; i++){
+                            if(item.modulos[i].id.toLowerCase() == modulo.toLowerCase()){
+                                item.modulos[i].estadoBloqueo = snapshot.val().bloquear_acceso;
+                                item.modulos[i].mensaje =  snapshot.val().mensaje;
+                                //this.notificacionEmitida();
+                            }   
+                        }
+                    }
+                })
+            }
+            index++
+            
+        } )            
+    }, 
     succesModal(){
-        this.cerrarModal();
+        console.log("cerrar parent")
+        this.dlg.contenido = "";
+        this.dlg.tipo = "";
+        this.dlg.modelo = !this.dlg.modelo;
+        this.dlg.bloqueo = false;
+        this.dlg.modulo = '';
+        this.$store.dispatch("setLoading", false);
+         setTimeout(() => {
+             this.notificacionEmitida();
+        }, 100);
+
     },
     failModal(){
 
@@ -354,22 +398,22 @@ export default {
         resourcePdf:''
     },
     cambio(prop) {
-    let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;
-    if (prop.item.alumno.dispositivo != null) {
+        let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;
+        if (prop.item.alumno.dispositivo != null) {
 
-        prop.selected = !prop.selected;
-        if(!prop.selected){
-            this.dispositivos.push(dispositivo.id);
-        }else{
-            this.dispositivos.splice(prop.index, 1);
+            prop.selected = !prop.selected;
+            if(!prop.selected){
+                this.dispositivos.push(dispositivo.id);
+            }else{
+                this.dispositivos.splice(prop.index, 1);
+            }
+            
+        } else {
+            setTimeout(() => {
+            this.alertValidaDsipositivo = false;
+            }, 2000);
+            this.alertValidaDsipositivo = true;
         }
-        
-    } else {
-        setTimeout(() => {
-          this.alertValidaDsipositivo = false;
-        }, 2000);
-        this.alertValidaDsipositivo = true;
-      }
     },
     
 
@@ -439,37 +483,42 @@ export default {
           this.token = tooken;
         })
         .then(() => {
-          let req = {
-            idGrupo: this.grupoSelected.id,
-            access_token: this.token
-          };
-          this.dataBusqueda = [];
-          notificacionServices
-            .getCatalogoDependiente(req, CONS.urlConsultaDeudor)
-            .then(data => {
-              
-              if (data.respuesta != undefined) {
-
-                data.respuesta.filter((item)=>{
-                    item.dispositivo=24;
-                    item.modulos=[
-                        {id:'Materias', estadoBloqueo:false},
-                        {id:'Calificaciones', estadoBloqueo:true},
-                        {id:'Sessiones', estadoBloqueo:false},
-                        {id:'Pagos', estadoBloqueo:true},
-                        {id:'Adeudos', estadoBloqueo:false}];
-                });
-                this.items = data.respuesta;
-
-                console.log(this.items);
-                debugger;
+            let req = {
+                idGrupo: this.grupoSelected.id,
+                access_token: this.token
+            };
+            this.dataBusqueda = [];
+            let demoList = [];
+            
+            notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaDeudor)
+                .then(data => {
+                    if (data.respuesta != undefined) {
+                        notificacionServices.obtenerModuloFirebase('lQjyIzVZXjUlxqog8qC5EeH5WJ23')
+                            .then((response) => { 
+                                //demoList.push({id:})
+                                debugger;
+                                this.dataModulos.forEach( item => {
+                                    demoList.push( {id: item, estadoBloqueo: response[item.toString()].bloquear_acceso, mensaje:response[item.toString()].mensaje});
+                                })
+                                
+                                console.log(response);
+                            })
+                            .then(()=>{
+                                console.log('dataModulos -> ' + this.demoList);
+                                data.respuesta.filter((item)=>{
+                                item.dispositivo=24;
+                                item.uid='lQjyIzVZXjUlxqog8qC5EeH5WJ23';
+                                item.modulos = demoList;    
+                                });
+                                this.items = data.respuesta;
+                                this.$store.dispatch("setLoading", false);
+                            })
+                    }
+                })
+                .catch(() => {
                 this.$store.dispatch("setLoading", false);
-              }
-            })
-            .catch(() => {
-              this.$store.dispatch("setLoading", false);
-            });
-        })
+                });
+        })        
         .catch(() => {
           this.$store.dispatch("setLoading", false);
         });
@@ -513,7 +562,7 @@ export default {
     getDispositivos(){
         return this.dispositivos.length > 0 ? this.dispositivos : null;
     },
-   
+    
   }
 };
 </script>

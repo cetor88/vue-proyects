@@ -64,16 +64,33 @@ export default {
             })
     },
 
-    actualizarModuloFirebase(mensaje, modulo, estado){
+    actualizarModuloFirebase(mensaje, modulo, estado, uid){
         return new Promise((resolve, reject) =>{
 
-            let ref = CONS.db.ref("alumnos/nFD9JOWG3Ab6Br1DkrSZz73AwqK2/configuracion/modulos/" + modulo.toLowerCase() );
+            let ref = CONS.db.ref("alumnos/"+uid+"/configuracion/modulos/" + modulo.toLowerCase() );
             let update= {bloquear_acceso:estado, mensaje:mensaje};
             ref.update(update)
             .then((response)=>{
                 resolve(true );
                 
             })  
+        })
+        .catch(function(err){
+            console.log("Ocurrio un error!!");
+            reject(null);
+        })
+    },
+
+    obtenerModuloFirebase(uid){
+        return new Promise((resolve, reject) =>{
+
+            let ref = CONS.db.ref("alumnos/"+uid+"/configuracion/modulos/");
+            ref.on('value',snapshot=>{
+                console.log( " snapshot ->" + snapshot.val());
+                debugger;
+                resolve(snapshot.val());
+            } )            
+
         })
         .catch(function(err){
             console.log("Ocurrio un error!!");
