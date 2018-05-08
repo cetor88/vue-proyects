@@ -62,7 +62,8 @@
                 console.log("Bloquear modulo");
                 if (this.$refs.formModule.validate() ) {
                     console.log("formulario válido");
-                    notificacionServices.actualizarModuloFirebase(this.mensajeFb, this.getProps.modulo, this.getProps.bloqueo, this.getProps.uid)
+                    //notificacionServices.actualizarModuloFirebase(this.mensajeFb, this.getProps.modulo, this.getProps.bloqueo, this.getProps.uid, this.getProps.token, this.getProps.item, this.getProps.dispositivo)
+                    notificacionServices.actualizarModuloFirebase(this.mensajeFb, this.getProps)
                     .then((ressponse)=>{
                         console.log("Termine de escribir en firebase!!");
                         this.$emit('succesModal', )// llamar al padre para cerrar la modal
@@ -75,7 +76,8 @@
             },
             desbloquear(){
                 console.log("Desbloquear modulo");
-                notificacionServices.actualizarModuloFirebase('', this.getProps.modulo, this.getProps.bloqueo, this.getProps.uid)
+                //notificacionServices.actualizarModuloFirebase('', this.getProps.modulo, this.getProps.bloqueo, this.getProps.uid, this.getProps.token, this.getProps.item, this.getProps.dispositivo)
+                notificacionServices.actualizarModuloFirebase('', this.getProps)
                     .then((ressponse)=>{
                         console.log("Termine de escribir en firebase!!");
                         this.$emit('succesModal', )// llamar al padre para cerrar la modal
