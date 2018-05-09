@@ -9,6 +9,8 @@ import login from "./components/login/login.vue";
 import logout from "./components/logout/logout.vue";
 import adminModulos from './components/home/adminModulos';
 
+import banner from './components/bannerTop/banner.vue'
+
 import firebase from "firebase";
 Vue.use(VueRouter);
 
@@ -50,6 +52,14 @@ var routes = [{
       requiresAuth: true
     }
   },
+  {
+    path: '/banner',
+    component: banner,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  
 
 ]
 export const router = new VueRouter({

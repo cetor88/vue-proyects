@@ -1,6 +1,7 @@
 var firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/database");
+require("firebase/storage");
 
 var ipOrigen ='http://187.190.149.140:8080/';
 //var ipOrigen ='http://c022377:8082/';
@@ -34,6 +35,10 @@ export default {
     urlConsultaDeudor: ipOrigen + 'CEPCM_MOVIL//api/deudoresController/obtenerDeudoresColegiaturasPorGrupo',//?idGrupo=972&access_token=62f755c0-08c8-4235-a2a3-4f5981f1cae7
 
     urlGenerarReporte: ipOrigen + 'CEPCM_MOVIL/api/reportesJasperController/obtenerReporteDeudoresPorGrupo', //?access_token=b5156dae-5cf7-4530-bcdd-69c95b8d26d9', POST
+    
+    urlObtenerMoudlosFB: ipOrigen + 'CEPCM_MOVIL/api/modulosController/obtnerModulosPorAplicacion?idAplicacion=1&access_token=',//650af496-8b6d-40c6-b265-20353cc859ac
+
+    urlGuardaBloqueoDesbloqueo:  ipOrigen + 'CEPCM_MOVIL/api/controlAccesoModuloController/persistirAccesoModulo?access_token=',//650af496-8b6d-40c6-b265-20353cc859ac POST
     /* end */
 
     firebaseApp : firebase.initializeApp({
@@ -46,5 +51,6 @@ export default {
                 }),
     db : firebase.database(),
     auth : firebase.auth(),
+    storage: firebase.storage(),
     
 }

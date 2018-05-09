@@ -7,61 +7,89 @@
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <span>Administración de módulos</span>
+                            <span>Configuración de accesos a modulos por alumno:</span>
                         </div>
                         
                     </v-card-text>
                 </v-card>
             </v-flex>
+        </v-layout>
+        <v-layout row wrap>
             <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
-                v-model="plantelSelected" >
-                    <template slot="no-options">
-                        No se cuenta con registros
-                    </template>
-                </v-select>  
+                <v-layout row>
+                    <v-flex xs2  >
+                        <v-subheader class="text-lg-center"> Plantel:</v-subheader>
+                    </v-flex>
+                    <v-flex xs10 >
+                        <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
+                        v-model="plantelSelected" >
+                            <template slot="no-options">
+                                No se cuenta con registros
+                            </template>
+                        </v-select>  
+                    </v-flex>
+                </v-layout>
             </v-flex>
+        </v-layout>
+        <v-layout row wrap>
             <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
-                 v-model="nivelAcademicoSelected" required>
-                    <template slot="no-options">
-                        No se cuenta con registros
-                    </template>
-                </v-select>
-            </v-flex>
-            <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
-                    v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
-                    <template slot="no-options">
-                        No se encuentran carreras con los criterios seleccionados
-                    </template>
+                <v-layout row>
+                    <v-flex xs2  >
+                        <v-subheader class="text-lg-center" >Nivel academico:</v-subheader>
+                    </v-flex>
+                    <v-flex xs10 >
+                        <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
+                        v-model="nivelAcademicoSelected" required>
+                            <template slot="no-options">
+                                No se cuenta con registros
+                            </template>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
 
-                    <template slot="option" slot-scope="option">
-                        <div class="d-center">
-                        
-                        {{ option.descripcion }}
-                        </div>
-                    </template>
-                    <template slot="selected-option" slot-scope="option">
-                        <div class="selected d-center">
-                            
-                            {{ option.descripcion }}
-                        </div>
-                    </template>
-                </v-select>
+            </v-flex>
+            <v-flex xs6  offset-xs3>
+                <v-layout row>
+                    <v-flex xs2 >
+                        <v-subheader class="text-lg-center">Carrera:</v-subheader>
+                    </v-flex>
+                    <v-flex xs10>            
+                        <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
+                            v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
+                            <template slot="no-options">
+                                No se encuentran carreras con los criterios seleccionados
+                            </template>
+
+                            <template slot="option" slot-scope="option">
+                                <div class="d-center">
+                                
+                                {{ option.descripcion }}
+                                </div>
+                            </template>
+                            <template slot="selected-option" slot-scope="option">
+                                <div class="selected d-center">
+                                    
+                                    {{ option.descripcion }}
+                                </div>
+                            </template>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
             </v-flex>            
             <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
-                    v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
-                    <template slot="no-data">
-                        No se cuenta con registros
-                    </template>
-                </v-select>
-
+                <v-layout row>
+                    <v-flex xs2>
+                        <v-subheader class="text-lg-center">Grupo:</v-subheader>
+                    </v-flex>
+                    <v-flex xs10> 
+                        <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
+                            v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
+                            <template slot="no-data">
+                                No se cuenta con registros
+                            </template>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
             </v-flex>
             <v-flex>
                 <!--pre>{{ selected}}</pre-->
@@ -83,15 +111,20 @@
             </v-flex>
         </v-layout>
 
-        <v-layout>
+        <v-layout row>
             <!--v-flex xs12>
                 <v-alert type="error"  v-model="alertValidaDsipositivo" dismissible transition="scale-transition">
                     Lo sentimos pero la persona no cuenta con dispositivo para recibir la notificación
                 </v-alert>
             </v-flex-->
+            <v-flex xs12  >
+                <v-subheader class="text-lg-center" color="grey darken-4"> <span style="font-weight: bold; color: black;">Listado de alumnos:</span></v-subheader>
+            </v-flex>
         </v-layout>
-        <v-layout>    
+        <v-layout row>
+            
             <v-flex xs12 >
+
                 <div>
                     <v-data-table  ref="dataTable1" :headers="headers" :items="items"  :pagination.sync="pagination" 
                         item-key="name"  class="elevation-1" >
@@ -103,12 +136,9 @@
                                 <th>
                                     Acceso a modulos
                                     <tr>
-                                        <td class="text-xs-center">Adeudos</td>
-                                        <td class="text-xs-center">Calendario</td>
-                                        <td class="text-xs-center">Calificaciones</td>
-                                        <td class="text-xs-center">Login </td>
-                                        <td class="text-xs-center">Materias</td>
-                                        <td class="text-xs-center">Pagos</td>
+                                        <td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
+                                            {{modulo.descripcion}}
+                                        </td>
                                         
                                     </tr>
                                 </th>
@@ -121,17 +151,21 @@
                                 <td class="text-xs-center">
                                     {{props.item.dispositivo}}
                                 </td>
-                                <td class="text-xs-center"> {{ props.item.uid }} </td>
+                                <td class="text-xs-center"> {{ props.item.matricula }} </td>
                                 <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
                                 
                                 <td class="text-xs-center"> 
                                     <tr>
                                         <td div v-for="modulo in props.item.modulos" :key="modulo.id" class="text-xs-center">
-                                            <span style="visibility:hidden"> ver </span>
-                                            <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.id, props.item.uid); listenerFireBase(modulo.id, props.item.uid)" ></v-switch>
+                                            <span style="visibility:hidden"> {{modulo.item2.descripcion}} </span>
+
+                                            <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
+                                                 listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)" >
+                                                 
+                                                 </v-switch>
                                             
-                                            <v-tooltip top v-if="modulo.estadoBloqueo">
-                                                <div dark color="primary" slot="activator" > ver más...</div>
+                                            <v-tooltip top v-if="!modulo.estadoBloqueo">
+                                                <div dark color="primary" slot="activator" >ver...</div>
                                                 <span v-text="modulo.mensaje"></span>
                                             </v-tooltip>
                                         </td>
@@ -187,6 +221,14 @@ export default {
       .then(data => {
         this.token = data;
       })
+      .then(()=>{
+          notificacionServices.obtenerModuloFirebase2(this.token)
+          .then((data)=>{
+              this.dataModulos=data;
+              console.log(this.dataModulos);
+
+          } )          
+      })
       .then(() => {
         let params = {
           catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]
@@ -224,7 +266,9 @@ export default {
                 modelo:false,
                 bloqueo:false,
                 modulo:'',
-                uid:''
+                uid:'',
+                token:'',
+                item:{}
             },
             dialogo:{
                 titulo:'Resultado de la operación',
@@ -270,7 +314,7 @@ export default {
             catImges: [],
             dataBusqueda:[],
             resourcePdf:'',
-            dataModulos:['adeudos', 'calendario', 'calificaciones', 'login', 'materias', 'pagos']
+            dataModulos:[],//['adeudos', 'calendario', 'calificaciones', 'login', 'materias', 'pagos']
 
     };
   },
@@ -323,32 +367,40 @@ export default {
         this.dlg.modelo = !this.dlg.modelo;
         this.dlg.bloqueo = false;
         this.dlg.modulo = '';
-        this.dlg.uid=''
-        /*this.$store.dispatch("setLoading", false);
-         setTimeout(() => {
-             this.notificacionEmitida();
-        }, 100); */
+        this.dlg.uid='',
+        this.dlg.token='';
+        this.dlg.item={};
         
     },
-    probarModal(event, estado, modulo, uid){
-        //this.listenerFireBase(modulo, uid);
+    probarModal(event, estado, modulo, uid, item, dispositivo){
+        this.$store
+        .dispatch("validarToken2")
+        .then(tooken => {
+          this.token = tooken;
 
-        if( !estado ){
-            debugger;
-            this.dlg.contenido = "Estas apunto de bloquear el modulo " + modulo;
-            this.dlg.tipo = "red lighten-1";
-            this.dlg.modelo = !this.dlg.modelo;
-            this.dlg.bloqueo = true;
-            this.dlg.modulo = modulo;
-            this.dlg.uid = uid;
-        }else{
-            this.dlg.contenido = "Estas apunto de desbloquear el modulo " + modulo;
-            this.dlg.tipo = "orange lighten-1";
-            this.dlg.modelo = !this.dlg.modelo;
-            this.dlg.bloqueo = false;
-            this.dlg.modulo = modulo;
-            this.dlg.uid = uid;
-        }
+            if( estado ){
+                debugger;
+                this.dlg.contenido = "Favor de introducir un mensaje con la descripción del bloqueo del módulo \""+ modulo.toUpperCase() +"\", con la cual se mostrará al alumno"   ;
+                this.dlg.tipo = "red lighten-1";
+                this.dlg.modelo = !this.dlg.modelo;
+                this.dlg.bloqueo = true;
+                this.dlg.modulo = modulo;
+                this.dlg.uid = uid;
+                this.dlg.token = tooken;
+                this.dlg.item = item;
+                this.dlg.dispositivo = dispositivo;
+            }else{
+                this.dlg.contenido = "Estas apunto de desbloquear el modulo " + modulo;
+                this.dlg.tipo = "orange lighten-1";
+                this.dlg.modelo = !this.dlg.modelo;
+                this.dlg.bloqueo = false;
+                this.dlg.modulo = modulo;
+                this.dlg.uid = uid;
+                this.dlg.token = tooken;
+                this.dlg.item = item;
+                this.dlg.dispositivo = dispositivo;
+            }
+        })
     },
     listenerFireBase( modulo, uid ){
         let ref = CONS.db.ref('alumnos/'+uid+'/configuracion/modulos/'+ modulo.toLowerCase());
@@ -359,10 +411,9 @@ export default {
                 this.items.filter((item)=>{
                     if(item.uid === uid){
                         for(var i = 0; i < item.modulos.length; i++){
-                            if(item.modulos[i].id.toLowerCase() == modulo.toLowerCase()){
-                                item.modulos[i].estadoBloqueo = snapshot.val().bloquear_acceso;
+                            if(item.modulos[i].item2.nodoFirebase.toLowerCase() == modulo.toLowerCase()){
+                                item.modulos[i].estadoBloqueo = !snapshot.val().bloquear_acceso;
                                 item.modulos[i].mensaje =  snapshot.val().mensaje;
-                                //this.notificacionEmitida();
                             }   
                         }
                     }
@@ -379,6 +430,8 @@ export default {
         this.dlg.modelo = !this.dlg.modelo;
         this.dlg.bloqueo = false;
         this.dlg.modulo = '';
+        this.dlg.token='';
+        this.dlg.item = {};
         this.$store.dispatch("setLoading", false);
          setTimeout(() => {
              this.notificacionEmitida();
@@ -493,12 +546,15 @@ export default {
             notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaDeudor)
                 .then(data => {
                     if (data.respuesta != undefined) {
-                        notificacionServices.obtenerModuloFirebase('lQjyIzVZXjUlxqog8qC5EeH5WJ23')
+                        notificacionServices.obtenerModuloFirebase('JkVXHsg6vWeV0s4P2RkugpdLKJ83')
                             .then((response) => { 
-                                //demoList.push({id:})
                                 debugger;
                                 this.dataModulos.forEach( item => {
-                                    demoList.push( {id: item, estadoBloqueo: response[item.toString()].bloquear_acceso, mensaje:response[item.toString()].mensaje});
+                                    demoList.push( { id: item.id,
+                                                    estadoBloqueo: !response[item.nodoFirebase.toString()].bloquear_acceso,
+                                                    mensaje:response[item.nodoFirebase.toString()].mensaje,
+                                                    item2:item}
+                                            );
                                 })
                                 
                                 console.log(response);
@@ -507,7 +563,7 @@ export default {
                                 console.log('dataModulos -> ' + this.demoList);
                                 data.respuesta.filter((item)=>{
                                 item.dispositivo=24;
-                                item.uid='lQjyIzVZXjUlxqog8qC5EeH5WJ23';
+                                item.uid='JkVXHsg6vWeV0s4P2RkugpdLKJ83';
                                 item.modulos = demoList;    
                                 });
                                 this.items = data.respuesta;
