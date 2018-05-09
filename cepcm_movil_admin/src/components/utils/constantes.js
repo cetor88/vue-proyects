@@ -2,8 +2,8 @@ var firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/database");
 
-//var ipOrigen ='http://187.190.149.140:8080/';
-var ipOrigen ='http://c022377:8082/';
+var ipOrigen ='http://187.190.149.140:8080/';
+//var ipOrigen ='http://c022377:8082/';
 export default {
     urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=password&client_id=restapp&client_secret=restapp&username=2&password=yhTo7LRvI2dvFxReUqzAxspzZi02', //GET
     urlRefreshToken :       ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=refresh_token&client_id=restapp&client_secret=restapp&refresh_token=',//GET
