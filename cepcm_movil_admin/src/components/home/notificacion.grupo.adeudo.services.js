@@ -105,10 +105,11 @@ export default {
 
         })
         .catch(function(err){
-            console.log("Ocurrio un error!!");
-            reject(null);
+            console.log("No se encontraron resultados con el uid " + uid);
+            resolve([]);
         })
     },
+
     obtenerModuloFirebase2(token){
         let url = CONS.urlObtenerMoudlosFB;
         return new Promise((resolve, reject) =>{
@@ -123,10 +124,11 @@ export default {
               })
             })
             .catch(function(err){
-                console.log("Ocurrio un error!!");
-                reject(null);
+                console.log("No se encontraron resultados con el uid " + uid);
+                resolve([]);
             })
     },
+
     guardaBloqueoDesbloqueoModulos(parametros, token){
         let url = CONS.urlGuardaBloqueoDesbloqueo;
         debugger;

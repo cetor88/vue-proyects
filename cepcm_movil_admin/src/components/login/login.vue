@@ -114,8 +114,8 @@ export default {
             .then(()=>{
               control.dispatch('iniciarUsuario', user);
               cotininuar.replace("home");
+              //cotininuar.replace("banner");
             })
-            //cotininuar.replace("banner");
           },
           (err)=> {
             alert("ups !!" + err);

@@ -6,6 +6,28 @@
             <v-spacer></v-spacer>
             
         </v-toolbar>
+        <v-flex>
+            <v-layout>
+                <v-carousel :interval="0">
+                    <v-carousel-item v-for="(item,i) in items" :src="item.url" :key="i">
+                        <v-speed-dial direction="bottom">
+    
+                        <v-btn fab dark large slot="activator" color="primary" fabhoverv-model="fab">
+                          <v-icon aria-label="bars" class="md-fab">fa fa-bars</v-icon>
+                        </v-btn>
+    
+                        
+                        <v-btn fab dark large color="primary">
+                          <v-icon class="md-fab md-mini md-warn fa fa-search"></v-icon>
+                        </v-btn>
+    
+                      </v-speed-dial>
+
+                    </v-carousel-item>
+                </v-carousel>
+            </v-layout>
+
+        </v-flex>
         <v-flex  xs12 flexbox>
             <v-card>
             <v-container fluid grid-list-md>
@@ -35,6 +57,7 @@
  
     import CONS from '../utils/constantes.js'
 
+    import bannerServices from "./banner.services";
     export default {
         name:'banner',
         data(){
@@ -43,7 +66,8 @@
                     refDocument:0,
                     banderaTermino:false,
                     porcentUpload:0
-                }]
+                }],
+                items: []
             }
         },
         methods:{
@@ -86,7 +110,14 @@
             porcentaje(){
                 return this.porcentUpload;
             }
+        },
+        mounted(){
+            bannerServices.obtenerBanners()
+            .then( (data) =>{
+                this.items = data;
+            })
         }
+
         
     }
 </script>

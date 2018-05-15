@@ -35,7 +35,7 @@
             <v-flex xs6  offset-xs3>
                 <v-layout row>
                     <v-flex xs2  >
-                        <v-subheader class="text-lg-center" >Nivel academico:</v-subheader>
+                        <v-subheader class="text-lg-left" >Nivel academico:</v-subheader>
                     </v-flex>
                     <v-flex xs10 >
                         <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
@@ -133,11 +133,23 @@
                                 <th v-for="header in props.headers" :key="header.text">
                                     {{ header.text }}
                                 </th>
-                                <th>
-                                    Acceso a modulos
+                                <th class="text-xs-center"> Acceso a modulos
+                                       
                                     <tr>
-                                        <td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
+                                        <!--td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
                                             {{modulo.descripcion}}
+                                        </td-->
+                                        <td class="text-xs-center">
+                                            <!--div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo.id" >
+                                                
+                                                    {{modulo.descripcion}}
+                                                
+                                            </div-->
+                                            <div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo" >
+                                                
+                                                    {{modulo}}
+                                                
+                                            </div>
                                         </td>
                                         
                                     </tr>
@@ -149,26 +161,35 @@
                             <tr :active="props.selected" >
                                 
                                 <td class="text-xs-center">
-                                    {{props.item.dispositivo}}
+                                    
+                                        {{props.item.dispositivo}}
+                                    
+                                
                                 </td>
                                 <td class="text-xs-center"> {{ props.item.matricula }} </td>
-                                <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
+                                <td class="text-xs-center"> {{ props.item.nombres + " "+ props.item.apaterno + " " + props.item.amaterno}} </td>
                                 
                                 <td class="text-xs-center"> 
                                     <tr>
-                                        <td div v-for="modulo in props.item.modulos" :key="modulo.id" class="text-xs-center">
-                                            <span style="visibility:hidden"> {{modulo.item2.descripcion}} </span>
-
-                                            <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
-                                                 listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)" >
-                                                 
-                                                 </v-switch>
+                                         <td class="text-xs-center">
+                                            <div class="td-cell"  v-for="modulo in props.item.modulos" :key="modulo.id" >
                                             
-                                            <v-tooltip top v-if="!modulo.estadoBloqueo">
-                                                <div dark color="primary" slot="activator" >ver...</div>
-                                                <span v-text="modulo.mensaje"></span>
-                                            </v-tooltip>
-                                        </td>
+                                                <div style="visibility:hidden"> {{modulo.item2.descripcion}} </div>
+
+                                                <v-switch v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
+                                                    listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)" >
+                                                    
+                                                </v-switch>
+                                                
+                                                <v-tooltip top>
+                                                    <div dark color="primary" slot="activator">
+                                                        <div v-bind:style="{visibility: !modulo.estadoBloqueo?'visible':'hidden'}">ver ..</div> 
+                                                    </div>
+                                                    <div v-if="!modulo.estadoBloqueo" v-text="modulo.mensaje"></div>
+                                                </v-tooltip>
+                                            
+                                            </div>
+                                         </td>
                                     </tr>
                                 </td>
                             </tr>
@@ -221,33 +242,25 @@ export default {
       .then(data => {
         this.token = data;
       })
-      .then(()=>{
+      /*.then(()=>{
           notificacionServices.obtenerModuloFirebase2(this.token)
           .then((data)=>{
               this.dataModulos=data;
               console.log(this.dataModulos);
 
           } )          
-      })
+      })*/
       .then(() => {
         let params = {
           catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]
         };
-        let cat = this.catalogs;
-        notificacionServices
-            .getCatalogoGenerico(params, this.token)
+        
+        notificacionServices.getCatalogoGenerico(params, this.token)
             .then(data => {
                 data.respuesta.forEach((item, index) => {
-                this.catalogs.push(item.respuesta);
-
+                    this.catalogs.push(item.respuesta);
                 });
-            })
-            .then(()=>{
-                let params = {access_token: this.token };
-                homeServices.obtenerImagenes(params).then((data) => {
-                    this.catImges = data.respuesta;
-                    this.$store.dispatch("setLoading", false);
-                });
+                this.$store.dispatch("setLoading", false);
             })
         
       })
@@ -293,7 +306,6 @@ export default {
             disparaBuscarGrupo: null,
             search: "",
             pagination: {},
-            //selected: [],
 
            
             headers: [
@@ -311,10 +323,11 @@ export default {
             
             confirmNotificacion:false,
             
-            catImges: [],
+            
             dataBusqueda:[],
             resourcePdf:'',
-            dataModulos:[],//['adeudos', 'calendario', 'calificaciones', 'login', 'materias', 'pagos']
+            //dataModulos:[],//['adeudos', 'calendario', 'calificaciones', 'login', 'materias', 'pagos']
+            dataModulos: ['adeudos', 'calendario', 'calificaciones', 'login', 'materias', 'pagos']
 
     };
   },
@@ -390,7 +403,7 @@ export default {
                 this.dlg.item = item;
                 this.dlg.dispositivo = dispositivo;
             }else{
-                this.dlg.contenido = "Estas apunto de desbloquear el modulo " + modulo;
+                this.dlg.contenido = "Estas apunto de desbloquear el modulo \""+ modulo.toUpperCase() +"\"";
                 this.dlg.tipo = "orange lighten-1";
                 this.dlg.modelo = !this.dlg.modelo;
                 this.dlg.bloqueo = false;
@@ -536,6 +549,7 @@ export default {
           this.token = tooken;
         })
         .then(() => {
+            
             let req = {
                 idGrupo: this.grupoSelected.id,
                 access_token: this.token
@@ -543,32 +557,35 @@ export default {
             this.dataBusqueda = [];
             let demoList = [];
             
-            notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaDeudor)
+            notificacionServices.getCatalogoDependiente(req, CONS.urlBuscarAlumnosGrupo)
                 .then(data => {
+                    debugger;
                     if (data.respuesta != undefined) {
-                        notificacionServices.obtenerModuloFirebase('JkVXHsg6vWeV0s4P2RkugpdLKJ83')
-                            .then((response) => { 
-                                debugger;
-                                this.dataModulos.forEach( item => {
-                                    demoList.push( { id: item.id,
-                                                    estadoBloqueo: !response[item.nodoFirebase.toString()].bloquear_acceso,
-                                                    mensaje:response[item.nodoFirebase.toString()].mensaje,
-                                                    item2:item}
-                                            );
-                                })
+                        data.respuesta.forEach(item => {
+                            
+                            item.dispositivo = item.dispositivo === null ? 'N/A' : item.dispositivo.id;
+                            item.uid = item.usuarioAplicacion !== null ? item.usuarioAplicacion.idFirebase :'';
+                            
+                            this.items.push(item);
+
+                            /*notificacionServices.obtenerModuloFirebase(uid)
+                                .then((response) => {
+                                    debugger;
+                                    if( response!==null ){
+                                        this.dataModulos.forEach( item => {
+                                            demoList.push( { id: item.id,
+                                                        estadoBloqueo: !response[item.nodoFirebase.toString()].bloquear_acceso,
+                                                        mensaje:response[item.nodoFirebase.toString()].mensaje,
+                                                        item2:item}
+                                                );
+                                        })
+                                    }
+                                    console.log(response);
+                                })*/
                                 
-                                console.log(response);
-                            })
-                            .then(()=>{
-                                console.log('dataModulos -> ' + this.demoList);
-                                data.respuesta.filter((item)=>{
-                                item.dispositivo=24;
-                                item.uid='JkVXHsg6vWeV0s4P2RkugpdLKJ83';
-                                item.modulos = demoList;    
-                                });
-                                this.items = data.respuesta;
-                                this.$store.dispatch("setLoading", false);
-                            })
+                            this.$store.dispatch("setLoading", false);
+                            
+                        });
                     }
                 })
                 .catch(() => {
@@ -622,3 +639,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+    .th-td-cell {
+        display: inline-block;
+        padding: 0px 25px;
+        
+    }
+    .td-cell {
+        display: inline-block;
+        padding: 0px 22px;
+        
+    }
+</style>

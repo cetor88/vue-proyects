@@ -32,13 +32,16 @@ export default {
     
     urlConsultaGrupo: ipOrigen + 'CEPCM_MOVIL/api/grupoController/busquedaPorPlantelCarrera',//?idPlantel=3&idCarrera=1&access_token=59a5fee0-f33e-4da6-b334-5b3141f6a222
 
-    urlConsultaDeudor: ipOrigen + 'CEPCM_MOVIL//api/deudoresController/obtenerDeudoresColegiaturasPorGrupo',//?idGrupo=972&access_token=62f755c0-08c8-4235-a2a3-4f5981f1cae7
+    urlConsultaDeudor: ipOrigen + 'CEPCM_MOVIL/api/deudoresController/obtenerDeudoresColegiaturasPorGrupo',//?idGrupo=972&access_token=62f755c0-08c8-4235-a2a3-4f5981f1cae7
 
     urlGenerarReporte: ipOrigen + 'CEPCM_MOVIL/api/reportesJasperController/obtenerReporteDeudoresPorGrupo', //?access_token=b5156dae-5cf7-4530-bcdd-69c95b8d26d9', POST
     
     urlObtenerMoudlosFB: ipOrigen + 'CEPCM_MOVIL/api/modulosController/obtnerModulosPorAplicacion?idAplicacion=1&access_token=',//650af496-8b6d-40c6-b265-20353cc859ac
 
-    urlGuardaBloqueoDesbloqueo:  ipOrigen + 'CEPCM_MOVIL/api/controlAccesoModuloController/persistirAccesoModulo?access_token=',//650af496-8b6d-40c6-b265-20353cc859ac POST
+    urlGuardaBloqueoDesbloqueo: ipOrigen + 'CEPCM_MOVIL/api/controlAccesoModuloController/persistirAccesoModulo?access_token=',//650af496-8b6d-40c6-b265-20353cc859ac POST
+
+    urlBuscarAlumnosGrupo: ipOrigen + 'CEPCM_MOVIL/api/alumnoController/obtenerAlumnosPorGrupo?',//=1&access_token=b1080caa-6a7e-4992-a92f-a6cffcf7b3d7'
+
     /* end */
 
     firebaseApp : firebase.initializeApp({
