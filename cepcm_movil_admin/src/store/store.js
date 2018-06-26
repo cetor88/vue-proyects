@@ -21,10 +21,10 @@ export const store = new Vuex.Store({
 
   mutations: {
     setToken: (state, tokenResp) => {
-      debugger;
-      state.tokn.value = tokenResp.value,
-        state.tokn.refresh = tokenResp.refreshToken,
-        state.tokn.expiraEn = Math.floor(new Date().getTime() + (tokenResp.expiresIn * 1000))
+      
+        state.tokn.value = tokenResp.access_token,
+        state.tokn.refresh = tokenResp.refresh_token,
+        state.tokn.expiraEn = Math.floor(new Date().getTime() + (tokenResp.expires_in * 1000))
       saveState('token', state.tokn);
     },
 
@@ -60,58 +60,101 @@ export const store = new Vuex.Store({
 
 
   actions: {
-    obtenerToken: (context) => {
-      debugger;
+    obtenerToken: (context, user) => {
       return new Promise((resolve, reject) => {
-        axios.get(CONSTANTES.urlGetToken)
-          .then((tokenResp) => {
-            if (tokenResp.data != undefined) {
-              context.commit('setToken', tokenResp.data);
-              context.commit('setSuccess', true);
-              resolve("ok");
-            } else
-              context.commit('setToken', null);
-            resolve(null);
-          })
-      })
-    },
-
+        const params = new URLSearchParams();
+        params.append('username', user == undefined ? 'hector.ht10@gmail.com': user.email);
+        params.append('password', user == undefined ? 'lQjyIzVZXjUlxqog8qC5EeH5WJ23': user.uid);
+        params.append('grant_type', 'password');
+        let config={
+          headers:{
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic Y2xpZW50YXBwOjEyMzQ1Ng=='
+          }
+        }
+        axios.post(CONSTANTES.urlGetToken, params, config).then((tokenResp) => {
+          if (tokenResp.status == 200) {
+            context.commit('setToken', tokenResp.data);
+            context.commit('setSuccess', true);
+            resolve(tokenResp.data);
+            //return ;
+          }else{
+            context.commit('setToken', null);
+            context.commit('setSuccess', false);
+            reject(null);
+            //return null;
+          }
+        }).catch(function (err) {
+            console.log("servicio no disponible, token!!"+ err);
+            //return err;
+            reject(err);
+        })
+    })
+  },
     refrescaToken: (context, token) => {
       return new Promise((resolve, reject) => {
-        axios.get(CONSTANTES.urlRefreshToken + token)
-          .then((response) => {
-            if (response.data != undefined) {
-              context.commit('setToken', response.data);
-              resolve("ok");
-            } else {
-              context.commit('setToken', null);
-              resolve(null);
-            }
+        const params = new URLSearchParams();
+        params.append('grant_type', 'refresh_token');
+        params.append('refresh_token', token);
+        let config={
+            headers:{
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Authorization': 'Basic Y2xpZW50YXBwOjEyMzQ1Ng=='
+          }
+        }
+        axios.post(CONSTANTES.urlGetToken, params, config).then((tokenResp) => {
+          if (tokenResp.status == 200) {
+            context.commit('setToken', tokenResp.data);
+            context.commit('setSuccess', true);
+            resolve(tokenResp.data);
+            //return tokenResp;
+          }else{
+            context.commit('setToken', null);
+            context.commit('setSuccess', false);
+            reject(null);
+            //return null;
+          }
+        }).catch(function (err) {
+            console.log("servicio no disponible, refresh token!!"+ err);
+            reject(err);
+            //return err;
           })
-
-      })
+      }) 
     },
 
-    validarToken2: (context) => {
+    validarToken2: (context) => { // se valida si el token ya expiro
+    //si ya expiro se manda a llamar el token; se manda a llamar a refrescar el token; si el refresh falla, se intenta llamar al token; 
+    //si el token sigue activo se regresa el token actual
 
       return new Promise((resolve, reject) => {
-
+      
         let time = new Date().getTime();
         let expiro = time > context.state.tokn.expiraEn //si la fecha actual es mayor que expiraEn 
+        
         if (expiro) {
+          console.log("expiro el token");
           let tokenRefresh = context.getters.obtenerTokenRefresh;
-          context.dispatch('refrescaToken', tokenRefresh).then((response) => {
-            if (response == null) {
+          context.dispatch('refrescaToken', tokenRefresh).then((response) => {// se intenta obtener el token refresh
+            debugger;
+            if (response == null) {// si no se obtiene
               console.log("ocurrio un error al refrescar el token");
-              context.dispatch('obtenerToken');
+              debugger
+              context.dispatch('obtenerToken');//se intenta obtener el token 
               resolve(context.getters.obtenerTokenActual);
             } else {
               console.log("Token refresh valido");
+              debugger
               resolve(context.getters.obtenerTokenActual);
             }
+          },(err)=>{
+            //console.log("Servicio no disponible, por generar el token");
+            //throw new Error("Servicio no disponible, favor de intentar más adelante");
+            reject(err)
           })
         } else {
+          console.log("El token sigue activo");
           resolve(context.getters.obtenerTokenActual);
+          
         }
       })
     },
@@ -145,7 +188,8 @@ export const store = new Vuex.Store({
     },
 
     obtenerTokenRefresh: (state) => {
-      return state.tokn.refresh.value;
+      
+      return state.tokn.refresh;
     },
 
     obtenerTokenActual: (state) => {

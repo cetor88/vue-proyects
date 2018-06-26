@@ -105,109 +105,145 @@
             </v-card>
         </v-flex>
     </v-layout>
+    <v-layout row wrap>
+                <v-flex xs12>
+                <mensajeDlg  @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps" ></mensajeDlg>
+                </v-flex>
+            </v-layout>
 
    </v-container>
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
+
 import homeServices from "./home.services";
+
 import autocomplete from "../autoComplete/autocomplete.vue";
 
-export default {
-  components: {
-    autocomplete
-  },
-  mounted() {
-      console.log("home")
-    this.$store
-      .dispatch("validarToken2")
-      .then(data => {
-        this.token = data;
-      })
-      .then(() => {
-        let params = {access_token: this.token };
-        homeServices.obtenerImagenes(params).then(data => {
-          this.catImges = data.respuesta;
-        });
-      });
-  },
-  data() {
-    return {
-        dialog:false,
-        catImges: [],
-        notificacion: {
-            titulo: "",
-            contenido: "",
-            img: "",
-            dispositivos: []
-        },
-        token: "",
-        loading: false,
-        items: [],
-        dispositivos: [],
-        personasSeleccionadas:[],
-        valid: true,
-        tituloRules: [
-            v => !!v || "Título es requerido",
-            v => (v && v.length <= 50) || "El título debe ser menor a 50 caracteres"
-        ],
-        contentRules: [
-            v => !!v || "Contenido es requerido",
-            v =>
-            (v && v.length <= 100) ||
-            "El contenido debe ser menor a 100 caracteres"
-        ],
-        imagesRules: [v => !!v || "Selecciona una imagen"]
-    };
-  },
+import mensajeDlg from '../dialogo/mensajesDlg';
 
-  methods: {
-    enviarNotificacion() {
-      if (this.$refs.form.validate() && this.dispositivos.length > 0) {
-        this.$store
-        .dispatch("validarToken2")
-        .then(data => {
+export default {
+    components: {autocomplete, mensajeDlg },
+    mounted() {
+        console.log("home")
+        this.$store.dispatch("setLoading", true);
+        this.$store.dispatch("validarToken2").then(data => {
             this.token = data;
+        }).then(() => {
+            let params = {access_token: this.token };
+            homeServices.obtenerImagenes(params).then(data => {
+                this.catImges = data.respuesta;
+                this.$store.dispatch("setLoading", false);
+            }).catch(error => {
+                    console.log("Resultado de la operacion... " + error);
+                    this.$store.dispatch("setLoading", false);
+                    this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                    this.dialogo.tipo =  "red lighten-1";
+                    this.dialogo.modelo = !this.dialogo.modelo;            
+            })
+        }).catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;            
         })
-        .then(() => {
-            let req = {
-              titulo: this.notificacion.titulo,
-              contenido: this.notificacion.contenido,
-              id_imagen: this.notificacion.img,
-              listaDispositivos: this.dispositivos
-            };
-            debugger;
-            homeServices
-                .guardarNotificacionADispositivos(req, this.token)
-                .then((data) => {
-                    console.log("Proceso correcto!!" + data);
-                })
-                .then(()=>{
-                    this.limpiarNotificacion();
-                    this.dialog = !this.dialog;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        })
-        
-      }
     },
-    limpiarNotificacion(){
-        this.notificacion.titulo='';
-        this.notificacion.contenido='';
-        this.notificacion.dispositivos=[];
-        this.dispositivos = [];
-        this.notificacion.img = '';
-        this.personasSeleccionadas = [];
+    data() {
+        return {
+            dialog:false,
+            dialogo:{
+                    titulo:'Resultado de la operación',
+                    contenido:'',
+                    tipo:'',
+                    modelo:false
+            },
+            catImges: [],
+            notificacion: {
+                titulo: "",
+                contenido: "",
+                img: "",
+                dispositivos: []
+            },
+            token: "",
+            loading: false,
+            items: [],
+            dispositivos: [],
+            personasSeleccionadas:[],
+            valid: true,
+            tituloRules: [
+                v => !!v || "Título es requerido",
+                v => (v && v.length <= 50) || "El título debe ser menor a 50 caracteres"
+            ],
+            contentRules: [
+                v => !!v || "Contenido es requerido",
+                v =>
+                (v && v.length <= 100) ||
+                "El contenido debe ser menor a 100 caracteres"
+            ],
+            imagesRules: [v => !!v || "Selecciona una imagen"]
+        }
+    },
+
+    methods: {
+        cerrarMensajeDlg(){        
+            this.dialogo.contenido = "";
+            this.dialogo.tipo = "";
+            this.dialogo.modelo = !this.dialogo.modelo;
+            this.$store.dispatch("setLoading", false);
+        }, 
+        enviarNotificacion() {
+            if (this.$refs.form.validate() && this.dispositivos.length > 0) {
+            this.$store
+            .dispatch("validarToken2")
+            .then(data => {
+                this.token = data;
+            })
+            .then(() => {
+                let req = {
+                    titulo: this.notificacion.titulo,
+                    contenido: this.notificacion.contenido,
+                    id_imagen: this.notificacion.img,
+                    listaDispositivos: this.dispositivos
+                };
+                debugger;
+                homeServices
+                    .guardarNotificacionADispositivos(req, this.token)
+                    .then((data) => {
+                        console.log("Proceso correcto!!" + data);
+                    })
+                    .then(()=>{
+                        this.limpiarNotificacion();
+                        this.dialog = !this.dialog;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            })
+            
+            }
+        },
+        limpiarNotificacion(){
+            this.notificacion.titulo='';
+            this.notificacion.contenido='';
+            this.notificacion.dispositivos=[];
+            this.dispositivos = [];
+            this.notificacion.img = '';
+            this.personasSeleccionadas = [];
+        }
+    },
+    computed:{
+        //mapState(["tokn"]),
+
+        //...mapGetters(["validarToken"]),
+
+        getMensajesProps(){
+            return this.dialogo;
+        },
     }
-  },
-    computed: 
-            mapState(["tokn"]),
-            ...mapGetters(["validarToken"]),
             
                 
-};
+}
 </script>
 
 <style >

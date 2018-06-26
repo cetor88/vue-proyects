@@ -110,7 +110,7 @@ export default {
       this.$store.state.auth.signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
         .then(
           (user)=> {
-            control.dispatch('obtenerToken')
+            control.dispatch('obtenerToken', user)
             .then(()=>{
               control.dispatch('iniciarUsuario', user);
               cotininuar.replace("home");

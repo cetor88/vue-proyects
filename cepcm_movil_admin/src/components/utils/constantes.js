@@ -3,11 +3,15 @@ require("firebase/auth");
 require("firebase/database");
 require("firebase/storage");
 
-var ipOrigen ='http://187.190.149.140:8080/';
-//var ipOrigen ='http://c022377:8082/';
+//http://10.64.8.52:8083/CEPCM_MOVIL/oauth/token
+
+//var ipOrigen ='http://187.190.149.140:8080/';
+var ipOrigen ='http://c022377:8083/';
 export default {
-    urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=password&client_id=restapp&client_secret=restapp&username=2&password=yhTo7LRvI2dvFxReUqzAxspzZi02', //GET
-    urlRefreshToken :       ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=refresh_token&client_id=restapp&client_secret=restapp&refresh_token=',//GET
+    //urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=password&client_id=restapp&client_secret=restapp&username=2&password=yhTo7LRvI2dvFxReUqzAxspzZi02', //GET
+    urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token', //POST
+    
+    //urlRefreshToken :       ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=refresh_token&client_id=restapp&client_secret=restapp&refresh_token=',//GET
     
     /* notificacion por persona */
     urlImagenesPorTipo:     ipOrigen + 'CEPCM_MOVIL/api/imagenController/obtnerImagenesPorTipo',//?id_tipo=1&access_token=52c18d1f-b7ce-4bc7-8a58-016fff2864eb', GET

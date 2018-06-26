@@ -1,160 +1,196 @@
 <template>
-  <v-container  grid-list-md text-xs-center>
+    
     <v-form ref="form" lazy-validation>
-        <v-layout row wrap>
-            <v-flex xs12 >
-                <v-card color="primary" dark>
-                    <v-card-text >
-                        <div>
-                            <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <span>Notificaciones a alumnos deudores</span>
-                        </div>
+        <v-container  grid-list-md text-xs-center>
+            
+                <v-layout row wrap>
+                    <v-flex xs12 >
+                        <v-card color="primary" dark>
+                            <v-card-text >
+                                <div>
+                                    <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
+                                    <span>Notificaciones a alumnos deudores</span>
+                                </div>
+                                
+                            </v-card-text>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                    <v-flex xs6  offset-xs3>
+                        <v-layout row>
+                            <v-flex xs2  >
+                                <v-subheader class="text-lg-center"> Plantel:</v-subheader>
+                            </v-flex>
+                            <v-flex xs10  >
+                                <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
+                                v-model="plantelSelected" >
+                                    <template slot="no-options">
+                                        No se cuenta con registros
+                                    </template>
+                                </v-select>  
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                    <v-flex xs6  offset-xs3>
+
+                        <v-layout row>
+                            <v-flex xs2  >
+                                <v-subheader class="text-lg-left" >Nivel academico:</v-subheader>
+                            </v-flex>
+                            <v-flex xs10 >
                         
-                    </v-card-text>
-                </v-card>
-            </v-flex>
-            <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
-                v-model="plantelSelected" >
-                    <template slot="no-options">
-                        No se cuenta con registros
-                    </template>
-                </v-select>  
-            </v-flex>
-            <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
-                 v-model="nivelAcademicoSelected" required>
-                    <template slot="no-options">
-                        No se cuenta con registros
-                    </template>
-                </v-select>
-            </v-flex>
-            <v-flex xs6  offset-xs3>
-                
-                <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
-                    v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
-                    <template slot="no-options">
-                        No se encuentran carreras con los criterios seleccionados
-                    </template>
+                                <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
+                                v-model="nivelAcademicoSelected" required>
+                                    <template slot="no-options">
+                                        No se cuenta con registros
+                                    </template>
+                                </v-select>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex xs6  offset-xs3>    
+                        <v-layout row>
+                            <v-flex xs2 >
+                                <v-subheader class="text-lg-center">Carrera:</v-subheader>
+                            </v-flex>
+                            <v-flex xs10>
+                                <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
+                                    v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
+                                    <template slot="no-options">
+                                        No se encuentran carreras con los criterios seleccionados
+                                    </template>
 
-                    <template slot="option" slot-scope="option">
-                        <div class="d-center">
+                                    <template slot="option" slot-scope="option">
+                                        <div class="d-center">
+                                        
+                                        {{ option.descripcion }}
+                                        </div>
+                                    </template>
+                                    <template slot="selected-option" slot-scope="option">
+                                        <div class="selected d-center">
+                                            
+                                            {{ option.descripcion }}
+                                        </div>
+                                    </template>
+                                </v-select>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>            
+                    <v-flex xs6  offset-xs3>
+                        <v-layout row>
+                            <v-flex xs2>
+                                <v-subheader class="text-lg-center">Grupo:</v-subheader>
+                            </v-flex>
+                            <v-flex xs10> 
                         
-                        {{ option.descripcion }}
-                        </div>
-                    </template>
-                    <template slot="selected-option" slot-scope="option">
-                        <div class="selected d-center">
-                            
-                            {{ option.descripcion }}
-                        </div>
-                    </template>
-                </v-select>
-            </v-flex>            
-            <v-flex xs6  offset-xs3>
+                                <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
+                                    v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
+                                    <template slot="no-data">
+                                        No se cuenta con registros
+                                    </template>
+                                </v-select>
+                            </v-flex>
+                        </v-layout>
+                    </v-flex>
+                    <v-flex>
+                        <!--pre>{{ selected}}</pre-->
+                    </v-flex>
+                </v-layout>
+            
                 
-                <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
-                    v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
-                    <template slot="no-data">
-                        No se cuenta con registros
-                    </template>
-                </v-select>
+                <v-layout>
+                    <v-flex xs12 >
+                        <v-btn :loading="loading3" color="primary" class="black--text" @click="probarModal" :disabled="dispositivos.length==0">
+                            Enviar notificación
+                            <v-icon right dark>fal fa-file</v-icon>
+                        </v-btn>
 
-            </v-flex>
-            <v-flex>
-                <!--pre>{{ selected}}</pre-->
-            </v-flex>
-        </v-layout>
-        <v-layout>
-            <v-flex xs12 >
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="probarModal" :disabled="dispositivos.length==0">
-                    Enviar notificación
-                    <v-icon right dark>fal fa-file</v-icon>
-                </v-btn>
-
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="generarBusqueda" :disabled="!grupoSelected">
-                    Buscar
-                    <v-icon right dark>search</v-icon>
-                </v-btn>
-                
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="generarReporte" :disabled="items.length==0" >
-                    Generar reporte
-                    <v-icon right dark>picture_as_pdf</v-icon>
-                </v-btn>
-                
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="limpiarForma">
-                    Limpiar
-                    <v-icon right dark>delete</v-icon>
-                </v-btn>
-                
-            </v-flex>
-        </v-layout>
-        <v-layout>
-            <v-flex xs12>
-                <v-alert type="error"  v-model="alertValidaDsipositivo" dismissible transition="scale-transition">
-                    Lo sentimos pero la persona no cuenta con dispositivo para recibir la notificación
-                </v-alert>
-            </v-flex>
-        </v-layout>
-        <v-layout>    
-            <v-flex xs12 >
-                <div>
-                    <v-data-table  v-model="selected"  ref="dataTable1"   :headers="headers" :items="items"  :pagination.sync="pagination" 
-                        item-key="name"  class="elevation-1" >
-                        <template slot="headers" slot-scope="props">
-                            <tr>
-                                <th>                                    
-                                </th>
-                                <th v-for="header in props.headers" :key="header.text">
-                                    {{ header.text }}
-                                </th>
-                            </tr>
-                        </template>
-
-                        <template slot="items" slot-scope="props">
-                            <tr :active="props.selected" @click="cambio( props)" >
-                                <td class="text-xs-center">
-                                    <v-checkbox hide-details :input-value="props.selected"></v-checkbox>
-                                </td>
-                                <td class="text-xs-center">
-                                     
-                                    <v-icon v-if="props.item.alumno.dispositivo != null"> phonelink_ring </v-icon>
-                                    <v-icon v-if="props.item.alumno.dispositivo == null"> phonelink_erase </v-icon>
-                                </td>
-                                <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
-                                <td class="text-xs-center"> {{ props.item.colegiaturas }} </td>
-                                <td class="text-xs-center"> {{ props.item.recargos }} </td>
-                                <td class="text-xs-center"> {{ props.item.importeRecargosColegiaturas }} </td>
-                                <td class="text-xs-center"> {{ props.item.importeColegiaturas }} </td>
-                                <td class="text-xs-center"> {{ props.item.reinscripcionesAdeudadas }} </td>
-                                <td class="text-xs-center"> {{ props.item.importeReinscripciones }} </td>
-                                <td class="text-xs-center"> {{ props.item.adeudoTotal }} </td>
-                            </tr>
-                        </template>
-                    </v-data-table>
-                    <!--div class="text-xs-center pt-2" >
-                        <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
-                    </div -->  
-                </div>
-            </v-flex>
-        </v-layout>
-        <v-layout>
-            <v-flex>
+                        <v-btn :loading="loading3" color="primary" class="black--text" @click="generarBusqueda" :disabled="!grupoSelected">
+                            Buscar
+                            <v-icon right dark>search</v-icon>
+                        </v-btn>
+                        
+                        <v-btn :loading="loading3" color="primary" class="black--text" @click="generarReporte" :disabled="items.length==0" >
+                            Generar reporte
+                            <v-icon right dark>picture_as_pdf</v-icon>
+                        </v-btn>
+                        
+                        <v-btn :loading="loading3" color="primary" class="black--text" @click="limpiarForma">
+                            Limpiar
+                            <v-icon right dark>delete</v-icon>
+                        </v-btn>
+                        
+                    </v-flex>
+                </v-layout>
+            
+                <v-layout>
+                    <v-flex xs12>
+                        <v-alert type="error"  v-model="alertValidaDsipositivo" dismissible transition="scale-transition">
+                            Lo sentimos pero la persona no cuenta con dispositivo para recibir la notificación
+                        </v-alert>
+                    </v-flex>
+                </v-layout>
+        
+      
+            <v-layout row wrap>
+                <v-flex xs12>
                 <myDialog @cerrarModal="cerrarModal" @notificacionEnviada="notificacionEmitida" @notificacionErrada="notificacionErrada"
                     v-if="getPorps.modelo" :imgs="catImges" :smart="getDispositivos" :propiedades="getPorps">
                 </myDialog>
                 <mensajeDlg  @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps" ></mensajeDlg>
-            </v-flex>
+
+                </v-flex>
+            </v-layout>
+        </v-container>
+
+        <v-layout row wrap>
+            <v-flex xs12>
+                <v-data-table  v-model="selected"  ref="dataTable1"   :headers="headers" :items="items" 
+                :pagination.sync="pagination" rows-per-page-text="Registros por página" item-key="name" class="elevation-1">
+                    <template slot="headers" slot-scope="props">
+                        <tr>
+                            <th>                                    
+                            </th>
+                            <th v-for="header in props.headers" :key="header.text">
+                                {{ header.text }}
+                            </th>
+                        </tr>
+                    </template>
+
+                    <template slot="items" slot-scope="props">
+                        <tr :active="props.selected" @click="cambio( props)" >
+                            <td class="text-xs-center">
+                                <v-checkbox hide-details :input-value="props.selected"></v-checkbox>
+                            </td>
+                            <td class="text-xs-center">
+                                    
+                                <v-icon v-if="props.item.alumno.dispositivo != null"> phonelink_ring </v-icon>
+                                <v-icon v-if="props.item.alumno.dispositivo == null"> phonelink_erase </v-icon>
+                            </td>
+                            <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
+                            <td class="text-xs-center"> {{ props.item.colegiaturasAdeudadas }} </td>
+                            <td class="text-xs-center"> {{ props.item.recargos }} </td>
+                            <td class="text-xs-center"> {{ props.item.importeRecargosColegiaturas }} </td>
+                            <td class="text-xs-center"> {{ props.item.importeColegiaturas }} </td>
+                            <td class="text-xs-center"> {{ props.item.reinscripcionesAdeudadas }} </td>
+                            <td class="text-xs-center"> {{ props.item.importeReinscripciones }} </td>
+                            <td class="text-xs-center"> {{ props.item.adeudoTotal }} </td>
+                        </tr>
+                    </template>
+                    <template slot="pageText" slot-scope="{ pageStart, pageStop }">
+                            {{ pageStart }} de {{ pageStop }}
+                    </template>
+                    <template slot="no-data">
+                        No existen registros
+                    </template>
+                </v-data-table>
+            </v-flex>    
         </v-layout>
-
-
+          
     </v-form>
-    <v-flex>
-
-    </v-flex>
-  </v-container>  
 
 </template>
 <script>
@@ -167,41 +203,49 @@ import CONS from "../utils/constantes.js";
 import myDialog from '../dialogo/commonDialog';
 import mensajeDlg from '../dialogo/mensajesDlg';
 export default {
+    components: { vSelect, myDialog, mensajeDlg},
+
   created() {
     this.$store.dispatch("setLoading", true);
   },
   mounted() {
-    this.$store
-      .dispatch("validarToken2")
-      .then(data => {
+    this.$store.dispatch("validarToken2").then(data => {
         this.token = data;
-      })
-      .then(() => {
+        debugger;
+      }).then(() => {
+          debugger;
         let params = {
           catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]
         };
-        let cat = this.catalogs;
-        notificacionServices
-            .getCatalogoGenerico(params, this.token)
-            .then(data => {
+        //let cat = this.catalogs;
+        notificacionServices.getCatalogoGenerico(params, this.token).then(data => {
                 data.respuesta.forEach((item, index) => {
                 this.catalogs.push(item.respuesta);
                 });
-            })
-            .then(()=>{
+        }).then(()=>{
                 let params = {access_token: this.token };
                 homeServices.obtenerImagenes(params).then((data) => {
                     this.catImges = data.respuesta;
                     this.$store.dispatch("setLoading", false);
                 });
-            })
+            }).catch(error => {
+                console.log("Resultado de la operacion... " + error);
+                this.$store.dispatch("setLoading", false);
+                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.modelo = !this.dialogo.modelo;            
+            });
         
-      })
-      .catch(error => {
+      }).catch(error => {
+        debugger;
+        console.log("Resultado de la operacion... " + error);
         this.$store.dispatch("setLoading", false);
+        this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+        this.dialogo.tipo =  "red lighten-1";
+        this.dialogo.modelo = !this.dialogo.modelo;
       });
   },
-  components: { vSelect, myDialog, mensajeDlg},
+  
   data: () => {
     return {
             dlg:{
@@ -234,13 +278,13 @@ export default {
             selected: [],
             headers: [
                 { text: "Dispositivo", value: "dispositivo" },
-                { text: "Alumno", value: "alumno" },
-                { text: "# Colegiaturas", value: "colegiaturas" },
+                { text: "Nombre del alumno", value: "alumno" },
+                { text: "# Colegiaturas", value: "colegiaturasAdeudadas" },
                 { text: "Recargos", value: "recargos" },
                 { text: "Importe de recargos", value: "importeRecargosColegiaturas" },
-                { text: "Importe", value: "importeColegiaturas" },
+                { text: "Importe colegiaturas", value: "importeColegiaturas" },
                 { text: "# de reinscripción", value: "reinscripcionesAdeudadas" },
-                { text: "Importe", value: "importeReinscripciones" },
+                { text: "Importe Reinscripción", value: "importeReinscripciones" },
                 { text: "Adeudo total", value: "adeudoTotal" }
             ],
             items: [],
@@ -325,21 +369,21 @@ export default {
         resourcePdf:''
     },
     cambio(prop) {
-    let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;
-    if (prop.item.alumno.dispositivo != null) {
-        prop.selected = !prop.selected;
-        if(!prop.selected){
-            this.dispositivos.push(dispositivo.id);
-        }else{
-            this.dispositivos.splice(prop.index, 1);
+        let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;
+        if (prop.item.alumno.dispositivo != null) {
+            prop.selected = !prop.selected;
+            if(!prop.selected){
+                this.dispositivos.push(dispositivo.id);
+            }else{
+                this.dispositivos.splice(prop.index, 1);
+            }
+            
+        } else {
+            setTimeout(() => {
+            this.alertValidaDsipositivo = false;
+            }, 2000);
+            this.alertValidaDsipositivo = true;
         }
-        
-    } else {
-        setTimeout(() => {
-          this.alertValidaDsipositivo = false;
-        }, 2000);
-        this.alertValidaDsipositivo = true;
-      }
     },
     
     buscarGrupo() {
@@ -412,11 +456,12 @@ export default {
             access_token: this.token
           };
           this.dataBusqueda = [];
-          notificacionServices
-            .getCatalogoDependiente(req, CONS.urlConsultaDeudor)
-            .then(data => {
-              
+          notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaDeudor).then(data => {
               if (data.respuesta != undefined) {
+                data.respuesta.filter((item)=>{
+                    item.importeRecargosColegiaturas = item.importeRecargosColegiaturas.toFixed(2);
+                    item.adeudoTotal = item.adeudoTotal.toFixed(2);
+                })
                 this.items = data.respuesta;
                 this.$store.dispatch("setLoading", false);
               }

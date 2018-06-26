@@ -24,15 +24,19 @@
       </v-toolbar-items>
     </v-toolbar>
                                   
-    <v-container grid-list-md text-xs-center>
+    <!--v-container text-xs-center-->
       <v-layout row wrap  v-if="getLoaing">
         <div class="modela-mask">
           <orbit-spinner indeterminate :size="100" color="#ff1d5e" />
         </div>
       </v-layout>
-
-      <router-view></router-view>
-    </v-container>
+    <!--/v-container-->
+    <v-layout row wrap>
+      <v-flex>
+        <router-view></router-view>
+      </v-flex>
+    </v-layout>
+    
   </v-app>
 </template>
 
