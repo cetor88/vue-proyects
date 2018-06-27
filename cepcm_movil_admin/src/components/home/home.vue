@@ -1,4 +1,3 @@
-
 <template>
   <v-container  grid-list-md text-xs-center>
     <v-form v-model="valid" ref="form" lazy-validation>
@@ -115,13 +114,9 @@
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
-
 import homeServices from "./home.services";
-
 import autocomplete from "../autoComplete/autocomplete.vue";
-
 import mensajeDlg from '../dialogo/mensajesDlg';
-
 export default {
     components: {autocomplete, mensajeDlg },
     mounted() {
@@ -184,7 +179,6 @@ export default {
             imagesRules: [v => !!v || "Selecciona una imagen"]
         }
     },
-
     methods: {
         cerrarMensajeDlg(){        
             this.dialogo.contenido = "";
@@ -234,9 +228,7 @@ export default {
     },
     computed:{
         //mapState(["tokn"]),
-
         //...mapGetters(["validarToken"]),
-
         getMensajesProps(){
             return this.dialogo;
         },
@@ -262,13 +254,9 @@ export default {
   top: auto;
   vertical-align: middle;
 }
-
 li.active{
     border-radius: 5px;
     background-color: #e0e0e0;
 }
 /*stylos modal*/
-
-
-
 </style>

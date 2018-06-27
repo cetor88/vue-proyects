@@ -64,15 +64,24 @@
                 </v-list>    
             </v-flex>
         </v-layout>
+        <v-layout row wrap>
+            <v-flex xs12>
+            <mensajeDlg  @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps" ></mensajeDlg>
+            </v-flex>
+        </v-layout>
         <v-progress-circular indeterminate v-bind:size="100" v-bind:width="5" color="red" v-if="loader"></v-progress-circular>
     </v-container>
 </template>
 
 <script>
     import {mapState, mapGetters} from 'vuex'
+
     import homeServices from '../home/home.services'   
     
+    import mensajeDlg from '../dialogo/mensajesDlg';
+
     export default{
+    components: { mensajeDlg },
     data () {
         return{
             valid: false,
@@ -82,6 +91,12 @@
             loading:false,
             alumnos: [],
             personasRules:[(v) => !!v || 'Elige al menos una persona'],
+            dialogo:{
+                titulo:'Resultado de la operación',
+                contenido:'',
+                tipo:'',
+                modelo:false
+            },
         }
     },
     props:{
@@ -94,6 +109,12 @@
     },
     
     methods: {
+        cerrarMensajeDlg(){        
+            this.dialogo.contenido = "";
+            this.dialogo.tipo = "";
+            this.dialogo.modelo = !this.dialogo.modelo;
+            this.$store.dispatch("setLoading", false);
+        },
         search (val) {
             if(val)
                 if(val.length > 3){
@@ -101,7 +122,8 @@
                 }
         },
         querySelections (strFiltro) {
-            this.loading = true
+            //this.loading = true
+            this.$store.dispatch("setLoading", true);
             let req = {};
             this.$store.dispatch('validarToken2')
             .then((data)=>{
@@ -117,11 +139,21 @@
                             this.alumnos.push({text: item.nombres +" "+ item.apaterno +" "+ item.amaterno , value: item.id, dispositivo: item.idDispositivoUsuario, matricula: item.matricula})
                         });
                     }
-                    this.loading = false
+                    //this.loading = false
+                    this.$store.dispatch("setLoading", false);
+                }).catch(error => {
+                    console.log("Resultado de la operacion... " + error);
+                    this.$store.dispatch("setLoading", false);
+                    this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                    this.dialogo.tipo =  "red lighten-1";
+                    this.dialogo.modelo = !this.dialogo.modelo;  
                 })
-            })
-            .catch(function(err){
-                console.log(err);
+            }).catch(error => {
+                console.log("Resultado de la operacion... " + error);
+                this.$store.dispatch("setLoading", false);
+                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.modelo = !this.dialogo.modelo;  
             })
         },
 
@@ -175,7 +207,10 @@
         },
         getPersonasSeleccionadas(){
             return this.personasSeleccionadas;
-        }
+        },
+        getMensajesProps(){
+            return this.dialogo;
+        },
 
     }
     

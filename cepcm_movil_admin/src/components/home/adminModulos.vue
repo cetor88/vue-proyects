@@ -472,39 +472,33 @@ export default {
 
         buscarGrupo() {
             return new Promise((resolve, reject) => {
-            this.$store
-                .dispatch("validarToken2")
-                .then(data => {
-                this.token = data;
-                let req = {
-                    idPlantel: this.plantelSelected.id,
-                    idCarrera: this.carreraSelected.id,
-                    access_token: this.token
-                };
-                //console.log(req);
-                notificacionServices
-                    .getCatalogoDependiente(req, CONS.urlConsultaGrupo)
-                    .then(data => {
-                    if (data.respuesta != undefined) {
-                        resolve(data.respuesta);
-                    }
-                    })
-                    .catch(() => {
-                    reject(null);
+                this.$store.dispatch("validarToken2").then(data => {
+                    this.token = data;
+                    let req = {
+                        idPlantel: this.plantelSelected.id,
+                        idCarrera: this.carreraSelected.id,
+                        access_token: this.token
+                    };
+                    notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaGrupo).then(data => {
+                        if (data.respuesta != undefined) {
+                            resolve(data.respuesta);
+                        }
+                    }).catch(() => {
+                        reject(null);
                     });
-                })
-                .catch(() => {
-                reject(null);
+                }).catch(() => {
+                    reject(null);
                 });
             });
         },
         onSearch: function onSearch(search, loading) {
             if (search.length > 3) {
-            loading(true);
-            this.$store.dispatch("validarToken2").then(tooken => {
-                this.token = tooken;
-                this.search3(loading, search, this);
-            });
+                this.$store.dispatch("setLoading", true);
+                this.$store.dispatch("validarToken2").then(tooken => {
+                    this.token = tooken;
+                    this.search3(loading, search, this);
+                    this.$store.dispatch("setLoading", false);
+                });
             }
         },
 
@@ -573,16 +567,23 @@ export default {
                                 
                             });
                         }
-                    }).catch(() => {
+                    }).catch(error => {
+                        console.log("Resultado de la operacion... " + error);
                         this.$store.dispatch("setLoading", false);
-
-                    })   
+                        this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                        this.dialogo.tipo =  "red lighten-1";
+                        this.dialogo.modelo = !this.dialogo.modelo;
+                    })  
             }).then(()=>{
                 this.items = auxItems;
 
-            }).catch(() => {
+            }).catch(error => {
+                console.log("Resultado de la operacion... " + error);
                 this.$store.dispatch("setLoading", false);
-            });
+                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.modelo = !this.dialogo.modelo;
+            })
         }
     },
 

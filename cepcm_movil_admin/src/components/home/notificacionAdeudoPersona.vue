@@ -211,13 +211,9 @@ export default {
   mounted() {
     this.$store.dispatch("validarToken2").then(data => {
         this.token = data;
-        debugger;
+
       }).then(() => {
-          debugger;
-        let params = {
-          catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]
-        };
-        //let cat = this.catalogs;
+        let params = {catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]};
         notificacionServices.getCatalogoGenerico(params, this.token).then(data => {
                 data.respuesta.forEach((item, index) => {
                 this.catalogs.push(item.respuesta);
@@ -237,7 +233,6 @@ export default {
             });
         
       }).catch(error => {
-        debugger;
         console.log("Resultado de la operacion... " + error);
         this.$store.dispatch("setLoading", false);
         this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
@@ -388,30 +383,28 @@ export default {
     
     buscarGrupo() {
       return new Promise((resolve, reject) => {
-        this.$store
-          .dispatch("validarToken2")
-          .then(data => {
+        this.$store.dispatch("validarToken2").then(data => {
             this.token = data;
-            let req = {
-              idPlantel: this.plantelSelected.id,
-              idCarrera: this.carreraSelected.id,
-              access_token: this.token
-            };
-            //console.log(req);
-            notificacionServices
-              .getCatalogoDependiente(req, CONS.urlConsultaGrupo)
-              .then(data => {
+            let req = { idPlantel: this.plantelSelected.id, idCarrera: this.carreraSelected.id, access_token: this.token };
+            
+            notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaGrupo).then(data => {
                 if (data.respuesta != undefined) {
                   resolve(data.respuesta);
                 }
-              })
-              .catch(() => {
-                reject(null);
-              });
-          })
-          .catch(() => {
-            reject(null);
-          });
+            }).catch(error => {
+                console.log("Resultado de la operacion... " + error);
+                this.$store.dispatch("setLoading", false);
+                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.modelo = !this.dialogo.modelo;
+            })
+        }).catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;
+        })
       });
     },
     onSearch: function onSearch(search, loading) {
@@ -420,24 +413,32 @@ export default {
         this.$store.dispatch("validarToken2").then(tooken => {
           this.token = tooken;
           this.search3(loading, search, this);
+        }).catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;
         });
       }
     },
     search3: function(loading, search, vm) {
-      //console.log("search3");
-      let req = {
-        idNivel: this.nivelAcademicoSelected.id,
-        filtro: search,
-        access_token: this.token
-      };
-      notificacionServices
-        .getCatalogoDependiente(req, CONS.urlConsultaCarrera)
-        .then(data => {
-          //s.log(data);
-          if (data.respuesta != undefined) {
-            this.carrera = data.respuesta;
-            loading(false);
-          }
+        let req = {
+            idNivel: this.nivelAcademicoSelected.id,
+            filtro: search,
+            access_token: this.token
+        };
+        notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaCarrera).then(data => {
+            if (data.respuesta != undefined) {
+                this.carrera = data.respuesta;
+                loading(false);
+            }
+        }).catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;
         });
     },
     generarBusqueda: function() {
@@ -465,39 +466,51 @@ export default {
                 this.items = data.respuesta;
                 this.$store.dispatch("setLoading", false);
               }
+            }).catch(error => {
+                console.log("Resultado de la operacion... " + error);
+                this.$store.dispatch("setLoading", false);
+                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.modelo = !this.dialogo.modelo;
             })
-            .catch(() => {
-              this.$store.dispatch("setLoading", false);
-            });
+        }).catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;
         })
-        .catch(() => {
-          this.$store.dispatch("setLoading", false);
-        });
     },
     generarReporte:function(){
         this.$store.dispatch("setLoading", true);
-        this.$store.dispatch("validarToken2")
-            .then(tooken => {
+        this.$store.dispatch("validarToken2").then(tooken => {
             this.token = tooken;
-            })
-            .then(() => {
-                let req={
-                    idGrupo:this.grupoSelected.id,
-                    registros:this.items
-                };
-                notificacionServices.enviarPostGeneric(CONS.urlGenerarReporte, req, this.token)
-                .then(data=>{
-                    let a = document.createElement("a");
-                    a.href = "data:application/octet-stream;base64,"+data.respuesta;
-                    a.download = "alumnos_deudores_"+Math.floor((Math.random() * 10) + 1)+".pdf"
-                    a.click();
-                    this.$store.dispatch("setLoading", false);
-                })
-                
-            })
-        .catch(() => {
-          this.$store.dispatch("setLoading", false);
-        });
+        })
+        .then(() => {
+            let req={
+                idGrupo:this.grupoSelected.id,
+                registros:this.items
+            };
+            notificacionServices.enviarPostGeneric(CONS.urlGenerarReporte, req, this.token).then(data=>{
+                let a = document.createElement("a");
+                a.href = "data:application/octet-stream;base64,"+data.respuesta;
+                a.download = "alumnos_deudores_"+Math.floor((Math.random() * 10) + 1)+".pdf"
+                a.click();
+                this.$store.dispatch("setLoading", false);
+            }).catch(error => {
+                console.log("Resultado de la operacion... " + error);
+                this.$store.dispatch("setLoading", false);
+                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.modelo = !this.dialogo.modelo;
+            })    
+        }).catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
+            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;
+        })
     }
   },
   computed: {

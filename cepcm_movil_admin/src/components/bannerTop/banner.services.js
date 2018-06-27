@@ -8,8 +8,6 @@ export default {
 
             let ref = CONS.db.ref("configuracion/aplicacionAlumnos/bannerTop/banners/");
             ref.on('value',snapshot=>{
-                console.log( " snapshot ->" + snapshot.val());
-                debugger;
                 resolve(snapshot.val());
             } )            
 

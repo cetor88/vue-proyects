@@ -71,6 +71,7 @@ export default {
             title: "Gestión de modulos",
             link: "/adminModulos"
           },
+          { icon: "fas fa-map-marker", title: "Banners", link: "/banner" },
           { icon: "fas fa-map-marker", title: "Ubicación", link: "/meetup/new" }
         ];
       }

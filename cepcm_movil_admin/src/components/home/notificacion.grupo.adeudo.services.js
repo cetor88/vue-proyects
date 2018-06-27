@@ -14,7 +14,7 @@ export default {
                 }else
                   reject(null);
             }).catch((err)=>{
-                console.log("Ocurrio un error!!"+ err);
+                console.log("Ocurrio un error!!");
                 reject(err);
             })
         })  
@@ -28,7 +28,7 @@ export default {
                 }else
                   reject(null);
             }).catch(function(err){
-                console.log("Ocurrio un error!!"+ err);
+                console.log("Ocurrio un error!!");
                 reject(err);
             })
         })            
@@ -43,7 +43,7 @@ export default {
                 }else
                     reject(null);
             }).catch(function(err){
-                console.log("Ocurrio un error!!"+ err);
+                console.log("Ocurrio un error!!");
                 reject(err);
             })
         })           
@@ -70,7 +70,7 @@ export default {
                 })
                 
             }).catch(function(err){
-                console.log("Ocurrio un error!!"+ err);
+                console.log("Ocurrio un error!!");
                 reject(err);
             })  
         })
@@ -85,10 +85,7 @@ export default {
                 ref.on('value',snapshot=>{
                     console.log( " snapshot ->" + snapshot.val());   
                     resolve(snapshot.val());
-                } ).catch(function(err){
-                        console.log("Ocurrio un error!!"+ err);
-                        reject(err);
-                })
+                } )
             }
         })
     },
@@ -102,27 +99,27 @@ export default {
                   resolve(resp.data.respuesta);
                 }else
                   reject(null);
-            }).catch(function(err){
-                console.log("Ocurrio un error!!"+ err);
-                reject(err);
             })
         })  
     },
 
     guardaBloqueoDesbloqueoModulos(parametros, token){
         let url = CONS.urlGuardaBloqueoDesbloqueo;
+        
         return new Promise((resolve, reject)=>{
-            axios.post( url + token, parametros).then((resp) => {
+            axios.post( url + token, parametros)
+            .then((resp) => {
+                
                 if (resp.data != undefined){
                     resolve(resp.data );
                 }else
-                    resolve(null);
-            }).catch(function(err){
-
-                console.log("Ocurrio un error!!"+ err);
-                reject(err);
+                resolve(null);
+                })
             })
-        })
-            
+            .catch(function(err){
+
+                console.log("No se pudo guardar el la operacion!!");
+                resolve(null);
+            })
     }
 }
