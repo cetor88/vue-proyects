@@ -2,28 +2,34 @@
     <v-container grid-list-md text-xs-center>
         <v-layout row wrap>
             <v-flex>
-                <v-text-field label="Buscar alumno" v-model="queryString" required v-on:keyup="search(queryString)">
+                <v-text-field label="Buscar alumno" v-model="queryString" required > <!--v-on:keyup="search(queryString)"-->
                 </v-text-field>
+                <strong 
+                v-bind:style="{ color: isCalculating && !searchQueryIsDirty?'blue': searchQueryIsDirty && !isCalculating ?'orange' : !searchQueryIsDirty && !isCalculating?'green':''}" >{{ searchIndicator }}</strong>
                 <div v-if="alumnos.length" transition="slide-x-transition" class="contentPerson">
                     <v-list slot="activator" class="content-person" two-line >
                         
                         <template v-for="persona  in getAlumnos" >                            
-                            <v-list-tile avatar  v-bind:key="persona.value"  @click="(persona.dispositivo != 0 ? personaSeleccionada(persona) :'')" :disabled="persona.dispositivo == 0">
+                            <v-list-tile avatar  v-bind:key="persona.value"  @click="(persona.dispositivo != 0 ? personaSeleccionada(persona) :'')"
+                                :disabled="persona.dispositivo == 0">
 
-                            <v-list-tile-avatar>
-                                <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true" ></i>
-                            </v-list-tile-avatar>
-                            <v-list-tile-content>
-                                <v-list-tile-title v-html="persona.text"></v-list-tile-title>
-                                <v-list-tile-sub-title v-html="persona.value"></v-list-tile-sub-title>
-                            </v-list-tile-content>
-                            <v-list-tile-action>
-                                <v-list-tile-action-text>Matricula: {{ persona.matricula }}</v-list-tile-action-text>
-                                <v-icon color="pink  lighten-1" v-if="persona.dispositivo != 0" >star</v-icon>
-                                <v-icon color="grey darken-2" v-else >star_border</v-icon>
-                            </v-list-tile-action>
+                                <v-list-tile-avatar>
+                                    <i color="pink"  class="fa fa-user fa-pull-left fa-border" aria-hidden="true" ></i>
+                                </v-list-tile-avatar>
+                                <v-list-tile-content>
+                                    <v-list-tile-title v-html="persona.text"></v-list-tile-title>
+                                    <v-list-tile-action-text>Matricula: {{ persona.matricula }}</v-list-tile-action-text>
+
+                                    
+                                </v-list-tile-content>
+                                <v-list-tile-action>
+                                    <v-list-tile-sub-title v-html="persona.value"></v-list-tile-sub-title>
+                                    <v-icon color="pink  lighten-1" v-if="persona.dispositivo != 0" >phonelink_ring</v-icon>
+                                    <v-icon color="grey darken-2" v-else >star_border</v-icon>
+                                </v-list-tile-action>
+                                
                             </v-list-tile>
-                            <v-divider v-bind:inset="true"></v-divider>
+                            <v-divider></v-divider>
                         </template>
                     </v-list>
                 </div>
@@ -48,18 +54,18 @@
                 </v-card>                
                 <v-list class="contentPerson" v-if="getPersonasSeleccionadas.length" two-line >
                     <template v-for="persona  in getPersonasSeleccionadas">                            
-                            <v-list-tile avatar  v-bind:key="persona.text"  class="action persona" >
+                            <v-list-tile avatar  :key="persona.text"  class="action persona" >
                             <v-list-tile-avatar>
-                                <i class="fa fa-user-o fa-pull-left fa-border" aria-hidden="true" ></i>
+                                <i class="fa fa-user fa-pull-left fa-border" aria-hidden="true" ></i>
                             </v-list-tile-avatar>
                             <v-list-tile-content>
-                                <v-list-tile-title v-text="persona.text + ' - ' + persona.value"> </v-list-tile-title>
+                                <v-list-tile-title v-text="persona.text + ' - ' + persona.matricula"> </v-list-tile-title>
                             </v-list-tile-content>
                             <v-list-tile-avatar>
-                                <i class="fa fa-trash-o fa-pull-left fa-border" aria-hidden="true" alt="Eliminar" @click="eliminaDispositivo(persona, personasSeleccionadas, dispositivos)"></i>
+                                <i class="fa fa-trash fa-pull-left fa-border" aria-hidden="true" alt="Eliminar" @click="eliminaDispositivo(persona, personasSeleccionadas, dispositivos)"></i>
                             </v-list-tile-avatar>
                             </v-list-tile>
-                            <v-divider ></v-divider>
+                            
                         </template>
                 </v-list>    
             </v-flex>
@@ -80,12 +86,25 @@
     
     import mensajeDlg from '../dialogo/mensajesDlg';
 
+    import _ from 'lodash'
+
     export default{
     components: { mensajeDlg },
+    props:{
+        dispositivos:{},
+        personasSeleccionadas:{
+            required: true
+        },
+        limpiarComp:{}
+    },
     data () {
         return{
             valid: false,
+
             queryString:'',
+            searchQueryIsDirty: false,
+            isCalculating: false,
+
             alerta:false,
             msgError:"",
             loading:false,
@@ -99,30 +118,39 @@
             },
         }
     },
-    props:{
-        dispositivos:{
 
-        },
-        personasSeleccionadas:{
-            required: true
+     watch: {
+        queryString: function () {
+            this.searchQueryIsDirty = true
+            
+            this.debounceInput(this.queryString)
         }
-    },
-    
+  },
+
     methods: {
-        cerrarMensajeDlg(){        
+        cerrarMensajeDlg(){
             this.dialogo.contenido = "";
             this.dialogo.tipo = "";
             this.dialogo.modelo = !this.dialogo.modelo;
             this.$store.dispatch("setLoading", false);
         },
-        search (val) {
-            if(val)
-                if(val.length > 3){
-                    val && this.querySelections(val)
-                }
-        },
+        debounceInput: _.debounce(function (e) {
+            
+            
+            if(e.length >= 4){
+                this.isCalculating = true
+                this.querySelections(e)
+                
+            }else{
+                this.alumnos=[]
+                this.isCalculating = false
+                this.searchQueryIsDirty=false
+                this.isCalculating=false;
+            }
+            }, 1000)
+        ,
+        
         querySelections (strFiltro) {
-            //this.loading = true
             this.$store.dispatch("setLoading", true);
             let req = {};
             this.$store.dispatch('validarToken2')
@@ -131,13 +159,14 @@
             })
             .then(() =>{
                 req = {filtro : strFiltro, access_token : this.token};
-                homeServices.obtenerAlumnosPorFiltro(req)
-                .then((data) =>{
+                homeServices.obtenerAlumnosPorFiltro(req).then((data) =>{
                     if(data.respuesta != undefined){
                         this.alumnos=[];
                         data.respuesta.forEach((item, key) =>{
                             this.alumnos.push({text: item.nombres +" "+ item.apaterno +" "+ item.amaterno , value: item.id, dispositivo: item.idDispositivoUsuario, matricula: item.matricula})
                         });
+                        this.isCalculating = false
+                        this.searchQueryIsDirty = false
                     }
                     //this.loading = false
                     this.$store.dispatch("setLoading", false);
@@ -146,14 +175,20 @@
                     this.$store.dispatch("setLoading", false);
                     this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
                     this.dialogo.tipo =  "red lighten-1";
-                    this.dialogo.modelo = !this.dialogo.modelo;  
+                    this.dialogo.modelo = !this.dialogo.modelo;
+                    
+                    this.isCalculating = false
+                    this.searchQueryIsDirty = false
                 })
             }).catch(error => {
                 console.log("Resultado de la operacion... " + error);
                 this.$store.dispatch("setLoading", false);
                 this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
                 this.dialogo.tipo =  "red lighten-1";
-                this.dialogo.modelo = !this.dialogo.modelo;  
+                this.dialogo.modelo = !this.dialogo.modelo;
+                
+                this.isCalculating = false
+                this.searchQueryIsDirty = false
             })
         },
 
@@ -211,7 +246,18 @@
         getMensajesProps(){
             return this.dialogo;
         },
-
+        searchIndicator() {
+            if (this.isCalculating) {
+                return '⟳ Calculando resultados'
+            } else if (this.searchQueryIsDirty) {
+                return '... Escribiendo'
+            } else {
+                return '✓ Resultados encontrados'
+            }
+        },
+        limpiarComponente(){
+            this.limpiarComp
+        }
     }
     
 }

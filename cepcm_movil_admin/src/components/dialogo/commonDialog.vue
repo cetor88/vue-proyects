@@ -22,29 +22,33 @@
                                 {{propiedades.contenido}}
                             </v-flex-->
                             <v-flex>
-                                <v-radio-group v-model="img"  :rules="[v => !!v || 'Selecciona una imagen']">
+                                
                                     <v-card>
                                         <v-toolbar color="primary" dark>
-                                            <v-toolbar-title class="text-xs-center">Imagen para la notificación:</v-toolbar-title>
+                                            <v-toolbar-title class="text-xs-center">Selecciona una imagen para la notificación</v-toolbar-title>
                                             <v-spacer></v-spacer>
                                         </v-toolbar>
                                         <v-list>
-                                            <v-list-group v-for="item in imgs" :value="item.id" v-bind:key="item.id">
+                                            <v-list-group v-for="item in imgs" v-model="item.active" :key="item.descripcion" > <!-- :value="item.id" v-bind:key="item.id" -->
                                                 <v-list-tile slot="item" >
                                                     <v-list-tile-action>
-                                                        <v-icon>{{ item.imagen }}</v-icon>
+                                                        <v-icon v-bind:style="{ color: item.active ?'gold':''}">{{ item.imagen }}</v-icon>
                                                     </v-list-tile-action>
+
                                                     <v-list-tile-content>
                                                         <v-list-tile-title>{{item.descripcion}}</v-list-tile-title>
                                                     </v-list-tile-content>
+
                                                     <v-list-tile-action>
                                                         <v-icon>far fa-angle-down</v-icon>
                                                     </v-list-tile-action>
                                                 </v-list-tile>
-                                                <v-list-tile v-for="subItem in item.imagenes" :class="{active : img==subItem.id}" v-bind:key="subItem.id" @click="img=subItem.id">
+
+                                                <v-list-tile v-for="subItem in item.imagenes" :class="{active : img==subItem.id}"
+                                                    :key="subItem.id" @click="img=subItem.id">
                                                     <v-list-tile-content >
                                                         <v-avatar :tile="false" class="lighten-4 imagen-avatar">
-                                                            <img v-bind:src="'data:image/jpg;base64,'+ subItem.imagen" alt="avatar" />
+                                                            <img :src="'data:image/jpg;base64,'+ subItem.imagen" alt="avatar" />
                                                         </v-avatar>
                                                     </v-list-tile-content>
                                                             
@@ -52,7 +56,9 @@
                                             </v-list-group>
                                         </v-list>
                                     </v-card>
-                                </v-radio-group>
+                                    <v-alert type="error" outline v-model="alertImagen" dismissible transition="scale-transition">
+                                        Imagen requerida.
+                                    </v-alert>
                             </v-flex>
                         </v-form>
                     </v-card-text>
@@ -86,7 +92,7 @@
                 dialog:true,
                 titulo: "",
                 contenido: "",
-                img: "",
+                img: null,
                 dispositivos: [],
                 
                 titRules: [
@@ -101,6 +107,9 @@
                 ],
                 imagesRules: [v => !!v || "Selecciona una imagen"],
                 token:undefined,
+                
+                alertImagen:false,
+                limpiarComp:false,
                
             }
         },
@@ -112,7 +121,7 @@
                 this.$emit('cerrarModal')// llamar al padre para cerrar la modal
             },
             enviarNotificacion() {
-                if (this.$refs.form.validate() && this.dispositivos.length > 0) {
+                if (this.$refs.form.validate() && this.dispositivos.length > 0 && this.img == null) {
                     this.$store.dispatch("setLoading", true);
                     this.$store
                     .dispatch("validarToken2")
@@ -126,11 +135,14 @@
                             id_imagen: this.img,
                             listaDispositivos: this.dispositivos
                         };
-                        homeServices
-                            .guardarNotificacionADispositivos(req, this.token)
-                            .then((data) => {
-                                console.log("Proceso correcto!!" + data);
-                                this.$emit('notificacionEnviada')// llamar al padre para cerrar la modal
+                        homeServices.guardarNotificacionADispositivos(req, this.token).then((data) => {
+                                if(data.respuesta[0].idEstatus == 1){
+                                    console.log("Proceso correcto!!" + data);
+                                    this.$emit('notificacionEnviada')// llamar al padre para cerrar la modal
+                                }else{
+                                    this.$emit('notificacionErrada')// llamar al padre para cerrar la modal    
+                                }
+                                
                             })
                             .catch(error => {
                                 console.log(error);
@@ -138,6 +150,8 @@
                             });
                     })
                     
+                }else{
+                    this.alertImagen=this.img == null ? true: false;
                 }
             },
             

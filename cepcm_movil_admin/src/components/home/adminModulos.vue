@@ -63,13 +63,13 @@
                             <template slot="option" slot-scope="option">
                                 <div class="d-center">
                                 
-                                {{ option.descripcion }}
+                                {{ option.descripcion  +' - '+ option.clave }}
                                 </div>
                             </template>
                             <template slot="selected-option" slot-scope="option">
                                 <div class="selected d-center">
                                     
-                                    {{ option.descripcion }}
+                                    {{ option.descripcion  +' - '+ option.clave  }}
                                 </div>
                             </template>
                         </v-select>
@@ -83,10 +83,12 @@
                     </v-flex>
                     <v-flex xs10> 
                         <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
-                            v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
-                            <template slot="no-data">
-                                No se cuenta con registros
-                            </template>
+                            v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' "
+                            no-data-text="No se cuenta con registros">
+                                <span slot="no-options">
+                                    No se cuenta con registros.
+                                </span>
+                            
                         </v-select>
                     </v-flex>
                 </v-layout>
@@ -120,7 +122,8 @@
             <v-flex xs12 >
                 <div>
                     <v-data-table  ref="dataTable1" :headers="headers" :items="items"  :pagination.sync="pagination" 
-                        rows-per-page-text="Registros por página" item-key="name"  class="elevation-1" >
+                        rows-per-page-text="Registros por página" item-key="name"  class="elevation-1"
+                        :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' >
                         <template slot="headers" slot-scope="props">
                             <tr>
                                 <th v-for="header in props.headers" :key="header.text">
@@ -294,7 +297,7 @@ export default {
 
             
             headers: [
-                { text: "Dispositivo", value: "dispositivo" },
+                //{ text: "Dispositivo", value: "dispositivo" },
                 { text: "Matricula", value: "uid" },
                 { text: "Alumno", value: "alumno" },
                 
@@ -369,6 +372,7 @@ export default {
             this.dlg.uid='',
             this.dlg.token='';
             this.dlg.item={};
+            this.dlg.titulo ='';
             
         },
         probarModal(event, estado, modulo, uid, item, dispositivo){
@@ -381,6 +385,7 @@ export default {
                     debugger;
                     this.dlg.contenido = "Favor de introducir un mensaje con la descripción del bloqueo del módulo \""+ modulo.toUpperCase() +"\", con la cual se mostrará al alumno"   ;
                     this.dlg.tipo = "red lighten-1";
+                    this.dlg.titulo = "Bloqueo de modulo";
                     this.dlg.modelo = !this.dlg.modelo;
                     this.dlg.bloqueo = true;
                     this.dlg.modulo = modulo;
@@ -391,6 +396,7 @@ export default {
                 }else{
                     this.dlg.contenido = "Estas apunto de desbloquear el modulo \""+ modulo.toUpperCase() +"\"";
                     this.dlg.tipo = "orange lighten-1";
+                    this.dlg.titulo = "Advertencia";
                     this.dlg.modelo = !this.dlg.modelo;
                     this.dlg.bloqueo = false;
                     this.dlg.modulo = modulo;
@@ -509,9 +515,7 @@ export default {
             filtro: search,
             access_token: this.token
             };
-            notificacionServices
-            .getCatalogoDependiente(req, CONS.urlConsultaCarrera)
-            .then(data => {
+            notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaCarrera).then(data => {
                 //s.log(data);
                 if (data.respuesta != undefined) {
                 this.carrera = data.respuesta;
@@ -535,7 +539,7 @@ export default {
                 this.dataBusqueda = [];
                 
                 notificacionServices.getCatalogoDependiente(req, CONS.urlBuscarAlumnosGrupo).then(data => {
-                        debugger;
+                        
                         if (data.respuesta != undefined) {
 
                             data.respuesta.forEach(item => {    
@@ -545,7 +549,7 @@ export default {
                                 let demoList = [];                         
                                 console.log(item.uid);
                                 notificacionServices.obtenerModuloFirebase(item.uid).then((response) => {
-                                    debugger;
+                                    
                                         if( response!==null ){
                                             this.dataModulos.forEach( item => {
                                                 demoList.push( { id: item.id,
@@ -639,5 +643,8 @@ export default {
         display: inline-block;
         padding: 0px 22px;
         
+    }
+    tr td div.td-cell {
+        padding: 0px 21px !important;
     }
 </style>

@@ -5,10 +5,13 @@ import CONS from '../utils/constantes.js'
 export default {
     getCatalogoGenerico(parametros, token) {
         
-        //const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
-           
-            axios.post(CONS.urlConsultaCatalogos + "?access_token=" + token, parametros).then((tokenResp) => {
+           let config={ 
+                headers:{
+                    'Authorization': 'Bearer ' + token,
+                }
+            }
+            axios.post(CONS.urlConsultaCatalogos, parametros, config).then((tokenResp) => {
                 if (tokenResp.data.codigo == 0 ){
                   resolve(tokenResp.data );
                 }else
@@ -20,7 +23,6 @@ export default {
         })  
     },
     getCatalogoDependiente(parametros, url) {
-        //const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
             axios.get(url, {   params: parametros, responseType: 'json' }).then((tokenResp) => {
                 if (tokenResp.data.codigo == 0 ){
@@ -35,7 +37,6 @@ export default {
     },
     enviarPostGeneric(url, parametros, token){
 
-        //const params = new URLSearchParams()
         return new Promise((resolve, reject) =>{
             axios.post( url + "?access_token=" + token, parametros ).then((tokenResp) => {
                 if (tokenResp.data != undefined){
@@ -63,7 +64,7 @@ export default {
             let update= {bloquear_acceso : obj.bloqueo, mensaje : mensaje};
             ref.update(update).then((response)=>{
                 this.guardaBloqueoDesbloqueoModulos(params, obj.token).then((data)=>{
-                    console.log("data-> " + data);
+                    //console.log("data-> " + data);
                     console.log("se persistio el modulo-> " + obj.modulo + " en el estado-> "+obj. estado);
                 }).then(()=>{
                     resolve(true );
@@ -79,11 +80,11 @@ export default {
 
     obtenerModuloFirebase(uid){
         return new Promise((resolve, reject) =>{
-            console.log(uid);
+            //console.log(uid);
             if(uid!=''){                
                 let ref = CONS.db.ref("alumnos/"+uid+"/configuracion/modulos/");
                 ref.on('value',snapshot=>{
-                    console.log( " snapshot ->" + snapshot.val());   
+                    //console.log( " snapshot ->" + snapshot.val());   
                     resolve(snapshot.val());
                 } )
             }

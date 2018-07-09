@@ -69,7 +69,9 @@ export const store = new Vuex.Store({
         let config={
           headers:{
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic Y2xpZW50YXBwOjEyMzQ1Ng=='
+            'Authorization': 'Basic Y2xpZW50YXBwOjEyMzQ1Ng==',
+             //'Access-Control-Allow-Origin': '*'
+
           }
         }
         axios.post(CONSTANTES.urlGetToken, params, config).then((tokenResp) => {
@@ -135,15 +137,15 @@ export const store = new Vuex.Store({
           console.log("expiro el token");
           let tokenRefresh = context.getters.obtenerTokenRefresh;
           context.dispatch('refrescaToken', tokenRefresh).then((response) => {// se intenta obtener el token refresh
-            debugger;
+            
             if (response == null) {// si no se obtiene
               console.log("ocurrio un error al refrescar el token");
-              debugger
+              
               context.dispatch('obtenerToken');//se intenta obtener el token 
               resolve(context.getters.obtenerTokenActual);
             } else {
               console.log("Token refresh valido");
-              debugger
+              
               resolve(context.getters.obtenerTokenActual);
             }
           },(err)=>{

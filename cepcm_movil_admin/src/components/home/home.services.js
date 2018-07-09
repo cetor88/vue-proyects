@@ -12,7 +12,10 @@ export default {
                     }
                 )
                 .then((tokenResp) => {
-                    if (tokenResp.data != undefined){
+                    if (tokenResp.data.codigo === 0){
+                        tokenResp.data.respuesta.filter((item)=>{
+                            item.active=false;
+                        })
                       resolve(tokenResp.data );
                     }else
                       reject(null);

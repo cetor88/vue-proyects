@@ -66,13 +66,13 @@
                                     <template slot="option" slot-scope="option">
                                         <div class="d-center">
                                         
-                                        {{ option.descripcion }}
+                                        {{ option.descripcion +' - '+ option.clave }}
                                         </div>
                                     </template>
                                     <template slot="selected-option" slot-scope="option">
                                         <div class="selected d-center">
                                             
-                                            {{ option.descripcion }}
+                                            {{ option.descripcion +' - '+  option.clave}}
                                         </div>
                                     </template>
                                 </v-select>
@@ -87,10 +87,11 @@
                             <v-flex xs10> 
                         
                                 <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
-                                    v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' ">
-                                    <template slot="no-data">
-                                        No se cuenta con registros
-                                    </template>
+                                    v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' "
+                                    no-data-text="No se cuenta con registros">
+                                    <span slot="no-options">
+                                        No se cuenta con registros.
+                                    </span>
                                 </v-select>
                             </v-flex>
                         </v-layout>
@@ -149,7 +150,8 @@
         <v-layout row wrap>
             <v-flex xs12>
                 <v-data-table  v-model="selected"  ref="dataTable1"   :headers="headers" :items="items" 
-                :pagination.sync="pagination" rows-per-page-text="Registros por página" item-key="name" class="elevation-1">
+                :pagination.sync="pagination" rows-per-page-text="Registros por página" item-key="name" 
+                :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' class="elevation-1">
                     <template slot="headers" slot-scope="props">
                         <tr>
                             <th>                                    
@@ -167,9 +169,10 @@
                             </td>
                             <td class="text-xs-center">
                                     
-                                <v-icon v-if="props.item.alumno.dispositivo != null"> phonelink_ring </v-icon>
-                                <v-icon v-if="props.item.alumno.dispositivo == null"> phonelink_erase </v-icon>
+                                <v-icon v-if="props.item.alumno.dispositivo != null" color="green"> phonelink_ring </v-icon>
+                                <v-icon v-if="props.item.alumno.dispositivo == null" color="red"> phonelink_erase </v-icon>
                             </td>
+                            <td class="text-xs-center"> {{ props.item.alumno.matricula }} </td>
                             <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
                             <td class="text-xs-center"> {{ props.item.colegiaturasAdeudadas }} </td>
                             <td class="text-xs-center"> {{ props.item.recargos }} </td>
@@ -213,18 +216,20 @@ export default {
         this.token = data;
 
       }).then(() => {
+        
         let params = {catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]};
+        debugger
         notificacionServices.getCatalogoGenerico(params, this.token).then(data => {
-                data.respuesta.forEach((item, index) => {
+            data.respuesta.forEach((item, index) => {
                 this.catalogs.push(item.respuesta);
-                });
+            });
         }).then(()=>{
                 let params = {access_token: this.token };
                 homeServices.obtenerImagenes(params).then((data) => {
-                    this.catImges = data.respuesta;
-                    this.$store.dispatch("setLoading", false);
+                this.catImges = data.respuesta;
+                this.$store.dispatch("setLoading", false);
                 });
-            }).catch(error => {
+        }).catch(error => {
                 console.log("Resultado de la operacion... " + error);
                 this.$store.dispatch("setLoading", false);
                 this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
@@ -273,6 +278,7 @@ export default {
             selected: [],
             headers: [
                 { text: "Dispositivo", value: "dispositivo" },
+                { text: "Matricula", value: "matricula" },
                 { text: "Nombre del alumno", value: "alumno" },
                 { text: "# Colegiaturas", value: "colegiaturasAdeudadas" },
                 { text: "Recargos", value: "recargos" },
@@ -292,7 +298,7 @@ export default {
             
             catImges: [],
             dataBusqueda:[],
-            resourcePdf:''
+            //resourcePdf:''
     };
   },
   watch: {
@@ -327,7 +333,7 @@ export default {
         }, 100); 
     },
     notificacionEmitida(){
-        this.dialogo.contenido = "Se ha generado con éxito la notificación";
+        this.dialogo.contenido = "Se ha enviado la notificación con éxitos";
         this.dialogo.tipo =  "green lighten-1";;
         this.dialogo.modelo = !this.dialogo.modelo;
         
@@ -351,17 +357,19 @@ export default {
         this.$store.dispatch("setLoading", false);
     },
     probarModal(){
+        this.dlg.titulo = "Datos de la notificación"; 
         this.dlg.contenido = "Contenido Generico";
+        
         this.dlg.tipo = "red lighten-1";
         this.dlg.modelo = !this.dlg.modelo;
                 
     },
     limpiarForma(){
-        this.plantelSelected = this.nivelAcademicoSelected = undefined;
-        this.carreraSelected = this.grupoSelected ="";
+        //this.plantelSelected = this.nivelAcademicoSelected = undefined;
+        //this.carreraSelected = this.grupoSelected ="";
         this.selected =this.items = this.dispositivos=[];
         this.dataBusqueda=[];
-        resourcePdf:''
+        //resourcePdf:''
     },
     cambio(prop) {
         let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;

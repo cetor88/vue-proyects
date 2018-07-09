@@ -29,7 +29,7 @@
             <v-flex xs6 offset-xs3>
                 <v-flex>
                     <autocomplete v-model="notificacion.dispositivos" :dispositivos="dispositivos" 
-                    :personasSeleccionadas="personasSeleccionadas"> </autocomplete>
+                    :personasSeleccionadas="personasSeleccionadas" :limpiarComp="limpiarComp"> </autocomplete>
                 </v-flex>
                 <v-flex>
                     <span v-if="dispositivos.length == 0"  style="color:red;">Elige al menos un alumno</span>
@@ -38,38 +38,43 @@
             </v-flex>
 
             <v-flex xs6 offset-xs3>
-                <v-radio-group v-model="notificacion.img"  :rules="[v => !!v || 'Selecciona una imagen']">
-                    <v-card>
-                        <v-toolbar color="primary" dark>
-                            <v-toolbar-title class="text-xs-center">Imagen para la notificación:</v-toolbar-title>
-                            <v-spacer></v-spacer>
-                        </v-toolbar>
-                        <v-list>
-                            <v-list-group v-for="item in catImges" :value="item.id" v-bind:key="item.id">
-                                <v-list-tile slot="item" @click="">
-                                    <v-list-tile-action>
-                                        <v-icon>{{ item.imagen }}</v-icon>
-                                    </v-list-tile-action>
-                                    <v-list-tile-content>
-                                        <v-list-tile-title>{{item.descripcion}}</v-list-tile-title>
-                                    </v-list-tile-content>
-                                    <v-list-tile-action>
+                <v-card>
+                    <v-toolbar color="primary" dark>
+                        <v-toolbar-title>Selecciona una imagen para la notificación</v-toolbar-title>
+                    </v-toolbar>
+        
+                    <v-list>
+                        <v-list-group v-for="item in catImges" v-model="item.active" :key="item.descripcion" >
+
+                            <v-list-tile slot="item">
+                                <v-list-tile-action>
+                                    <v-icon v-bind:style="{ color: item.active ?'gold':''}">{{ item.imagen }}</v-icon>
+                                </v-list-tile-action>
+
+                                <v-list-tile-content>
+                                    <v-list-tile-title>{{ item.descripcion }}</v-list-tile-title>
+                                </v-list-tile-content>
+
+                                <v-list-tile-action>
                                         <v-icon>far fa-angle-down</v-icon>
-                                    </v-list-tile-action>
-                                </v-list-tile>
-                                <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id}" v-bind:key="subItem.id" @click="notificacion.img=subItem.id">
-                                    <v-list-tile-content >
-                                        <v-avatar :tile="false" class="lighten-4 imagen-avatar">
-                                            <img v-bind:src="'data:image/jpg;base64,'+ subItem.imagen" alt="avatar" />
-                                        </v-avatar>
-                                    </v-list-tile-content>
-                                            
-                                </v-list-tile>
-                            </v-list-group>
-                        </v-list>
-                    </v-card>
-                </v-radio-group>
-                    
+                                </v-list-tile-action>
+                            </v-list-tile>
+                
+                            <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id}"
+                                :key="subItem.id" @click="notificacion.img=subItem.id">
+                                <v-list-tile-content>
+                                    <v-avatar :tile="false" class="lighten-4 imagen-avatar">
+                                        <img :src="'data:image/jpg;base64,'+ subItem.imagen" alt="avatar" />
+                                    </v-avatar>
+                                </v-list-tile-content>
+                                
+                            </v-list-tile>
+                        </v-list-group>
+                    </v-list>
+                </v-card> 
+                <v-alert type="error" outline v-model="alertImagen" dismissible transition="scale-transition">
+                    Imagen requerida.
+                </v-alert>
             </v-flex>
             <v-flex xs12>
                 <v-btn @click="limpiarNotificacion"  color="primary" dark >
@@ -86,18 +91,22 @@
     <v-layout>
         <v-flex>
             <v-card>
-                <v-dialog v-model="dialog" max-width="500px">
+                <v-dialog v-model="dialogInfo.modelo" max-width="500px">
                     <v-card>
-                        <v-toolbar color="green" dark>
-                            <v-toolbar-title>Resultado de la operación</v-toolbar-title>
+                        <v-toolbar :color="dialogInfo.tipo" dark>
+                            <v-toolbar-title>{{dialogInfo.titulo}}</v-toolbar-title>
                             <v-spacer></v-spacer>
                         </v-toolbar>
-                        <v-card-text>
-                            Se han enviado las notificaciones exitosamente
+                        <v-card-text center>
+                            <p class="text-md-center"> 
+                                <span  :color="dialogInfo.tipo" >
+                                    {{dialogInfo.contenido}}
+                                </span>
+                                </p> 
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="green lighten-1" dark @click.native="dialog = false">Aceptar</v-btn>
+                            <v-btn :color="dialogInfo.tipo" dark @click.native="reiniciarModal">Aceptar</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -128,25 +137,33 @@ export default {
             let params = {access_token: this.token };
             homeServices.obtenerImagenes(params).then(data => {
                 this.catImges = data.respuesta;
-                this.$store.dispatch("setLoading", false);
+                //this.$store.dispatch("setLoading", false);
             }).catch(error => {
                     console.log("Resultado de la operacion... " + error);
-                    this.$store.dispatch("setLoading", false);
+                    //this.$store.dispatch("setLoading", false);
                     this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
                     this.dialogo.tipo =  "red lighten-1";
                     this.dialogo.modelo = !this.dialogo.modelo;            
             })
         }).catch(error => {
             console.log("Resultado de la operacion... " + error);
-            this.$store.dispatch("setLoading", false);
+            //this.$store.dispatch("setLoading", false);
             this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
             this.dialogo.tipo =  "red lighten-1";
             this.dialogo.modelo = !this.dialogo.modelo;            
-        })
+        }).finally(() => {
+            
+            this.$store.dispatch("setLoading", false);
+        });
     },
     data() {
         return {
-            dialog:false,
+            dialogInfo:{
+                titulo:'Resultado de la operación',
+                contenido:'',
+                tipo:'',
+                modelo:false
+            },
             dialogo:{
                     titulo:'Resultado de la operación',
                     contenido:'',
@@ -157,7 +174,7 @@ export default {
             notificacion: {
                 titulo: "",
                 contenido: "",
-                img: "",
+                img: null,
                 dispositivos: []
             },
             token: "",
@@ -176,10 +193,20 @@ export default {
                 (v && v.length <= 100) ||
                 "El contenido debe ser menor a 100 caracteres"
             ],
-            imagesRules: [v => !!v || "Selecciona una imagen"]
+            imagesRules: [v => !!v || "Selecciona una imagen"],
+            
+            alertImagen:false,
+            limpiarComp:false,
         }
     },
     methods: {
+        reiniciarModal(){
+            this.dialogInfo.modelo = false;
+            this.dialogInfo.titulo = 'Resultado de la operación';
+            this.dialogInfo.contenido ='',
+            this.dialogInfo.tipo ='',
+            this.dialogInfo.modelo =false
+        },
         cerrarMensajeDlg(){        
             this.dialogo.contenido = "";
             this.dialogo.tipo = "";
@@ -187,10 +214,10 @@ export default {
             this.$store.dispatch("setLoading", false);
         }, 
         enviarNotificacion() {
-            if (this.$refs.form.validate() && this.dispositivos.length > 0) {
-            this.$store
-            .dispatch("validarToken2")
-            .then(data => {
+            
+            if (this.$refs.form.validate() && this.dispositivos.length > 0 && this.notificacion.img !=null ) {
+                this.$store.dispatch("setLoading", true);
+                this.$store.dispatch("validarToken2").then(data => {
                 this.token = data;
             })
             .then(() => {
@@ -200,30 +227,47 @@ export default {
                     id_imagen: this.notificacion.img,
                     listaDispositivos: this.dispositivos
                 };
-                debugger;
-                homeServices
-                    .guardarNotificacionADispositivos(req, this.token)
-                    .then((data) => {
+                
+                homeServices.guardarNotificacionADispositivos(req, this.token).then((data) => {
                         console.log("Proceso correcto!!" + data);
-                    })
-                    .then(()=>{
-                        this.limpiarNotificacion();
-                        this.dialog = !this.dialog;
+                        if(data.respuesta[0].idEstatus == 1){
+                            this.limpiarNotificacion();
+                            this.dialogInfo.modelo = !this.dialogInfo.modelo;
+                            this.dialogInfo.tipo = 'green lighten-1'
+                            this.dialogInfo.contenido = 'Se han enviado las notificaciones exitosamente';
+                            this.$store.dispatch("setLoading", false);
+                        }else{
+                            this.dialogInfo.modelo = !this.dialogInfo.modelo;
+                            this.dialogInfo.tipo = 'oranche lighten-1'
+                            this.dialogInfo.contenido = 'Ocurrió un error inesperado.';
+                            this.$store.dispatch("setLoading", false);
+                        }
                     })
                     .catch(error => {
                         console.log(error);
+                        this.$store.dispatch("setLoading", false);
                     });
             })
             
+            }else{
+                this.alertImagen=this.notificacion.img == null ? true: false;
+
+                this.dialogInfo.modelo = !this.dialogInfo.modelo;
+                this.dialogInfo.tipo = 'red lighten-1'
+                this.dialogInfo.titulo = 'Error'
+                this.dialogInfo.contenido = 'Favor de especificar todos los valores requeridos.';
             }
+
         },
         limpiarNotificacion(){
             this.notificacion.titulo='';
             this.notificacion.contenido='';
             this.notificacion.dispositivos=[];
             this.dispositivos = [];
-            this.notificacion.img = '';
+            this.notificacion.img = null;
             this.personasSeleccionadas = [];
+            this.limpiarComp=true;
+
         }
     },
     computed:{

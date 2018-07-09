@@ -19,24 +19,19 @@
               <form @submit.prevent="onSignin">
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
-                      name="email"
-                      label="Mail"
-                      id="email"
-                      v-model="loginDetails.email"
-                      type="email"
-                      required></v-text-field>
+                    <v-text-field name="email" label="Mail" id="email" v-model="loginDetails.email" type="email" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field
-                      name="password"
-                      label="Password"
-                      id="password"
-                      v-model="loginDetails.password"
-                      type="password"
-                      required></v-text-field>
+                    <v-text-field name="password" label="Password" id="password" v-model="loginDetails.password" type="password" required></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs12>
+                    <v-alert v-model="mensajeSining" color="error" icon="warning" outline v-if="mensajeSining.length>0"  dismissible>
+                        {{mensajeSining}}
+                    </v-alert>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -62,9 +57,10 @@
 
 
 <script >
-import Vue from "vue"
-import  {router} from '../../routes'
-import {mapState, } from 'vuex'
+import Vue from "vue";
+import  {router} from '../../routes';
+import {mapState, } from 'vuex';
+import loginServices from './login.services.js';
 
 export default {
   name: "login",
@@ -78,6 +74,7 @@ export default {
       },
       dialog: false,
       error:false,
+      mensajeSining:'',
     }
   },
 
@@ -108,17 +105,19 @@ export default {
       let control = this.$store;
       
       this.$store.state.auth.signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
-        .then(
-          (user)=> {
-            control.dispatch('obtenerToken', user)
-            .then(()=>{
+        .then((user)=> {
+            loginServices.obtenerUsuario(user.uid).then((data)=>{
+              control.dispatch('obtenerToken', user).then(()=>{
               control.dispatch('iniciarUsuario', user);
               cotininuar.replace("home");
-              //cotininuar.replace("banner");
+              })
+            }).catch(()=>{
+              debugger
+              this.mensajeSining="El password es incorrecto"  
             })
           },
           (err)=> {
-            alert("ups !!" + err);
+            this.mensajeSining="El password es incorrecto"
           }
         )
        
