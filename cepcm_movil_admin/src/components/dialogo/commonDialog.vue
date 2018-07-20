@@ -121,7 +121,8 @@
                 this.$emit('cerrarModal')// llamar al padre para cerrar la modal
             },
             enviarNotificacion() {
-                if (this.$refs.form.validate() && this.dispositivos.length > 0 && this.img == null) {
+                debugger;
+                if (this.$refs.form.validate() && this.dispositivos.length > 0 && this.img != null) {
                     this.$store.dispatch("setLoading", true);
                     this.$store
                     .dispatch("validarToken2")
@@ -136,7 +137,7 @@
                             listaDispositivos: this.dispositivos
                         };
                         homeServices.guardarNotificacionADispositivos(req, this.token).then((data) => {
-                                if(data.respuesta[0].idEstatus == 1){
+                                if(data.respuesta[0].idEstatus == -1){
                                     console.log("Proceso correcto!!" + data);
                                     this.$emit('notificacionEnviada')// llamar al padre para cerrar la modal
                                 }else{

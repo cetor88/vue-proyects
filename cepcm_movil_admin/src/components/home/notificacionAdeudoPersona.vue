@@ -333,7 +333,7 @@ export default {
         }, 100); 
     },
     notificacionEmitida(){
-        this.dialogo.contenido = "Se ha enviado la notificación con éxitos";
+        this.dialogo.contenido = "Se ha enviado la notificación con éxito";
         this.dialogo.tipo =  "green lighten-1";;
         this.dialogo.modelo = !this.dialogo.modelo;
         
@@ -357,10 +357,10 @@ export default {
         this.$store.dispatch("setLoading", false);
     },
     probarModal(){
-        this.dlg.titulo = "Datos de la notificación"; 
+        this.dlg.titulo = "Datos para la notificación"; 
         this.dlg.contenido = "Contenido Generico";
         
-        this.dlg.tipo = "red lighten-1";
+        this.dlg.tipo = "primary lighten-1";
         this.dlg.modelo = !this.dlg.modelo;
                 
     },

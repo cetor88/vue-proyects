@@ -148,9 +148,9 @@
                         </template>
                         <template slot="items" slot-scope="props">
                             <tr :active="props.selected" >
-                                <td class="text-xs-center">
+                                <!-- td class="text-xs-center" style="dislay:none;">
                                     {{props.item.dispositivo}}                                
-                                </td>
+                                </td -->
                                 <td class="text-xs-center"> 
                                     {{ props.item.matricula }} 
                                 </td>
@@ -384,8 +384,8 @@ export default {
                 if( estado ){
                     debugger;
                     this.dlg.contenido = "Favor de introducir un mensaje con la descripción del bloqueo del módulo \""+ modulo.toUpperCase() +"\", con la cual se mostrará al alumno"   ;
-                    this.dlg.tipo = "red lighten-1";
-                    this.dlg.titulo = "Bloqueo de modulo";
+                    this.dlg.tipo = "primary lighten-1";
+                    this.dlg.titulo = "Bloqueo de módulo";
                     this.dlg.modelo = !this.dlg.modelo;
                     this.dlg.bloqueo = true;
                     this.dlg.modulo = modulo;
@@ -394,7 +394,7 @@ export default {
                     this.dlg.item = item;
                     this.dlg.dispositivo = dispositivo;
                 }else{
-                    this.dlg.contenido = "Estas apunto de desbloquear el modulo \""+ modulo.toUpperCase() +"\"";
+                    this.dlg.contenido = "Estas apunto de desbloquear el módulo \""+ modulo.toUpperCase() +"\"";
                     this.dlg.tipo = "orange lighten-1";
                     this.dlg.titulo = "Advertencia";
                     this.dlg.modelo = !this.dlg.modelo;
@@ -529,7 +529,7 @@ export default {
             this.selected = [];
             this.dispositivos = [];
             let auxItems=[];
-
+            
             this.$store.dispatch("validarToken2").then(tooken => {
                 this.token = tooken;
                 let req = {
@@ -539,7 +539,7 @@ export default {
                 this.dataBusqueda = [];
                 
                 notificacionServices.getCatalogoDependiente(req, CONS.urlBuscarAlumnosGrupo).then(data => {
-                        
+                        debugger;
                         if (data.respuesta != undefined) {
 
                             data.respuesta.forEach(item => {    
@@ -547,7 +547,7 @@ export default {
                                 item.uid = item.usuarioAplicacion !== null ? item.usuarioAplicacion.idFirebase :'';
                                 
                                 let demoList = [];                         
-                                console.log(item.uid);
+                                
                                 notificacionServices.obtenerModuloFirebase(item.uid).then((response) => {
                                     
                                         if( response!==null ){
@@ -579,6 +579,7 @@ export default {
                         this.dialogo.modelo = !this.dialogo.modelo;
                     })  
             }).then(()=>{
+
                 this.items = auxItems;
 
             }).catch(error => {
