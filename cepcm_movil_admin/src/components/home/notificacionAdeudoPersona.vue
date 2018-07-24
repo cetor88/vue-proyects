@@ -104,25 +104,26 @@
                 
                 <v-layout>
                     <v-flex xs12 >
-                        <v-btn :loading="loading3" color="primary" class="black--text" @click="probarModal" :disabled="dispositivos.length==0">
+                        <v-btn :loading="loading3" color="primary"  @click="probarModal" :disabled="dispositivos.length==0" >
                             Enviar notificación
                             <v-icon right dark>fal fa-file</v-icon>
                         </v-btn>
 
-                        <v-btn :loading="loading3" color="primary" class="black--text" @click="generarBusqueda" :disabled="!grupoSelected">
+                        <v-btn :loading="loading3" color="primary"  @click="generarBusqueda" :disabled="!grupoSelected" >
                             Buscar
                             <v-icon right dark>search</v-icon>
                         </v-btn>
                         
-                        <v-btn :loading="loading3" color="primary" class="black--text" @click="generarReporte" :disabled="items.length==0" >
+                        <v-btn :loading="loading3" color="primary"  @click="generarReporte" :disabled="items.length==0"  >
                             Generar reporte
                             <v-icon right dark>picture_as_pdf</v-icon>
                         </v-btn>
                         
-                        <v-btn :loading="loading3" color="primary" class="black--text" @click="limpiarForma">
+                        <v-btn :loading="loading3" color="primary" @click="limpiarForma" >
                             Limpiar
                             <v-icon right dark>delete</v-icon>
                         </v-btn>
+                        
                         
                     </v-flex>
                 </v-layout>
@@ -216,7 +217,7 @@ export default {
   filters:{
       pesos: function (value) {
         if (!value) return ''
-        value = value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        value = parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
         return "$ "+value
     }
   },

@@ -97,12 +97,12 @@
 
         <v-layout>
             <v-flex xs12 >
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="generarBusqueda" :disabled="!grupoSelected">
+                <v-btn :loading="loading3" color="primary"  @click="generarBusqueda" :disabled="!grupoSelected">
                     Buscar
                     <v-icon right dark>search</v-icon>
                 </v-btn>
                 
-                <v-btn :loading="loading3" color="primary" class="black--text" @click="limpiarForma">
+                <v-btn :loading="loading3" color="primary"  @click="limpiarForma">
                     Limpiar
                     <v-icon right dark>delete</v-icon>
                 </v-btn>
