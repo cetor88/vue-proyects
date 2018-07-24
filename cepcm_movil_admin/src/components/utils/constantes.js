@@ -5,8 +5,10 @@ require("firebase/storage");
 
 //http://10.64.8.52:8083/CEPCM_MOVIL/oauth/token
 
-//var ipOrigen ='http://187.190.149.140:8080/';
-var ipOrigen ='http://c022377:8083/';
+var ipOrigen ='http://187.190.149.140:8083/';
+
+
+//var ipOrigen ='http://c022377:8083/';
 export default {
     //urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token?grant_type=password&client_id=restapp&client_secret=restapp&username=2&password=yhTo7LRvI2dvFxReUqzAxspzZi02', //GET
     urlGetToken:            ipOrigen + 'CEPCM_MOVIL/oauth/token', //POST

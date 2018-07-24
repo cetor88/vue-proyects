@@ -176,11 +176,11 @@
                             <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
                             <td class="text-xs-center"> {{ props.item.colegiaturasAdeudadas }} </td>
                             <td class="text-xs-center"> {{ props.item.recargos }} </td>
-                            <td class="text-xs-center"> {{ props.item.importeRecargosColegiaturas }} </td>
-                            <td class="text-xs-center"> {{ props.item.importeColegiaturas }} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.importeRecargosColegiaturas * 100) / 100  | pesos}} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.importeColegiaturas * 100) / 100  | pesos}} </td>
                             <td class="text-xs-center"> {{ props.item.reinscripcionesAdeudadas }} </td>
-                            <td class="text-xs-center"> {{ props.item.importeReinscripciones }} </td>
-                            <td class="text-xs-center"> {{ props.item.adeudoTotal }} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.importeReinscripciones * 100) / 100  | pesos}} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.adeudoTotal * 100) / 100 | pesos}} </td>
                         </tr>
                     </template>
                     <template slot="pageText" slot-scope="{ pageStart, pageStop }">
@@ -205,11 +205,20 @@ import homeServices from "./home.services";
 import CONS from "../utils/constantes.js";
 import myDialog from '../dialogo/commonDialog';
 import mensajeDlg from '../dialogo/mensajesDlg';
+
 export default {
     components: { vSelect, myDialog, mensajeDlg},
 
   created() {
     this.$store.dispatch("setLoading", true);
+  },
+
+  filters:{
+      pesos: function (value) {
+        if (!value) return ''
+        value = value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        return "$ "+value
+    }
   },
   mounted() {
     this.$store.dispatch("validarToken2").then(data => {
