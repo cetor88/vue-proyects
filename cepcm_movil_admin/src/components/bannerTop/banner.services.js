@@ -5,7 +5,7 @@ export default {
     obtenerBanners(){
         
         return new Promise((resolve, reject) =>{
-            let ref = CONS.db.ref(CONS.rutaBannerFirebase);
+            let ref = CONS.db.ref(CONS.rutaBannerTopFirebase);
             ref.on('value',snapshot=>{
                 resolve(snapshot.val());
             } )            
@@ -18,7 +18,7 @@ export default {
     agregarBanner(urlDowload, redirect, fileName){
         return new Promise((resolve, reject) => {
             this.obtenerReferenciaFB().then((data)=>{
-                let ref = CONS.db.ref(CONS.rutaBannerFirebase + data);
+                let ref = CONS.db.ref(CONS.rutaBannerTopFirebase + data);
                 ref.set({url:urlDowload, redirect:redirect, name:fileName})
             }).then(()=>{
                 this.actualizarFechaHeaders();
@@ -28,7 +28,7 @@ export default {
     },
     obtenerReferenciaFB(param) {
         return new Promise((resolve) => {
-            let ref = CONS.db.ref(CONS.rutaBannerFirebase);
+            let ref = CONS.db.ref(CONS.rutaBannerTopFirebase);
             var dato = {
               "url": "",
               "redirect": ""
@@ -38,7 +38,7 @@ export default {
     },
 
     actualizarFechaHeaders(){
-        let ref = CONS.db.ref(CONS.rutaBannerTopFirebase);
+        let ref = CONS.db.ref(CONS.rutaBannerTopFB);
         ref.update({fechaActualizacion:new Date().getTime()})
     },
 
@@ -70,7 +70,7 @@ export default {
 
     eliminaHeaderDataBase(idFirebase){
         return new Promise((resolve, reject) => {
-            let ref = CONS.db.ref(CONS.rutaBannerFirebase + idFirebase);
+            let ref = CONS.db.ref(CONS.rutaBannerTopFirebase + idFirebase);
             ref.remove().then(()=> {
                 resolve("ok")
             }).catch((error)=> {

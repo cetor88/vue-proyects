@@ -95,7 +95,7 @@
             let ref = CONS.db.ref(CONS.rutaBannerTopFirebase);
             ref.on('value',(snapshot)=>{
                 var result =[];
-                Object.keys(snapshot.val()).map(function(value, item) {
+                Object.keys(snapshot.val()).map((value, item) =>{
                     let interSnapShot = snapshot.val()[value];
                     interSnapShot.idFireBase=value;
                     result.push(interSnapShot);
@@ -134,7 +134,7 @@
                 this.headerConfig.modelo = !this.headerConfig.modelo;
                 
             },
-            cerrarMensajeDlg(){        
+            cerrarMensajeDlg(){
                 this.dialogo.contenido = "";
                 this.dialogo.tipo = "green";
                 this.dialogo.modelo = !this.dialogo.modelo;

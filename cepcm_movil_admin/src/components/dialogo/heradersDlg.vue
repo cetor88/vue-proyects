@@ -9,14 +9,14 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form ref="form" v-model="valid" lazy-validation>
-                            <v-container grid-list-md text-xs-center v-if="conifg.option ==='add'" >
+                            <v-container grid-list-md text-xs-center v-if="conifg.option ==='add'" v-for="(file, id) in archivos" :key="id">
                                 <v-layout row wrap>
                                     <v-flex xs2  >
                                         <v-subheader class="text-lg-center"> Url a redireccionar:</v-subheader>
                                     </v-flex>
                                     <v-flex xs10 sm10 md10>
                                         <v-text-field label="Url a redireccionar" :counter="150"  maxLength="150"  id="redirect"
-                                            v-model="header.redirect">
+                                            v-model="header.redirect" :disabled="file.porcentUpload == 100">
                                         </v-text-field>
                                     </v-flex>
 
@@ -27,7 +27,7 @@
                                     </v-flex>
                                     <v-flex xs10 sm10 md10>
                                         <div class="previewImage" @click="trigger($event)">
-                                            <v-flex v-bind="{ [`xs12 sm12`]: true }" v-for="(file, id) in archivos" :key="id">
+                                            <v-flex v-bind="{ [`xs12 sm12`]: true }" >
                                                 <v-layout row wrap>
                                                     <v-flex xs12 v-if="file.porcentUpload != 100" >
                                                         <span >Haz click aquí para agregar una imagen</span>
@@ -78,7 +78,7 @@
                         <v-spacer></v-spacer>
                         <v-btn v-if="conifg.option ==='delete'" :color="conifg.tipo" dark @click="eliminar">Eliminar</v-btn>
                         <v-btn v-if="conifg.option ==='add'" :color="conifg.tipo" dark @click="cerrar">Aceptar</v-btn>
-                        <v-btn :color="conifg.tipo" dark @click="cerrar">Cancelar</v-btn>
+                        <v-btn v-if="conifg.option ==='delete'" :color="conifg.tipo" dark @click="cerrar">Cancelar</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -124,6 +124,7 @@
             onFileSelected:(event, archivo)=>{
                 return new Promise((resolve, reject) => {
                     this.banderaTermino = true;
+                    document.getElementById("redirect").style.disabled=true;
                     //get file
                     let file = event.target.files[0];
 
@@ -144,7 +145,10 @@
                             console.log('File available at', downloadURL);
                             archivo.url = downloadURL;
                             bannerServices.agregarBanner(downloadURL, document.getElementById("redirect").value, file.name).then((data)=>{
+                                
                                 resolve("ok")
+                                
+                                
                             })
                         });
                     })

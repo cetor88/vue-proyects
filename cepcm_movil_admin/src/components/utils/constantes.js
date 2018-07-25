@@ -49,7 +49,8 @@ export default {
     urlBuscarAlumnosGrupo: ipOrigen + 'CEPCM_MOVIL/api/alumnoController/obtenerAlumnosPorGrupo?',//=1&access_token=b1080caa-6a7e-4992-a92f-a6cffcf7b3d7'
 
     rutaBannerTopFirebase : "configuracion/aplicacionAlumnos/configuracion/bannerTop/banners/",
-
+    
+    rutaBannerTopFB:'configuracion/aplicacionAlumnos/configuracion/bannerTop/',
     rutaBannerStorage: '/app/bannerTop/banner/',
 
     rutaUsuariosFb:'/usuarios/',
