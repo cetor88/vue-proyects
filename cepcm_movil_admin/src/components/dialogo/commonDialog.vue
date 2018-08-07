@@ -29,7 +29,7 @@
                                             <v-spacer></v-spacer>
                                         </v-toolbar>
                                         <v-list>
-                                            <v-list-group v-for="item in imgs" v-model="item.active" :key="item.descripcion" > <!-- :value="item.id" v-bind:key="item.id" -->
+                                            <v-list-group v-for="item in getImagenes" v-model="item.active" :key="item.descripcion" > <!-- :value="item.id" v-bind:key="item.id" -->
                                                 <v-list-tile slot="item" >
                                                     <v-list-tile-action>
                                                         <v-icon v-bind:style="{ color: item.active ?'gold':''}">{{ item.imagen }}</v-icon>
@@ -44,7 +44,7 @@
                                                     </v-list-tile-action>
                                                 </v-list-tile>
 
-                                                <v-list-tile v-for="subItem in item.imagenes" :class="{active : img==subItem.id}"
+                                                <v-list-tile v-for="subItem in item.imagenes" :class="{active : img==subItem.id, primary_accent1 : img==subItem.id }"
                                                     :key="subItem.id" @click="img=subItem.id">
                                                     <v-list-tile-content >
                                                         <v-avatar :tile="false" class="lighten-4 imagen-avatar">
@@ -110,7 +110,7 @@
                 
                 alertImagen:false,
                 limpiarComp:false,
-               
+                imagenes: [],
             }
         },
         methods: {
@@ -137,7 +137,7 @@
                             listaDispositivos: this.dispositivos
                         };
                         homeServices.guardarNotificacionADispositivos(req, this.token).then((data) => {
-                                if(data.respuesta[0].idEstatus == -1){
+                                if(data.respuesta[0].idEstatus == 1){
                                     console.log("Proceso correcto!!" + data);
                                     this.$emit('notificacionEnviada')// llamar al padre para cerrar la modal
                                 }else{
@@ -158,14 +158,22 @@
             
         },
         mounted() {
-            console.log("catalogos imgs-> " + this.imgs);
             this.dispositivos = this.smart;
         },
         computed: {
             getPorps() {
-            return this.dlg;
-
+                return this.dlg;
             },
+            getImagenes(){
+                console.log("catalogos imgs-> " + this.imgs);
+                this.imagenes=[]
+                this.imgs.forEach((item,index)=>{
+                    item.active=false;
+                    this.imagenes.push(item)
+                })
+                return this.imagenes; 
+                 
+            }
         }
 
       
@@ -174,8 +182,12 @@
 
 <style>
 
-li.active{
-    border-radius: 5px;
-    background-color: #e0e0e0;
-}
+li.active:after {
+        content: "✓";
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        font-size: 1.5em;
+        color: #c51162 !important
+    }
 </style>

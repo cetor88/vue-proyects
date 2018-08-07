@@ -126,7 +126,7 @@
                         :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' >
                         <template slot="headers" slot-scope="props">
                             <tr>
-                                <th v-for="header in props.headers" :key="header.text">
+                                <th v-for="header in props.headers" :key="header.text" class="itemTh">
                                     {{ header.text }}
                                 </th>
                                 <th class="text-xs-center"> Acceso a modulos
@@ -647,5 +647,8 @@ export default {
     }
     tr td div.td-cell {
         padding: 0px 21px !important;
+    }
+    table.table thead th.itemTh {
+        padding-top: 20px;
     }
 </style>

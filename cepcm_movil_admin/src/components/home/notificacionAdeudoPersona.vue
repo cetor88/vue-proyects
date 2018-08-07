@@ -38,7 +38,7 @@
 
                         <v-layout row>
                             <v-flex xs2  >
-                                <v-subheader class="text-lg-left" >Nivel academico:</v-subheader>
+                                <v-subheader class="text-lg-center" >Nivel academico:</v-subheader>
                             </v-flex>
                             <v-flex xs10 >
                         
@@ -149,7 +149,7 @@
         </v-container>
 
         <v-layout row wrap>
-            <v-flex xs12>
+            <v-flex xs12 class="contenedorTabla">
                 <v-data-table  v-model="selected"  ref="dataTable1"   :headers="headers" :items="items" 
                 :pagination.sync="pagination" rows-per-page-text="Registros por página" item-key="name" 
                 :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' class="elevation-1">
@@ -204,111 +204,122 @@ import { mapState, mapGetters } from "vuex";
 import notificacionServices from "./notificacion.grupo.adeudo.services";
 import homeServices from "./home.services";
 import CONS from "../utils/constantes.js";
-import myDialog from '../dialogo/commonDialog';
-import mensajeDlg from '../dialogo/mensajesDlg';
+import myDialog from "../dialogo/commonDialog";
+import mensajeDlg from "../dialogo/mensajesDlg";
 
 export default {
-    components: { vSelect, myDialog, mensajeDlg},
+  components: { vSelect, myDialog, mensajeDlg },
 
   created() {
     this.$store.dispatch("setLoading", true);
   },
 
-  filters:{
-      pesos: function (value) {
-        if (!value) return ''
-        value = parseFloat(value).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-        return "$ "+value
+  filters: {
+    pesos: function(value) {
+      if (!value) return "";
+      value = parseFloat(value)
+        .toFixed(2)
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return "$ " + value;
     }
   },
   mounted() {
-    this.$store.dispatch("validarToken2").then(data => {
+    this.$store
+      .dispatch("validarToken2")
+      .then(data => {
         this.token = data;
-
-      }).then(() => {
-        
-        let params = {catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]};
-        debugger
-        notificacionServices.getCatalogoGenerico(params, this.token).then(data => {
+      })
+      .then(() => {
+        let params = {
+          catalogos: [{ cveCatalogo: "PLT" }, { cveCatalogo: "NVL" }]
+        };
+        debugger;
+        notificacionServices
+          .getCatalogoGenerico(params, this.token)
+          .then(data => {
             data.respuesta.forEach((item, index) => {
-                this.catalogs.push(item.respuesta);
+              this.catalogs.push(item.respuesta);
             });
-        }).then(()=>{
-                let params = {access_token: this.token };
-                homeServices.obtenerImagenes(params).then((data) => {
-                this.catImges = data.respuesta;
-                this.$store.dispatch("setLoading", false);
-                });
-        }).catch(error => {
-                console.log("Resultado de la operacion... " + error);
-                this.$store.dispatch("setLoading", false);
-                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-                this.dialogo.tipo =  "red lighten-1";
-                this.dialogo.modelo = !this.dialogo.modelo;            
+          })
+          .then(() => {
+            let params = { access_token: this.token };
+            homeServices.obtenerImagenes(params).then(data => {
+              this.catImges = data.respuesta;
+              this.$store.dispatch("setLoading", false);
             });
-        
-      }).catch(error => {
+          })
+          .catch(error => {
+            console.log("Resultado de la operacion... " + error);
+            this.$store.dispatch("setLoading", false);
+            this.dialogo.contenido =
+              "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+            this.dialogo.tipo = "red lighten-1";
+            this.dialogo.modelo = !this.dialogo.modelo;
+          });
+      })
+      .catch(error => {
         console.log("Resultado de la operacion... " + error);
         this.$store.dispatch("setLoading", false);
-        this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-        this.dialogo.tipo =  "red lighten-1";
+        this.dialogo.contenido =
+          "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+        this.dialogo.tipo = "red lighten-1";
         this.dialogo.modelo = !this.dialogo.modelo;
       });
   },
-  
+
   data: () => {
     return {
-            dlg:{
-                titulo:'Resultado de la operación',
-                contenido:'',
-                tipo:'',
-                modelo:false
-            },
-            dialogo:{
-                titulo:'Resultado de la operación',
-                contenido:'',
-                tipo:'',
-                modelo:false
-            },
-            token: "",
-            alertValidaDsipositivo: false,
-            catalogs: [],
-            plantel: [],
-            plantelSelected: undefined,
-            nivelAcademico: [],
-            nivelAcademicoSelected: undefined,
-            carrera: [],
-            carreraSelected: "",
-            grupo: [],
-            grupoSelected: "",
-            queryString: null,
-            disparaBuscarGrupo: null,
-            search: "",
-            pagination: {},
-            selected: [],
-            headers: [
-                { text: "Dispositivo", value: "dispositivo" },
-                { text: "Matricula", value: "matricula" },
-                { text: "Nombre del alumno", value: "alumno" },
-                { text: "# Colegiaturas", value: "colegiaturasAdeudadas" },
-                { text: "Recargos", value: "recargos" },
-                { text: "Importe de recargos", value: "importeRecargosColegiaturas" },
-                { text: "Importe colegiaturas", value: "importeColegiaturas" },
-                { text: "# de reinscripción", value: "reinscripcionesAdeudadas" },
-                { text: "Importe Reinscripción", value: "importeReinscripciones" },
-                { text: "Adeudo total", value: "adeudoTotal" }
-            ],
-            items: [],
-            loader: null,
-            loading3: false,
-            
-            dispositivos:[],
-            
-            confirmNotificacion:false,
-            
-            catImges: [],
-            dataBusqueda:[],
-            //resourcePdf:''
+      dlg: {
+        titulo: "Resultado de la operación",
+        contenido: "",
+        tipo: "",
+        modelo: false
+      },
+      dialogo: {
+        titulo: "Resultado de la operación",
+        contenido: "",
+        tipo: "",
+        modelo: false
+      },
+      token: "",
+      alertValidaDsipositivo: false,
+      catalogs: [],
+      plantel: [],
+      plantelSelected: undefined,
+      nivelAcademico: [],
+      nivelAcademicoSelected: undefined,
+      carrera: [],
+      carreraSelected: "",
+      grupo: [],
+      grupoSelected: "",
+      queryString: null,
+      disparaBuscarGrupo: null,
+      search: "",
+      pagination: {},
+      selected: [],
+      headers: [
+        { text: "Dispositivo", value: "dispositivo" },
+        { text: "Matricula", value: "matricula" },
+        { text: "Nombre del alumno", value: "alumno" },
+        { text: "# Colegiaturas", value: "colegiaturasAdeudadas" },
+        { text: "Recargos", value: "recargos" },
+        { text: "Importe de recargos", value: "importeRecargosColegiaturas" },
+        { text: "Importe colegiaturas", value: "importeColegiaturas" },
+        { text: "# de reinscripción", value: "reinscripcionesAdeudadas" },
+        { text: "Importe Reinscripción", value: "importeReinscripciones" },
+        { text: "Adeudo total", value: "adeudoTotal" }
+      ],
+      items: [],
+      loader: null,
+      loading3: false,
+
+      dispositivos: [],
+
+      confirmNotificacion: false,
+
+      catImges: [],
+      dataBusqueda: []
+      //resourcePdf:''
     };
   },
   watch: {
@@ -331,132 +342,158 @@ export default {
         }*/
   },
   methods: {
-    notificacionErrada(){
-        this.dialogo.contenido = "Ha ocurrido un error al enviar la notificación, favor de intantar de nuevo";
-        this.dialogo.tipo =  "red lighten-1";;
-        this.dialogo.modelo = !this.dialogo.modelo;
-        
-        setTimeout(() => {
-            
-            this.cerrarModal();
-            
-        }, 100); 
+    notificacionErrada() {
+      this.dialogo.contenido =
+        "Ha ocurrido un error al enviar la notificación, favor de intantar de nuevo";
+      this.dialogo.tipo = "red lighten-1";
+      this.dialogo.modelo = !this.dialogo.modelo;
+
+      setTimeout(() => {
+        this.cerrarModal();
+      }, 100);
     },
-    notificacionEmitida(){
-        this.dialogo.contenido = "Se ha enviado la notificación con éxito";
-        this.dialogo.tipo =  "green lighten-1";;
-        this.dialogo.modelo = !this.dialogo.modelo;
-        
-        setTimeout(() => {
-            this.limpiarForma();
-            this.cerrarModal();
-            
-        }, 100); 
+    notificacionEmitida() {
+      this.dialogo.contenido = "Se ha enviado la notificación con éxito";
+      this.dialogo.tipo = "green lighten-1";
+      this.dialogo.modelo = !this.dialogo.modelo;
+
+      setTimeout(() => {
+        this.limpiarForma();
+        this.cerrarModal();
+      }, 100);
     },
-    cerrarMensajeDlg(){        
-        this.dialogo.contenido = "";
-        this.dialogo.tipo = "";
-        this.dialogo.modelo = !this.dialogo.modelo;
-        this.$store.dispatch("setLoading", false);
-    },  
-    cerrarModal(){
-        console.log("cerrar parent")
-        this.dlg.contenido = "";
-        this.dlg.tipo = "";
-        this.dlg.modelo = !this.dlg.modelo;
-        this.$store.dispatch("setLoading", false);
+    cerrarMensajeDlg() {
+      this.dialogo.contenido = "";
+      this.dialogo.tipo = "";
+      this.dialogo.modelo = !this.dialogo.modelo;
+      this.$store.dispatch("setLoading", false);
     },
-    probarModal(){
-        this.dlg.titulo = "Datos para la notificación"; 
-        this.dlg.contenido = "Contenido Generico";
-        
-        this.dlg.tipo = "primary lighten-1";
-        this.dlg.modelo = !this.dlg.modelo;
-                
+    cerrarModal() {
+      console.log("cerrar parent");
+      this.dlg.contenido = "";
+      this.dlg.tipo = "";
+      this.dlg.modelo = !this.dlg.modelo;
+      this.$store.dispatch("setLoading", false);
     },
-    limpiarForma(){
-        //this.plantelSelected = this.nivelAcademicoSelected = undefined;
-        //this.carreraSelected = this.grupoSelected ="";
-        this.selected =this.items = this.dispositivos=[];
-        this.dataBusqueda=[];
-        //resourcePdf:''
+    probarModal() {
+      this.dlg.titulo = "Datos para la notificación";
+      this.dlg.contenido = "Contenido Generico";
+
+      this.dlg.tipo = "primary lighten-1";
+      this.dlg.modelo = !this.dlg.modelo;
+    },
+    limpiarForma() {
+      //this.plantelSelected = this.nivelAcademicoSelected = undefined;
+      //this.carreraSelected = this.grupoSelected ="";
+      this.selected = this.items = this.dispositivos = [];
+      this.dataBusqueda = [];
+      //resourcePdf:''
     },
     cambio(prop) {
-        let dispositivo = prop.item.alumno.dispositivo != null ? prop.item.alumno.dispositivo: null;
-        if (prop.item.alumno.dispositivo != null) {
+      let dispositivo =
+        prop.item.alumno.dispositivo != null
+          ? prop.item.alumno.dispositivo
+          : null;
+      if (prop.item.alumno.dispositivo != null) {
             prop.selected = !prop.selected;
-            if(!prop.selected){
-                this.dispositivos.push(dispositivo.id);
-            }else{
+            if (!prop.selected) {
+                const demo = this.dispositivos.filter( (item, index) =>{
+                    if (item === dispositivo.id){
+                        this.dispositivos.splice(index, 1);
+                    }
+                })
+                        this.dispositivos.push(dispositivo.id);
+                
+                
+            } else {
                 this.dispositivos.splice(prop.index, 1);
             }
-            
         } else {
             setTimeout(() => {
             this.alertValidaDsipositivo = false;
             }, 2000);
             this.alertValidaDsipositivo = true;
-        }
+      }
     },
-    
+
     buscarGrupo() {
       return new Promise((resolve, reject) => {
-        this.$store.dispatch("validarToken2").then(data => {
+        this.$store
+          .dispatch("validarToken2")
+          .then(data => {
             this.token = data;
-            let req = { idPlantel: this.plantelSelected.id, idCarrera: this.carreraSelected.id, access_token: this.token };
-            
-            notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaGrupo).then(data => {
+            let req = {
+              idPlantel: this.plantelSelected.id,
+              idCarrera: this.carreraSelected.id,
+              access_token: this.token
+            };
+
+            notificacionServices
+              .getCatalogoDependiente(req, CONS.urlConsultaGrupo)
+              .then(data => {
                 if (data.respuesta != undefined) {
                   resolve(data.respuesta);
                 }
-            }).catch(error => {
+              })
+              .catch(error => {
                 console.log("Resultado de la operacion... " + error);
                 this.$store.dispatch("setLoading", false);
-                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-                this.dialogo.tipo =  "red lighten-1";
+                this.dialogo.contenido =
+                  "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+                this.dialogo.tipo = "red lighten-1";
                 this.dialogo.modelo = !this.dialogo.modelo;
-            })
-        }).catch(error => {
+              });
+          })
+          .catch(error => {
             console.log("Resultado de la operacion... " + error);
             this.$store.dispatch("setLoading", false);
-            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.contenido =
+              "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+            this.dialogo.tipo = "red lighten-1";
             this.dialogo.modelo = !this.dialogo.modelo;
-        })
+          });
       });
     },
     onSearch: function onSearch(search, loading) {
       if (search.length > 3) {
         loading(true);
-        this.$store.dispatch("validarToken2").then(tooken => {
-          this.token = tooken;
-          this.search3(loading, search, this);
-        }).catch(error => {
+        this.$store
+          .dispatch("validarToken2")
+          .then(tooken => {
+            this.token = tooken;
+            this.search3(loading, search, this);
+          })
+          .catch(error => {
             console.log("Resultado de la operacion... " + error);
             this.$store.dispatch("setLoading", false);
-            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-            this.dialogo.tipo =  "red lighten-1";
+            this.dialogo.contenido =
+              "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+            this.dialogo.tipo = "red lighten-1";
             this.dialogo.modelo = !this.dialogo.modelo;
-        });
+          });
       }
     },
     search3: function(loading, search, vm) {
-        let req = {
-            idNivel: this.nivelAcademicoSelected.id,
-            filtro: search,
-            access_token: this.token
-        };
-        notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaCarrera).then(data => {
-            if (data.respuesta != undefined) {
-                this.carrera = data.respuesta;
-                loading(false);
-            }
-        }).catch(error => {
-            console.log("Resultado de la operacion... " + error);
-            this.$store.dispatch("setLoading", false);
-            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-            this.dialogo.tipo =  "red lighten-1";
-            this.dialogo.modelo = !this.dialogo.modelo;
+      let req = {
+        idNivel: this.nivelAcademicoSelected.id,
+        filtro: search,
+        access_token: this.token
+      };
+      notificacionServices
+        .getCatalogoDependiente(req, CONS.urlConsultaCarrera)
+        .then(data => {
+          if (data.respuesta != undefined) {
+            this.carrera = data.respuesta;
+            loading(false);
+          }
+        })
+        .catch(error => {
+          console.log("Resultado de la operacion... " + error);
+          this.$store.dispatch("setLoading", false);
+          this.dialogo.contenido =
+            "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+          this.dialogo.tipo = "red lighten-1";
+          this.dialogo.modelo = !this.dialogo.modelo;
         });
     },
     generarBusqueda: function() {
@@ -475,70 +512,89 @@ export default {
             access_token: this.token
           };
           this.dataBusqueda = [];
-          notificacionServices.getCatalogoDependiente(req, CONS.urlConsultaDeudor).then(data => {
+          notificacionServices
+            .getCatalogoDependiente(req, CONS.urlConsultaDeudor)
+            .then(data => {
               if (data.respuesta != undefined) {
-                data.respuesta.filter((item)=>{
-                    item.importeRecargosColegiaturas = item.importeRecargosColegiaturas.toFixed(2);
-                    item.adeudoTotal = item.adeudoTotal.toFixed(2);
-                })
+                data.respuesta.filter(item => {
+                  item.importeRecargosColegiaturas = item.importeRecargosColegiaturas.toFixed(
+                    2
+                  );
+                  item.adeudoTotal = item.adeudoTotal.toFixed(2);
+                });
                 this.items = data.respuesta;
                 this.$store.dispatch("setLoading", false);
               }
-            }).catch(error => {
-                console.log("Resultado de la operacion... " + error);
-                this.$store.dispatch("setLoading", false);
-                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-                this.dialogo.tipo =  "red lighten-1";
-                this.dialogo.modelo = !this.dialogo.modelo;
             })
-        }).catch(error => {
-            console.log("Resultado de la operacion... " + error);
-            this.$store.dispatch("setLoading", false);
-            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-            this.dialogo.tipo =  "red lighten-1";
-            this.dialogo.modelo = !this.dialogo.modelo;
+            .catch(error => {
+              console.log("Resultado de la operacion... " + error);
+              this.$store.dispatch("setLoading", false);
+              this.dialogo.contenido =
+                "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+              this.dialogo.tipo = "red lighten-1";
+              this.dialogo.modelo = !this.dialogo.modelo;
+            });
         })
+        .catch(error => {
+          console.log("Resultado de la operacion... " + error);
+          this.$store.dispatch("setLoading", false);
+          this.dialogo.contenido =
+            "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+          this.dialogo.tipo = "red lighten-1";
+          this.dialogo.modelo = !this.dialogo.modelo;
+        });
     },
-    generarReporte:function(){
-        this.$store.dispatch("setLoading", true);
-        this.$store.dispatch("validarToken2").then(tooken => {
-            this.token = tooken;
+    generarReporte: function() {
+      this.$store.dispatch("setLoading", true);
+      this.$store
+        .dispatch("validarToken2")
+        .then(tooken => {
+          this.token = tooken;
         })
         .then(() => {
-            let req={
-                idGrupo:this.grupoSelected.id,
-                registros:this.items
-            };
-            notificacionServices.enviarPostGeneric(CONS.urlGenerarReporte, req, this.token).then(data=>{
-                let a = document.createElement("a");
-                a.href = "data:application/octet-stream;base64,"+data.respuesta;
-                a.download = "alumnos_deudores_"+Math.floor((Math.random() * 10) + 1)+".pdf"
-                a.click();
-                this.$store.dispatch("setLoading", false);
-            }).catch(error => {
-                console.log("Resultado de la operacion... " + error);
-                this.$store.dispatch("setLoading", false);
-                this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-                this.dialogo.tipo =  "red lighten-1";
-                this.dialogo.modelo = !this.dialogo.modelo;
-            })    
-        }).catch(error => {
-            console.log("Resultado de la operacion... " + error);
-            this.$store.dispatch("setLoading", false);
-            this.dialogo.contenido = 'Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador';
-            this.dialogo.tipo =  "red lighten-1";
-            this.dialogo.modelo = !this.dialogo.modelo;
+          let req = {
+            idGrupo: this.grupoSelected.id,
+            registros: this.items
+          };
+          notificacionServices
+            .enviarPostGeneric(CONS.urlGenerarReporte, req, this.token)
+            .then(data => {
+              let a = document.createElement("a");
+              a.href = "data:application/octet-stream;base64," + data.respuesta;
+              a.download =
+                "alumnos_deudores_" +
+                Math.floor(Math.random() * 10 + 1) +
+                ".pdf";
+              a.click();
+              this.$store.dispatch("setLoading", false);
+            })
+            .catch(error => {
+              console.log("Resultado de la operacion... " + error);
+              this.$store.dispatch("setLoading", false);
+              this.dialogo.contenido =
+                "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+              this.dialogo.tipo = "red lighten-1";
+              this.dialogo.modelo = !this.dialogo.modelo;
+            });
         })
+        .catch(error => {
+          console.log("Resultado de la operacion... " + error);
+          this.$store.dispatch("setLoading", false);
+          this.dialogo.contenido =
+            "Servicio temporalmente no disponible, favor de intentar más adelante ó comunicarse con él administrador";
+          this.dialogo.tipo = "red lighten-1";
+          this.dialogo.modelo = !this.dialogo.modelo;
+        });
     }
   },
   computed: {
     getPorps() {
-       return this.dlg;
+      return this.dlg;
     },
-     getMensajesProps(){
-        return this.dialogo;
+    getMensajesProps() {
+      return this.dialogo;
     },
-    
+
     getCatalogos: function() {
       return this.catalogs;
     },
@@ -564,10 +620,19 @@ export default {
         return (this.grupo = []);
       }
     },
-    getDispositivos(){
-        return this.dispositivos.length > 0 ? this.dispositivos : null;
-    },
-   
+    getDispositivos() {
+      return this.dispositivos.length > 0 ? this.dispositivos : null;
+    }
   }
 };
 </script>
+
+<style>
+table.table tbody td{
+  font-size: 10px !important;
+}
+table.table  thead th{
+  font-size: 11px !important;
+}
+
+</style>

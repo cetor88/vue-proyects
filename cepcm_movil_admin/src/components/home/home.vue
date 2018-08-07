@@ -60,7 +60,7 @@
                                 </v-list-tile-action>
                             </v-list-tile>
                 
-                            <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id}"
+                            <v-list-tile v-for="subItem in item.imagenes" :class="{active : notificacion.img==subItem.id, primary_accent1 : notificacion.img==subItem.id, }"
                                 :key="subItem.id" @click="notificacion.img=subItem.id">
                                 <v-list-tile-content>
                                     <v-avatar :tile="false" class="lighten-4 imagen-avatar">
@@ -137,6 +137,7 @@ export default {
             let params = {access_token: this.token };
             homeServices.obtenerImagenes(params).then(data => {
                 this.catImges = data.respuesta;
+
                 //this.$store.dispatch("setLoading", false);
             }).catch(error => {
                     console.log("Resultado de la operacion... " + error);
@@ -267,6 +268,9 @@ export default {
             this.notificacion.img = null;
             this.personasSeleccionadas = [];
             this.limpiarComp=true;
+            this.catImges.filter((item)=>{
+                item.active = false;
+            })
 
         }
     },
@@ -298,9 +302,13 @@ export default {
   top: auto;
   vertical-align: middle;
 }
-li.active{
-    border-radius: 5px;
-    background-color: #e0e0e0;
-}
+li.active:after {
+        content: "✓";
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        font-size: 1.5em;
+        color: #c51162 !important
+    }
 /*stylos modal*/
 </style>

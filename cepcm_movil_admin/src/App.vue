@@ -62,7 +62,7 @@ export default {
         menuItems = [
           {
             icon: "far fa-comment-alt",
-            title: "Avisos generales",
+            title: "Notificaciones",
             link: "/home"
           },
           { icon: "far fa-money-bill-alt", title: "Deudores", link: "/adeudo" },

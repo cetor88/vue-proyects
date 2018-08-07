@@ -67,7 +67,7 @@ export default {
 
   data() {
     return {
-      mensaje: "Inicia session con tu email y contraseña",
+      mensaje: "Inicia session con tu Mail y Password",
       loginDetails: {
         email: "",
         password: ""
@@ -103,21 +103,24 @@ export default {
       var comp = this;
       let cotininuar = this.$router;
       let control = this.$store;
-      
+      this.$store.dispatch("setLoading", true);
+
       this.$store.state.auth.signInWithEmailAndPassword( this.loginDetails.email, this.loginDetails.password )
         .then((user)=> {
             loginServices.obtenerUsuario(user.uid).then((data)=>{
               control.dispatch('obtenerToken', user).then(()=>{
               control.dispatch('iniciarUsuario', user);
+              this.$store.dispatch("setLoading", true);
               cotininuar.replace("home");
               })
             }).catch(()=>{
-              debugger
-              this.mensajeSining="El password es incorrecto"  
+              this.$store.dispatch("setLoading", false);
+              this.mensajeSining="Usuario y/o contraseña incorrect@"  
             })
           },
           (err)=> {
-            this.mensajeSining="El password es incorrecto"
+            this.$store.dispatch("setLoading", false);
+            this.mensajeSining="Usuario y/o contraseña incorrect@"
           }
         )
        

@@ -5,7 +5,10 @@
                 <v-text-field label="Buscar alumno" v-model="queryString" required > <!--v-on:keyup="search(queryString)"-->
                 </v-text-field>
                 <strong 
-                v-bind:style="{ color: isCalculating && !searchQueryIsDirty?'blue': searchQueryIsDirty && !isCalculating ?'orange' : !searchQueryIsDirty && !isCalculating?'green':''}" >{{ searchIndicator }}</strong>
+                v-bind:style="{ color: isCalculating && !searchQueryIsDirty?'blue': searchQueryIsDirty && !isCalculating ?'orange' : !searchQueryIsDirty && !isCalculating?'green':''}" >
+                {{ searchIndicator }}
+                </strong>
+
                 <div v-if="alumnos.length" transition="slide-x-transition" class="contentPerson">
                     <v-list slot="activator" class="content-person" two-line >
                         
@@ -135,8 +138,6 @@
             this.$store.dispatch("setLoading", false);
         },
         debounceInput: _.debounce(function (e) {
-            
-            
             if(e.length >= 4){
                 this.isCalculating = true
                 this.querySelections(e)
@@ -148,9 +149,7 @@
                 this.isCalculating=false;
             }
             }, 1000)
-        ,
-        
-        querySelections (strFiltro) {
+        ,querySelections (strFiltro) {
             this.$store.dispatch("setLoading", true);
             let req = {};
             this.$store.dispatch('validarToken2')
@@ -251,7 +250,11 @@
                 return '⟳ Calculando resultados'
             } else if (this.searchQueryIsDirty) {
                 return '... Escribiendo'
-            } else {
+            }
+            if(this.alumnos.length == 0){
+                return '';
+            }
+             else {
                 return '✓ Resultados encontrados'
             }
         },
@@ -317,5 +320,7 @@
             border-radius: 10px;
             -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
     }
+
+    
 
 </style>

@@ -30,10 +30,11 @@
                                             <v-flex v-bind="{ [`xs12 sm12`]: true }" >
                                                 <v-layout row wrap>
                                                     <v-flex xs12 v-if="file.porcentUpload != 100" >
-                                                        <span >Haz click aquí para agregar una imagen</span>
+                                                        <span >Haz click aquí para agregar una imagen.</span>
+
                                                     </v-flex>
-                                                    <v-flex xs12  >
-                                                        <input id="inputTrigger" style="display:none;" type="file" @change="onFileSelected($event, file)" ref="fileInput">
+                                                    <v-flex xs12 >
+                                                        <input id="inputTrigger" style="display:none;" :accept="aceptFiles" type="file" @change="onFileSelected($event, file)" ref="fileInput">
                                                         <v-progress-circular :size="100" v-if="file.porcentUpload > 0 && file.porcentUpload < 100" 
                                                             :width="15" :rotate="90" :value="file.porcentUpload" color="red" >
                                                             {{ file.porcentUpload }}
@@ -52,6 +53,14 @@
                                                                 </v-avatar>
                                                             </v-flex>
                                                         </v-layout>   
+                                                    </v-flex>
+                                                    
+                                                    <v-flex xs12 v-if="file.width !== -1">
+                                                        <v-alert type="error"  v-model="file.alertValidaDsipositivo" dismissible transition="scale-transition">
+                                                            <div v-for="item in file.alertValidaMsg" >
+                                                                <span>{{item}}</span>
+                                                            </div>
+                                                        </v-alert>
                                                     </v-flex>
                                                 </v-layout>                                                
                                             </v-flex>
@@ -106,8 +115,13 @@
                     refDocument:0,
                     banderaTermino:false,
                     porcentUpload:0,
-                    url:''
+                    url:'',
+                    height:-1,
+                    width:-1,
+                    alertValidaDsipositivo:false,
+                    alertValidaMsg:[],
                 }],
+                aceptFiles:'image/jpg image/png'
             }
         },
         methods: {
@@ -122,37 +136,70 @@
             },
 
             onFileSelected:(event, archivo)=>{
+                var _URL = window.URL || window.webkitURL;
+                archivo.alertValidaMsg=[];
+
                 return new Promise((resolve, reject) => {
                     this.banderaTermino = true;
                     document.getElementById("redirect").style.disabled=true;
+                    
                     //get file
                     let file = event.target.files[0];
+                    if(file != undefined){
+                        var reader = new FileReader();
+                        //var img = document.createElement('img');
+                        reader.onload = function (e) {
+                            var img = new Image();
+                            img.src = reader.result;
+                            img.onload = function() {
+                                var width = img.naturalWidth,
+                                height = img.naturalHeight;
 
-                    //create a storage ref
-                    let ref =  CONS.storage.ref(CONS.rutaBannerStorage + file.name);
-                    //upload file
-                    let task = ref.put(file);
-                    //upload progress               
-                    task.on('state_changed', (snapshot) =>{
-                                    
-                        archivo.porcentUpload = Math.ceil( (snapshot.bytesTransferred / snapshot.totalBytes) * 100 );
-                        console.log("archivo en proceso" + archivo.porcentUpload);
-                    },  (error)=>{   
-                        console.log("el archivo no pudo subir");
-                    },  (complete) =>{
-                        console.log("archivo subido");
-                        task.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                            console.log('File available at', downloadURL);
-                            archivo.url = downloadURL;
-                            bannerServices.agregarBanner(downloadURL, document.getElementById("redirect").value, file.name).then((data)=>{
-                                
-                                resolve("ok")
-                                
-                                
-                            })
-                        });
-                    })
+                                //window.URL.revokeObjectURL( img.src );
+                                archivo.width = width;
+                                archivo.height = height;
+                                //file.width <= 400  && file.width >= 1500
+                                if( (width >= 400 && width <= 1000) && (height >= 300 && height <=1000) ) {
+                                    console.log("tamaño correcto")
+                                    //create a storage ref
+                                    let ref =  CONS.storage.ref(CONS.rutaBannerStorage + file.name);
+                                    //upload file
+                                    let task = ref.put(file);
+                                    //upload progress               
+                                    task.on('state_changed', (snapshot) =>{
+                                                    
+                                        archivo.porcentUpload = Math.ceil( (snapshot.bytesTransferred / snapshot.totalBytes) * 100 );
+                                        console.log("archivo en proceso" + archivo.porcentUpload);
+                                    },  (error)=>{   
+                                        console.log("el archivo no pudo subir");
+                                    },  (complete) =>{
+                                        console.log("archivo subido");
+                                        task.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                                            console.log('File available at', downloadURL);
+                                            archivo.url = downloadURL;
+                                            bannerServices.agregarBanner(downloadURL, document.getElementById("redirect").value, file.name).then((data)=>{
+                                                
+                                                resolve("ok")
+                                                
+                                                
+                                            })
+                                        });
+                                    })
+                                }
+                                else {
+                                    console.log("el archivo debe ser mayor " + archivo)
+                                    archivo.alertValidaMsg.push("1.- Las dimensiones del archivo no son válidas.",
+                                        " 2.- Verificar que el ancho sea mayor a 400 px y la altura mayor a 300 px.",
+                                        "3.- Los formatos validos son " + this.aceptFiles + ".");
+                                    archivo.alertValidaDsipositivo = true;
+                                }
+                            }
+                            //img.src = reader.result;
+                        }
+                        reader.readAsDataURL(file);
+                    }
                 })
+                
             },
             
             eliminar(){

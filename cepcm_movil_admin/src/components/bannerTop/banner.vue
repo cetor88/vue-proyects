@@ -36,7 +36,15 @@
                                     <v-btn dark icon class="mr-3" color="pink" @click="next($event, watchUrl)">
                                         <v-icon >chevron_right</v-icon>
                                     </v-btn>
+                                    
                                 </v-card-title>
+                                <v-card-actions>
+                                    <v-btn :class="{active: item.id == watchUrl.index}" fab small dark color="primary" v-for="item in this.items"
+                                        @click="goo($event, item.id)" :key="item.id" > 
+                                        <v-icon :class="{active: item.id == watchUrl.index}" dark >flag</v-icon>
+                                        {{item.id + 1 }}
+                                    </v-btn>
+                                </v-card-actions>
                                 </v-layout>
                             </v-card-media>
                         </v-card>
@@ -101,10 +109,9 @@
                     result.push(interSnapShot);
                 });
                 this.items = result;
+                let index=0;
                 result.filter((item)=>{
-                    let index=0;
                     item.id=index;
-                    
                     index++;
                 });
                 
@@ -141,7 +148,7 @@
                 this.$store.dispatch("setLoading", false);
             },
             next(event, itemUrl){
-                if(  itemUrl.index+1 < this.items.length){
+                if(  itemUrl.index + 1 < this.items.length){
                     this.watchUrl.url= this.items[itemUrl.index+1].url;
                     this.watchUrl.index= itemUrl.index+1;
                 }else{
@@ -158,6 +165,10 @@
                     this.watchUrl.index= this.items.length-1;
                 }
             },
+            goo($event, index){
+                this.watchUrl.url= this.items[index].url;
+                this.watchUrl.index= index;
+            }
     },
     computed: {
             porcentaje(){
@@ -181,7 +192,7 @@
 </script>
 
 <style >
-    .vueperslides__slide--active:before {
+    .card__media__background:before {
         content: 'This slide is active!';
         position: absolute;
         top: -18px;
@@ -217,4 +228,11 @@
         opacity: .9;
         transition: visibility 0s,opacity .5s linear;
     }
+    button.active {
+        font-size: 25px;
+        opacity: .5;
+        transition: visibility 0s,opacity .1s linear;
+        
+    }   
+    
 </style>
