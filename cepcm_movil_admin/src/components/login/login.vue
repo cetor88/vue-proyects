@@ -19,12 +19,12 @@
               <form @submit.prevent="onSignin">
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="email" label="Mail" id="email" v-model="loginDetails.email" type="email" required></v-text-field>
+                    <v-text-field name="email" label="Email" id="email" v-model="loginDetails.email" type="email" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="password" label="Password" id="password" v-model="loginDetails.password" type="password" required></v-text-field>
+                    <v-text-field name="password" label="Contraseña" id="password" v-model="loginDetails.password" type="password" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -36,7 +36,7 @@
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn type="submit" dark color="primary">
+                    <v-btn block type="submit" dark color="primary">
                       Aceptar
                        <span slot="loader" class="custom-loader">
                         <v-icon light>cached</v-icon>
@@ -67,7 +67,7 @@ export default {
 
   data() {
     return {
-      mensaje: "Inicia session con tu Mail y Password",
+      mensaje: "Inicia session con tu email y contraseña",
       loginDetails: {
         email: "",
         password: ""

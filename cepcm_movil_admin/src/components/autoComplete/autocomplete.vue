@@ -1,5 +1,6 @@
 <template>
-    <v-container grid-list-md text-xs-center>
+    <!--v-container grid-list-md text-xs-center-->
+    <div>
         <v-layout row wrap>
             <v-flex>
                 <v-text-field label="Buscar alumno" v-model="queryString" required > <!--v-on:keyup="search(queryString)"-->
@@ -26,7 +27,7 @@
                                     
                                 </v-list-tile-content>
                                 <v-list-tile-action>
-                                    <v-list-tile-sub-title v-html="persona.value"></v-list-tile-sub-title>
+                                    <v-list-tile-sub-title ></v-list-tile-sub-title>
                                     <v-icon color="pink  lighten-1" v-if="persona.dispositivo != 0" >phonelink_ring</v-icon>
                                     <v-icon color="grey darken-2" v-else >star_border</v-icon>
                                 </v-list-tile-action>
@@ -51,7 +52,7 @@
                     <v-card-text >
                         <div>
                             <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <h2>Alumnos a los que se les enviará la norificación</h2>
+                            <h2>Alumnos a los que se les enviará la notificación</h2>
                         </div>
                     </v-card-text>
                 </v-card>                
@@ -62,7 +63,8 @@
                                 <i class="fa fa-user fa-pull-left fa-border" aria-hidden="true" ></i>
                             </v-list-tile-avatar>
                             <v-list-tile-content>
-                                <v-list-tile-title v-text="persona.text + ' - ' + persona.matricula"> </v-list-tile-title>
+                                <v-list-tile-title v-text="persona.text"> </v-list-tile-title>
+                                <v-list-tile-sub-title v-text="persona.matricula"> </v-list-tile-sub-title>
                             </v-list-tile-content>
                             <v-list-tile-avatar>
                                 <i class="fa fa-trash fa-pull-left fa-border" aria-hidden="true" alt="Eliminar" @click="eliminaDispositivo(persona, personasSeleccionadas, dispositivos)"></i>
@@ -79,7 +81,8 @@
             </v-flex>
         </v-layout>
         <v-progress-circular indeterminate v-bind:size="100" v-bind:width="5" color="red" v-if="loader"></v-progress-circular>
-    </v-container>
+        </div>
+    <!--/v-container-->
 </template>
 
 <script>
@@ -249,7 +252,7 @@
             if (this.isCalculating) {
                 return '⟳ Calculando resultados'
             } else if (this.searchQueryIsDirty) {
-                return '... Escribiendo'
+                return '... '
             }
             if(this.alumnos.length == 0){
                 return '';
