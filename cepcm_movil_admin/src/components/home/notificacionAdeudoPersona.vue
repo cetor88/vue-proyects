@@ -38,7 +38,7 @@
 
                         <v-layout row>
                             <v-flex xs2  >
-                                <v-subheader class="text-lg-center" >Nivel academico:</v-subheader>
+                                <v-subheader class="text-xs-center">Nivel academico:</v-subheader>
                             </v-flex>
                             <v-flex xs10 >
                         
@@ -54,7 +54,7 @@
                     <v-flex xs6  offset-xs3>    
                         <v-layout row>
                             <v-flex xs2 >
-                                <v-subheader class="text-lg-center">Carrera:</v-subheader>
+                                <v-subheader class="text-md-right">Carrera:</v-subheader>
                             </v-flex>
                             <v-flex xs10>
                                 <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
@@ -82,7 +82,7 @@
                     <v-flex xs6  offset-xs3>
                         <v-layout row>
                             <v-flex xs2>
-                                <v-subheader class="text-lg-center">Grupo:</v-subheader>
+                                <v-subheader class="text-md-center">Grupo:</v-subheader>
                             </v-flex>
                             <v-flex xs10> 
                         
@@ -146,7 +146,7 @@
 
                 </v-flex>
             </v-layout>
-        </v-container>
+        
 
         <v-layout row wrap>
             <v-flex xs12 class="contenedorTabla">
@@ -157,7 +157,7 @@
                         <tr>
                             <th>                                    
                             </th>
-                            <th v-for="header in props.headers" :key="header.text">
+                            <th v-for="header in props.headers" :key="header.text" >
                                 {{ header.text }}
                             </th>
                         </tr>
@@ -193,6 +193,8 @@
                 </v-data-table>
             </v-flex>    
         </v-layout>
+
+      </v-container>
           
     </v-form>
 
@@ -298,16 +300,16 @@ export default {
       pagination: {},
       selected: [],
       headers: [
-        { text: "Dispositivo", value: "dispositivo" },
-        { text: "Matricula", value: "matricula" },
-        { text: "Nombre del alumno", value: "alumno" },
-        { text: "# Colegiaturas", value: "colegiaturasAdeudadas" },
-        { text: "Recargos", value: "recargos" },
-        { text: "Importe de recargos", value: "importeRecargosColegiaturas" },
-        { text: "Importe colegiaturas", value: "importeColegiaturas" },
-        { text: "# de reinscripción", value: "reinscripcionesAdeudadas" },
-        { text: "Importe Reinscripción", value: "importeReinscripciones" },
-        { text: "Adeudo total", value: "adeudoTotal" }
+        { text: "DISPOSITIVO", value: "dispositivo", class:"text-capitalize" },
+        { text: "MATRICULA", value: "matricula" },
+        { text: "NOMBRE ALUMNO", value: "alumno" },
+        { text: "NO. COLEGIATURAS", value: "colegiaturasAdeudadas" },
+        { text: "RECARGOS", value: "recargos" },
+        { text: "IMPORTE RECARGOS", value: "importeRecargosColegiaturas" },
+        { text: "IMPORTE COLEGIATURAS", value: "importeColegiaturas" },
+        { text: "NO. REINSCRIPCION", value: "reinscripcionesAdeudadas" },
+        { text: "IMPORTE REINSCRIPCION", value: "importeReinscripciones" },
+        { text: "ADEUDO TOTAL", value: "adeudoTotal" }
       ],
       items: [],
       loader: null,
@@ -633,6 +635,9 @@ table.table tbody td{
 }
 table.table  thead th{
   font-size: 11px !important;
+}
+li.subheader{
+  display: inline;
 }
 
 </style>

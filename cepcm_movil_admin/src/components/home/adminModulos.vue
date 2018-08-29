@@ -126,7 +126,7 @@
                         :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' >
                         <template slot="headers" slot-scope="props">
                             <tr>
-                                <th v-for="header in props.headers" :key="header.text" class="itemTh">
+                                <th v-for="header in props.headers" :key="header.text" :class="['itemTh', 'text-capitalize']" >
                                     {{ header.text }}
                                 </th>
                                 <th class="text-xs-center"> Acceso a modulos
@@ -134,11 +134,11 @@
                                         <!--td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
                                             {{modulo.descripcion}}
                                         </td-->
-                                        <td class="text-xs-center">
+                                        <td class="text-xs-center" >
                                             <!--div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo.id" >
                                                 {{modulo.descripcion}}
                                             </div-->
-                                            <div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo.id" >
+                                            <div class="th-td-cell text-capitalize" v-for="modulo in dataModulos" :key="modulo.id" >
                                                 {{modulo.descripcion}}
                                             </div>
                                         </td>
@@ -299,7 +299,7 @@ export default {
             headers: [
                 //{ text: "Dispositivo", value: "dispositivo" },
                 { text: "Matricula", value: "uid" },
-                { text: "Alumno", value: "alumno" },
+                { text: "Alumno", value: "alumno"},
                 
                 
             ],
@@ -650,5 +650,8 @@ export default {
     }
     table.table thead th.itemTh {
         padding-top: 20px;
+    }
+    .text-capitalize{
+        text-transform:uppercase;
     }
 </style>

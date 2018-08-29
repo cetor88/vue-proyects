@@ -1,0 +1,114 @@
+[debug] [2018-08-29T13:58:42.651Z] ----------------------------------------------------------------------
+[debug] [2018-08-29T13:58:42.655Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2018-08-29T13:58:42.656Z] CLI Version:   4.2.1
+[debug] [2018-08-29T13:58:42.656Z] Platform:      darwin
+[debug] [2018-08-29T13:58:42.656Z] Node Version:  v8.11.4
+[debug] [2018-08-29T13:58:42.656Z] Time:          Wed Aug 29 2018 08:58:42 GMT-0500 (CDT)
+[debug] [2018-08-29T13:58:42.656Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-08-29T13:58:42.670Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-08-29T13:58:42.670Z] > authorizing via signed-in user
+[debug] [2018-08-29T13:58:42.672Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-08-29T13:58:42.672Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2018-08-29T13:58:42.902Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-29T13:58:42.914Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/cepcm-24ec6  
+ 
+[debug] [2018-08-29T13:58:43.290Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'cepcm-24ec6'...
+[info] 
+[info] i  deploying hosting
+[debug] [2018-08-29T13:58:43.298Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/cepcm-24ec6/versions  
+
+[debug] [2018-08-29T13:58:44.919Z] <<< HTTP RESPONSE 200
+[info] i  hosting[cepcm-24ec6]: beginning deploy...
+[info] i  hosting[cepcm-24ec6]: found 3046 files in public
+[debug] [2018-08-29T13:58:45.604Z] [hosting] hash cache [cHVibGlj] not populated
+[debug] [2018-08-29T13:58:46.486Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/cepcm-24ec6/versions/b3069423d610d61e:populateFiles  
+ <request body omitted>
+[debug] [2018-08-29T13:58:47.385Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/cepcm-24ec6/versions/b3069423d610d61e:populateFiles  
+ <request body omitted>
+[debug] [2018-08-29T13:58:48.569Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/cepcm-24ec6/versions/b3069423d610d61e:populateFiles  
+ <request body omitted>
+[debug] [2018-08-29T13:58:49.952Z] [hosting] hash cache [cHVibGlj] stored for 3046 files
+[debug] [2018-08-29T13:58:49.953Z] [hosting][hash queue][FINAL]
+[debug] [2018-08-29T13:58:49.953Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/cepcm-24ec6/versions/b3069423d610d61e:populateFiles  
+ <request body omitted>
+[debug] [2018-08-29T13:58:50.766Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-29T13:58:52.179Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-29T13:58:52.913Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-29T13:58:53.231Z] <<< HTTP RESPONSE 200
+[debug] [2018-08-29T13:58:53.232Z] [hosting][populate queue][FINAL]
+[debug] [2018-08-29T13:58:53.232Z] [hosting] uploads queued: 2039
+[debug] [2018-08-29T13:58:54.222Z] [hosting][upload]
+[debug] [2018-08-29T13:58:59.738Z] [hosting][upload]
+[debug] [2018-08-29T13:59:07.168Z] [hosting][upload]
+[debug] [2018-08-29T13:59:10.606Z] [hosting][upload]
+[debug] [2018-08-29T13:59:11.975Z] [hosting][upload]
+[debug] [2018-08-29T13:59:13.246Z] [hosting][upload]
+[debug] [2018-08-29T13:59:14.941Z] [uploadQueue] Retrying task ab9a812fb314b7fe839810ae19d5f89a7e00288feb979adf13b90c2fef807ed7
+[debug] [2018-08-29T13:59:14.945Z] [uploadQueue] Retrying task eac5c77479e3219ce754a64b8c0314e746f897821c10b0bb5d43003426e46675
+[debug] [2018-08-29T13:59:14.991Z] [uploadQueue] Retrying task c59c74de64c73f633d285af879ee00971faafad1d1bbb459d85b65bead23ad19
+[debug] [2018-08-29T13:59:14.992Z] [uploadQueue] Retrying task 9e91ff516d83b3cafdbce18df1a65376e98fdfa19abc8ab1cd2b81245eb215ab
+[debug] [2018-08-29T13:59:15.011Z] [hosting][upload]
+[debug] [2018-08-29T13:59:15.076Z] [uploadQueue] Retrying task f0a292c488b8c5b1a6cce7424b54932308acfe65497dd5b8843e8f24272af3bb
+[debug] [2018-08-29T13:59:15.190Z] [uploadQueue] Retrying task 38f08ec10058d1ec55bbbffed38c76b6d532d7f15b60fc67a2ce759b3b913c66
+[debug] [2018-08-29T13:59:15.191Z] [uploadQueue] Retrying task 3843f4306d3511af619b6df6605594dfcd18e8f1e4dc797fc407df10a4104172
+[debug] [2018-08-29T13:59:15.195Z] [uploadQueue] Retrying task 69777e051758363969e04bf66354ccd7663ed0905d225e9b8e80a0af81bb1c22
+[debug] [2018-08-29T13:59:15.206Z] [uploadQueue] Retrying task 8885587ca824f69ba0e89100a1b5872241d96a7e339f45be46cf1a2d74f1bc05
+[debug] [2018-08-29T13:59:15.206Z] [uploadQueue] Retrying task 1c6ab1ef3c90923add1d59d984fa1111bd75255a546183212087a7d69ac48c32
+[debug] [2018-08-29T13:59:15.228Z] [uploadQueue] Retrying task bab8fdf77928b059a83b866ea4c8de7a609c3c3f6f02868dae0db50a7d60a6cc
+[debug] [2018-08-29T13:59:15.236Z] [uploadQueue] Retrying task 02a06d57ea3c27be0288fe57f95dc09a7a36d1859fbed513d7131a23e39fdb45
+[debug] [2018-08-29T13:59:15.236Z] [uploadQueue] Retrying task 945a550b9eeb7bec21a97185dcfcf5aa15d8ccb17d55605c1b4ca5208b562657
+[debug] [2018-08-29T13:59:15.237Z] [uploadQueue] Retrying task f111ca928edcd9b17d542bff8b5c4e85028d8b9618b702050dc11c63217ed1e7
+[debug] [2018-08-29T13:59:15.250Z] [uploadQueue] Retrying task 9dece7d4412cdd9ba00d514da69a5b897b622a9272f51c701accc14c7e1eb18f
+[debug] [2018-08-29T13:59:15.305Z] [uploadQueue] Retrying task 51851b2fa8a5ca5948fcfba4369bb540181bf390af9da5d342b8df2a9cf82e13
+[debug] [2018-08-29T13:59:15.306Z] [uploadQueue] Retrying task 58b3465fe70e20fc3b56fddc042921609af0d01d62388a355a947db396686711
+[debug] [2018-08-29T13:59:15.313Z] [uploadQueue] Retrying task e16a564e7c9e2aec605f00696167ad8fff80e5f0b21bbef5602fc2795b7abff3
+[debug] [2018-08-29T13:59:15.315Z] [uploadQueue] Retrying task 25be1d3e15c98dbba885a55540a34acde573c3d6bc1b7045d925377a0f0e5d75
+[debug] [2018-08-29T13:59:15.315Z] [uploadQueue] Retrying task d60960ffdce6554754bd207a3ed4a3a3f3cb3733afb26e638dc39aba5e62ab7a
+[debug] [2018-08-29T13:59:15.344Z] [uploadQueue] Retrying task ab346ca8afc8e4fbb98bdb9ecbaccd8c0d53fd18ff6f638f390ba3b204330a57
+[debug] [2018-08-29T13:59:15.346Z] [uploadQueue] Retrying task cead6f951cc936c7dd45bc5639a9721051a6da3172e6763bf42cdba389714ef5
+[debug] [2018-08-29T13:59:15.346Z] [uploadQueue] Retrying task dce4731bad784f9bb80aee2cc51f0e7c0c2029257f6827af984c0ed9d7999a9f
+[debug] [2018-08-29T13:59:15.352Z] [uploadQueue] Retrying task ab520fb3ec44432643c165f2e1039e397d41a276b30f554291dec4b4cfd936fb
+[debug] [2018-08-29T13:59:15.364Z] [uploadQueue] Retrying task 75327bc20b87266b2d3452f6f314b6814c794cb29a99001535f4e4293d96da56
+[debug] [2018-08-29T13:59:15.368Z] [uploadQueue] Retrying task 9a9939a3372f587d0e2266832826428c2407aeceae3749f1c53f0cd5a120b914
+[debug] [2018-08-29T13:59:15.375Z] [uploadQueue] Retrying task bbd0e4a6d7ecee020dc598126eb7c7dfebab2923cead20657d7239e4764c025d
+[debug] [2018-08-29T13:59:16.805Z] [uploadQueue] Retrying task 90e5fa5bffe8200873c8934b804d1197767bb19afee9a1014ed0d674bbe40abf
+[debug] [2018-08-29T13:59:16.805Z] [uploadQueue] Retrying task 2d8370362231fc1cb3cb4fa33dfc56f179e92b5fcc0c8ae608b14ff949e6a7e2
+[debug] [2018-08-29T13:59:16.815Z] [uploadQueue] Retrying task 4afd59e19d6e21baf7350456d9ae20d8f92ababdd00bdaa83f31e258733cff61
+[debug] [2018-08-29T13:59:16.834Z] [uploadQueue] Retrying task 292d09d07cc84e5efbb979af8c39c5c2f4ba9e260be970a1f7ff8bb556923348
+[debug] [2018-08-29T13:59:16.856Z] [uploadQueue] Retrying task 0e3a9e933a9e8fa7f2eeb13784a936236a94681a7caf868e7570364cfc1dcb80
+[debug] [2018-08-29T13:59:16.856Z] [uploadQueue] Retrying task dedd9017fd5b440cd7ccf46d9884051afcaa215758a673ebf202783ab7cee36b
+[debug] [2018-08-29T13:59:16.862Z] [uploadQueue] Retrying task 8b41e6afbb1898037e35171a38b2c3fbfb2e7870af864c3973b04bad256a24e5
+[debug] [2018-08-29T13:59:16.867Z] [uploadQueue] Retrying task c717ccba8857e44bccaf32fcda79858728fb82ff9b1bc1583206114367ac1336
+[debug] [2018-08-29T13:59:17.411Z] [uploadQueue] Retrying task b0a2cb2124510f285053a45791da9e8a9dc4b6ff497371a956438ad3416d2eee
+[debug] [2018-08-29T13:59:17.608Z] [hosting][upload]
+[debug] [2018-08-29T13:59:18.759Z] [hosting][upload]
+[debug] [2018-08-29T13:59:20.324Z] [uploadQueue] Retrying task 07e29736903be030e9ff358c5b51db3e35d687d71c75b55b40200b37a007cf6e
+[debug] [2018-08-29T13:59:20.384Z] [hosting][upload]
+[debug] [2018-08-29T13:59:22.028Z] [hosting][upload]
+[debug] [2018-08-29T13:59:22.055Z] [uploadQueue] Retrying task 2c2dd54bddf358cb5ff9dc43f9153083aa98a9cdabaf588b67a963ce7a800d19
+[debug] [2018-08-29T13:59:22.058Z] [uploadQueue] Retrying task c7eb6cb0ad9ea3e7293902af35a1a75912ddd533a6dc3171f5086fc88086595b
+[debug] [2018-08-29T13:59:22.062Z] [uploadQueue] Retrying task c68f776ba8e57d7619e892edcc40ca04fdb21f44135e9df861fff9f46bd34293
+[debug] [2018-08-29T13:59:22.067Z] [uploadQueue] Retrying task 258c3e260beba6a1b78aa2a710129471d98a5153717c4e50fb7f7647684ed605
+[debug] [2018-08-29T13:59:22.168Z] [uploadQueue] Retrying task 9ad2ed771805cbe1722583b858c20db32c510b5b07f62314d3e36896426dae06
+[debug] [2018-08-29T13:59:22.168Z] [uploadQueue] Retrying task 81f0b48671f11930c94ae0d6de021822e9b26de6309d320b8b85c6047130ad61
+[debug] [2018-08-29T13:59:22.960Z] [uploadQueue] Retrying task 80a3192ec124c153679b51748c751b4c1043bd547e5342827cdf06c8682bb938
+[debug] [2018-08-29T13:59:23.371Z] [uploadQueue] Retrying task 0515d42ff14cbd51cf2171afd646bd9028fe90b128c37cc523cd2ee9ddd06ff7
+[debug] [2018-08-29T13:59:23.372Z] [uploadQueue] Retrying task 7ba15b2c5944203608f648447dd872e193c51b8e02b5c183e9adba5c46bf489b
+[debug] [2018-08-29T13:59:23.372Z] [uploadQueue] Retrying task 7f2125ab149027c7cee253e45cadabd6df7ff68363a62a4f64ed7f66f8adf48f
+[debug] [2018-08-29T13:59:23.372Z] [uploadQueue] Retrying task 8340cacb0e4c7a0e1ba40a2e33c639dd43f2b9c8369b80dd85b008207dd18667
+[debug] [2018-08-29T13:59:23.451Z] [hosting][upload]
+[debug] [2018-08-29T13:59:23.516Z] [uploadQueue] Retrying task 408ae1f1be939cfefb5212224878a55087ddaf3fee5170487e8821e71f9c93c5
+[debug] [2018-08-29T13:59:23.541Z] [uploadQueue] Retrying task a94cde71983543154d7c809ad052be9abae0765af28057344046625ca8fa0c0d
+[debug] [2018-08-29T13:59:23.581Z] [uploadQueue] Retrying task 98f47f0483b080e7ad3d6e6f4dd25c73fcfc43b061389afb0854935463082ed6
+[debug] [2018-08-29T13:59:25.191Z] [hosting][upload]
+[debug] [2018-08-29T13:59:26.950Z] [hosting][upload]
+[debug] [2018-08-29T13:59:28.158Z] [hosting][upload]
+[debug] [2018-08-29T13:59:29.127Z] [hosting][upload]
+[debug] [2018-08-29T13:59:30.799Z] [hosting][upload]
+[debug] [2018-08-29T13:59:30.801Z] [uploadQueue] Retrying task 8c6a3f2a6512a9cfc2808c4b02190786afab5a5bece638578abf51e3fbf044e9
+[debug] [2018-08-29T13:59:31.077Z] [uploadQueue] Retrying task 9c79ce48a44182cc6a6fddc80e864d9305fa6d4a62235d77b369ac67cb8613c0
+[debug] [2018-08-29T13:59:32.043Z] [uploadQueue] Retrying task 02f88d0bb63718db210201e6bdd17027b70adba2ef02ab9dc05075b9f95cbafb
