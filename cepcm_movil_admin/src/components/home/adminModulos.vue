@@ -1,211 +1,218 @@
 <template>
-  <v-container  grid-list-md text-xs-center>
-    <v-form ref="form" lazy-validation>
-        <v-layout row wrap>
-            <v-flex xs12 >
-                <v-card color="primary" dark>
-                    <v-card-text >
-                        <div>
-                            <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
-                            <span>Configuración de accesos a modulos por alumno:</span>
-                        </div>
-                        
-                    </v-card-text>
-                </v-card>
-            </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <v-flex xs6  offset-xs3>
-                <v-layout row>
-                    <v-flex xs2  >
-                        <v-subheader class="text-lg-center"> Plantel:</v-subheader>
-                    </v-flex>
-                    <v-flex xs10 >
-                        <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
-                        v-model="plantelSelected" >
-                            <template slot="no-options">
-                                No se cuenta con registros
-                            </template>
-                        </v-select>  
-                    </v-flex>
-                </v-layout>
-            </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <v-flex xs6  offset-xs3>
-                <v-layout row>
-                    <v-flex xs2  >
-                        <v-subheader class="text-lg-left" >Nivel academico:</v-subheader>
-                    </v-flex>
-                    <v-flex xs10 >
-                        <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
-                        v-model="nivelAcademicoSelected" required>
-                            <template slot="no-options">
-                                No se cuenta con registros
-                            </template>
-                        </v-select>
-                    </v-flex>
-                </v-layout>
+        <v-form ref="form" lazy-validation>
+    <v-container grid-list-md text-xs-center>
+            <v-layout row wrap>
+                <v-flex>
+                    <v-card color="primary" dark>
+                        <v-card-text>
+                            <div>
+                                <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title"></i>
+                                <span>Configuración de accesos a modulos por alumno:</span>
+                            </div>
 
-            </v-flex>
-            <v-flex xs6  offset-xs3>
-                <v-layout row>
-                    <v-flex xs2 >
-                        <v-subheader class="text-lg-center">Carrera:</v-subheader>
-                    </v-flex>
-                    <v-flex xs10>            
-                        <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
-                            v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
-                            <template slot="no-options">
-                                No se encuentran carreras con los criterios seleccionados
-                            </template>
+                        </v-card-text>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex sm8 offset-sm2>
+                    <v-layout row wrap>
+                        <v-flex sm3 xs12>
+                            <v-subheader :light="true">Plantel:</v-subheader>
+                        </v-flex>
+                        <v-flex sm9 xs12>
+                            <v-select placeholder="Plantel" :options="getCatalogos[0]" label="descripcion" id="id"
+                                v-model="plantelSelected">
+                                <template slot="no-options">
+                                    No se cuenta con registros
+                                </template>
+                            </v-select>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex sm8 offset-sm2>
+                    <v-layout row wrap>
+                        <v-flex sm3 xs12>
+                            <v-subheader :light="true">Nivel academico:</v-subheader>
+                        </v-flex>
+                        <v-flex sm9 xs12>
+                            <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id"
+                                v-model="nivelAcademicoSelected" required>
+                                <template slot="no-options">
+                                    No se cuenta con registros
+                                </template>
+                            </v-select>
+                        </v-flex>
+                    </v-layout>
 
-                            <template slot="option" slot-scope="option">
-                                <div class="d-center">
-                                
-                                {{ option.descripcion  +' - '+ option.clave }}
-                                </div>
-                            </template>
-                            <template slot="selected-option" slot-scope="option">
-                                <div class="selected d-center">
-                                    
-                                    {{ option.descripcion  +' - '+ option.clave  }}
-                                </div>
-                            </template>
-                        </v-select>
-                    </v-flex>
-                </v-layout>
-            </v-flex>            
-            <v-flex xs6  offset-xs3>
-                <v-layout row>
-                    <v-flex xs2>
-                        <v-subheader class="text-lg-center">Grupo:</v-subheader>
-                    </v-flex>
-                    <v-flex xs10> 
-                        <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
-                            v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' "
-                            no-data-text="No se cuenta con registros">
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex sm8 offset-sm2>
+                    <v-layout row wrap>
+                        <v-flex sm3 xs12>
+                            <v-subheader class="text-lg-center">Carrera:</v-subheader>
+                        </v-flex>
+                        <v-flex sm9 xs12>
+                            <v-select placeholder="Carretera" :filterable="false" :options="carrera" label="descripcion"
+                                id="id" @search="onSearch" v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
+                                <template slot="no-options">
+                                    No se encuentran carreras con los criterios seleccionados
+                                </template>
+
+                                <template slot="option" slot-scope="option">
+                                    <div class="d-center">
+
+                                        {{ option.descripcion +' - '+ option.clave }}
+                                    </div>
+                                </template>
+                                <template slot="selected-option" slot-scope="option">
+                                    <div class="selected d-center">
+
+                                        {{ option.descripcion +' - '+ option.clave }}
+                                    </div>
+                                </template>
+                            </v-select>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex sm8 offset-sm2>
+                    <v-layout row wrap>
+                        <v-flex sm3 xs12>
+                            <v-subheader class="text-xs-center">Grupo:</v-subheader>
+                        </v-flex>
+                        <v-flex sm9 xs12>
+                            <v-select placeholder="Grupo" :options="getGrupos" label="descripcion" id="id" required
+                                v-model="grupoSelected" :disabled="carreraSelected == '' || plantelSelected=='' "
+                                no-data-text="No se cuenta con registros">
                                 <span slot="no-options">
                                     No se cuenta con registros.
                                 </span>
-                            
-                        </v-select>
-                    </v-flex>
-                </v-layout>
-            </v-flex>
-        </v-layout>
 
-        <v-layout>
-            <v-flex xs12 >
-                <v-btn :loading="loading3" color="primary"  @click="generarBusqueda" :disabled="!grupoSelected">
-                    Buscar
-                    <v-icon right dark>search</v-icon>
-                </v-btn>
-                
-                <v-btn :loading="loading3" color="primary"  @click="limpiarForma">
-                    Limpiar
-                    <v-icon right dark>delete</v-icon>
-                </v-btn>
-            </v-flex>
-        </v-layout>
+                            </v-select>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+            </v-layout>
+
+            <v-layout>
+                <v-flex xs12>
+                    <v-btn :loading="loading3" color="primary" @click="generarBusqueda" :disabled="!grupoSelected">
+                        Buscar
+                        <v-icon right dark>search</v-icon>
+                    </v-btn>
+
+                    <v-btn :loading="loading3" color="primary" @click="limpiarForma">
+                        Limpiar
+                        <v-icon right dark>delete</v-icon>
+                    </v-btn>
+                </v-flex>
+            </v-layout>
 
 
-    </v-form>
+        
 
         <v-layout row>
-            <v-flex xs12  >
-                <v-subheader class="text-lg-center" color="grey darken-4"> <span style="font-weight: bold; color: black;">Listado de alumnos:</span></v-subheader>
+            <v-flex xs12>
+                <v-subheader class="text-lg-center" color="grey darken-4"> <span style="font-weight: bold; color: black;">Listado
+                        de alumnos:</span></v-subheader>
             </v-flex>
         </v-layout>
         <v-layout row>
-            
-            <v-flex xs12 >
+
+            <v-flex xs12>
                 <div>
-                    <v-data-table  ref="dataTable1" :headers="headers" :items="items"  :pagination.sync="pagination" 
-                        rows-per-page-text="Registros por página" item-key="name"  class="elevation-1"
-                        :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' >
+                    <v-data-table ref="dataTable1" :headers="headers" :items="items" :pagination.sync="pagination"
+                        rows-per-page-text="Registros por página" item-key="name" class="elevation-1"
+                        :rows-per-page-items='[25, {"text":"ver todos","value":-1}]'>
                         <template slot="headers" slot-scope="props">
                             <tr>
-                                <th v-for="header in props.headers" :key="header.text" :class="['itemTh', 'text-capitalize']" >
+                                <th v-for="header in props.headers" :key="header.text" :class="['itemTh', 'text-capitalize']">
                                     {{ header.text }}
                                 </th>
                                 <th class="text-xs-center"> Acceso a modulos
-                                    <tr>
-                                        <!--td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
-                                            {{modulo.descripcion}}
-                                        </td-->
-                                        <td class="text-xs-center" >
-                                            <!--div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo.id" >
-                                                {{modulo.descripcion}}
-                                            </div-->
-                                            <div class="th-td-cell text-capitalize" v-for="modulo in dataModulos" :key="modulo.id" >
-                                                {{modulo.descripcion}}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </th>
+                            <tr>
+                                <!--td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
+                                              {{modulo.descripcion}}
+                                          </td-->
+                                <td class="text-xs-center">
+                                    <!--div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo.id" >
+                                                  {{modulo.descripcion}}
+                                              </div-->
+                                    <div class="th-td-cell text-capitalize" v-for="modulo in dataModulos" :key="modulo.id">
+                                        {{modulo.descripcion}}
+                                    </div>
+                                </td>
+                            </tr>
+                            </th>
                             </tr>
                         </template>
                         <template slot="items" slot-scope="props">
-                            <tr :active="props.selected" >
+                            <tr :active="props.selected">
                                 <!-- td class="text-xs-center" style="dislay:none;">
-                                    {{props.item.dispositivo}}                                
-                                </td -->
-                                <td class="text-xs-center"> 
-                                    {{ props.item.matricula }} 
+                                      {{props.item.dispositivo}}                                
+                                  </td -->
+                                <td class="text-xs-center">
+                                    {{ props.item.matricula }}
                                 </td>
-                                <td class="text-xs-center"> 
-                                    {{ props.item.nombres + " "+ props.item.apaterno + " " + props.item.amaterno}} 
+                                <td class="text-xs-center">
+                                    {{ props.item.nombres + " "+ props.item.apaterno + " " + props.item.amaterno}}
                                 </td>
-                                
-                                <td class="text-xs-center"> 
-                                    <tr>
-                                         <td class="text-xs-center">
-                                            <div class="td-cell"  v-for="modulo in props.item.modulos" :key="modulo.id" >
-                                            
-                                                <div style="visibility:hidden"> {{modulo.item2.descripcion}} </div>
 
-                                                <v-switch v-model="modulo.estadoBloqueo" 
-                                                    @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
-                                                            listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)" >
-                                                    
+                                <td class="text-xs-center">
+                            <tr>
+                                <td class="text-xs-center">
+                                    <div class="td-cell text-xs-center" v-for="modulo in props.item.modulos" :key="modulo.id">
+                                            <div class="text-capitalize" style="visibility:hidden"> {{modulo.item2.descripcion}} </div>
+                                            <div class="demo007" style="display:inherit">
+
+                                                <v-switch hide-details color="primary" v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
+                                                                listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)">
+
                                                 </v-switch>
-                                                
-                                                <v-tooltip top>
-                                                    <div dark color="primary" slot="activator">
-                                                        <div v-bind:style="{visibility: !modulo.estadoBloqueo?'visible':'hidden'}">ver ..</div> 
-                                                    </div>
-                                                    <div v-if="!modulo.estadoBloqueo" v-text="modulo.mensaje"></div>
-                                                </v-tooltip>
-                                            
                                             </div>
-                                         </td>
-                                    </tr>
+                                            <v-tooltip top>
+                                                <div dark color="primary" slot="activator">
+                                                    <div v-bind:style="{visibility: !modulo.estadoBloqueo?'visible':'hidden'}">ver
+                                                        ..</div>
+                                                </div>
+                                                <div v-if="!modulo.estadoBloqueo" v-text="modulo.mensaje"></div>
+                                            </v-tooltip>
+
+                                    </div>
                                 </td>
+                            </tr>
+                            </td>
                             </tr>
                         </template>
                         <template slot="pageText" slot-scope="{ pageStart, pageStop }">
-                                {{ pageStart }} de {{ pageStop }}
+                            {{ pageStart }} de {{ pageStop }}
                         </template>
                         <template slot="no-data">
                             No existen registros
                         </template>
                     </v-data-table>
-                    
+
                 </div>
             </v-flex>
         </v-layout>
+        
         <v-layout>
             <v-flex>
-                <adminModulesFirebase @cerrarModal="cerrarModal" @succesModal="succesModal" @failModal="failModal" :propiedades="getPorps" v-if="getPorps.modelo" >
+                <adminModulesFirebase @cerrarModal="cerrarModal" @succesModal="succesModal" @failModal="failModal"
+                    :propiedades="getPorps" v-if="getPorps.modelo">
                 </adminModulesFirebase>
 
-                <mensajeDlg  @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps" ></mensajeDlg>
+                <mensajeDlg @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps"></mensajeDlg>
             </v-flex>
         </v-layout>
 
-</v-container>
-    
+    </v-container>
+</v-form>
 
 </template>
 
@@ -653,5 +660,8 @@ export default {
     }
     .text-capitalize{
         text-transform:uppercase;
+    }
+    .subheader {
+        display: inline-block;
     }
 </style>

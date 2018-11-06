@@ -1,213 +1,201 @@
 <template>
+    <v-form ref="form" lazy-validation>  
+  <v-container fluid  grid-list-md text-xs-center>
+        <v-layout row wrap >
+            <v-flex  >
+                <v-card color="primary" dark>
+                    <v-card-text >
+                      <div>
+                            <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title" ></i>
+                            <span>Notificaciones a alumnos deudores:</span>
+                        </div>
+                          
+                    </v-card-text>
+                </v-card>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+            <v-flex sm8  offset-sm2>
+                <v-layout row wrap>
+                    <v-flex sm3 xs12  >
+                        <v-subheader class="text-sm-center"> Plantel:</v-subheader>
+                    </v-flex>
+                    <v-flex sm9 xs12  >
+                        <v-select placeholder="Plantel" :options="getCatalogos[0]"  label="descripcion" id="id"
+                        v-model="plantelSelected" >
+                            <template slot="no-options">
+                                No se cuenta con registros
+                            </template>
+                        </v-select>  
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+            <v-flex sm8  offset-sm2>
 
-    <v-form ref="form" lazy-validation>
-        <v-container grid-list-md text-xs-center>
+                <v-layout  row wrap>
+                    <v-flex sm3 xs12  >
+                        <v-subheader class="text-sm-center">Nivel academico:</v-subheader>
+                    </v-flex>
+                    <v-flex sm9 xs12 >
+                
+                        <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id" 
+                        v-model="nivelAcademicoSelected" required>
+                            <template slot="no-options">
+                                No se cuenta con registros
+                            </template>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+            <v-flex sm8 offset-sm2>    
+                <v-layout  row wrap>
+                    <v-flex sm3 xs12 >
+                        <v-subheader class="text-md-right">Carrera:</v-subheader>
+                    </v-flex>
+                    <v-flex sm9 xs12>
+                        <v-select placeholder="Carretera" :filterable="false" :options="carrera"  label="descripcion" id="id" @search="onSearch" 
+                            v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
+                            <template slot="no-options">
+                                No se encuentran carreras con los criterios seleccionados
+                            </template>
 
-            <v-layout row wrap>
-                <v-flex>
-                    <v-card color="primary" dark>
-                        <v-card-text>
-                            <div>
-                                <i class="fa fa-bookmark-o fa-2x fa-rotate-90 item-title"></i>
-                                <span>Notificaciones a alumnos deudores</span>
-                            </div>
+                            <template slot="option" slot-scope="option">
+                                <div class="d-center">
+                                
+                                {{ option.descripcion +' - '+ option.clave }}
+                                </div>
+                            </template>
+                            <template slot="selected-option" slot-scope="option">
+                                <div class="selected d-center">
+                                    
+                                    {{ option.descripcion +' - '+  option.clave}}
+                                </div>
+                            </template>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+        </v-layout>
+        <v-layout row wrap>
+            <v-flex sm8  offset-sm2>
+                <v-layout row wrap>
+                    <v-flex sm3 xs12>
+                        <v-subheader class="text-md-center">Grupo:</v-subheader>
+                    </v-flex>
+                    <v-flex sm9 xs12> 
+                
+                        <v-select placeholder="Grupo" :options="getGrupos" label="descripcion"  id="id" required
+                            v-model="grupoSelected"  :disabled="carreraSelected == '' || plantelSelected=='' "
+                            no-data-text="No se cuenta con registros">
+                            <span slot="no-options">
+                                No se cuenta con registros.
+                            </span>
+                        </v-select>
+                    </v-flex>
+                </v-layout>
+            </v-flex>
+            
+        </v-layout>
+    
+        
+        <v-layout>
+            <v-flex sm12  text-sm-center>
+                <v-btn sm3 xs6 :loading="loading3" color="primary" d-inline-block @click="probarModal" :disabled="dispositivos.length==0" >
+                    Enviar notificación
+                    <v-icon right dark>fal fa-file</v-icon>
+                </v-btn>
+                
+                <v-btn sm3 xs6 :loading="loading3" color="primary" d-inline-block @click="generarReporte" :disabled="items.length==0"  >
+                    Generar reporte
+                    <v-icon right dark>picture_as_pdf</v-icon>
+                </v-btn>
 
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
-                    <v-layout row wrap>
-                        <v-flex sm3 xs12>
-                            <v-subheader class="text-sm-center"> Plantel:</v-subheader>
-                        </v-flex>
-                        <v-flex sm9 xs12>
-                            <v-select placeholder="Plantel" :options="getCatalogos[0]" label="descripcion" id="id"
-                                v-model="plantelSelected">
-                                <template slot="no-options">
-                                    No se cuenta con registros
-                                </template>
-                            </v-select>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
+                <v-btn sm3 xs6 :loading="loading3" color="primary" d-inline-block @click="generarBusqueda" :disabled="!grupoSelected" >
+                    Buscar
+                    <v-icon right dark>search</v-icon>
+                </v-btn>
+                
+                <v-btn sm3 xs6 :loading="loading3" color="primary" d-inline-block @click="limpiarForma" >
+                    Limpiar
+                    <v-icon right dark>delete</v-icon>
+                </v-btn>
+                
+                
+            </v-flex>
+        </v-layout>
+    
+        <v-layout>
+            <v-flex xs12>
+                <v-alert type="error"  v-model="alertValidaDsipositivo" dismissible transition="scale-transition">
+                    Lo sentimos pero la persona no cuenta con dispositivo para recibir la notificación
+                </v-alert>
+            </v-flex>
+        </v-layout>
+    
+  
+        <v-layout row wrap>
+            <v-flex xs12>
+            <myDialog @cerrarModal="cerrarModal" @notificacionEnviada="notificacionEmitida" @notificacionErrada="notificacionErrada"
+                v-if="getPorps.modelo" :imgs="catImges" :smart="getDispositivos" :propiedades="getPorps">
+            </myDialog>
+            <mensajeDlg  @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps" ></mensajeDlg>
 
-                    <v-layout row wrap>
-                        <v-flex sm3 xs12>
-                            <v-subheader class="text-sm-center">Nivel academico:</v-subheader>
-                        </v-flex>
-                        <v-flex sm9 xs12>
+            </v-flex>
+        </v-layout>
+      
 
-                            <v-select placeholder="Nivel academico" :options="getCatalogos[1]" label="descripcion" id="id"
-                                v-model="nivelAcademicoSelected" required>
-                                <template slot="no-options">
-                                    No se cuenta con registros
-                                </template>
-                            </v-select>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
-                    <v-layout row wrap>
-                        <v-flex sm3 xs12>
-                            <v-subheader class="text-md-right">Carrera:</v-subheader>
-                        </v-flex>
-                        <v-flex sm9 xs12>
-                            <v-select placeholder="Carretera" :filterable="false" :options="carrera" label="descripcion"
-                                id="id" @search="onSearch" v-model="carreraSelected" required :disabled="!nivelAcademicoSelected || !plantelSelected">
-                                <template slot="no-options">
-                                    No se encuentran carreras con los criterios seleccionados
-                                </template>
+        <v-layout row wrap>
+            <v-flex xs12 class="contenedorTabla">
+                <v-data-table  v-model="selected"  ref="dataTable1"   :headers="headers" :items="items" 
+                :pagination.sync="pagination" rows-per-page-text="Registros por página" item-key="name" 
+                :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' class="elevation-1">
+                    <template slot="headers" slot-scope="props">
+                        <tr>
+                            <th>                                    
+                            </th>
+                            <th v-for="header in props.headers" :key="header.text" >
+                                {{ header.text }}
+                            </th>
+                        </tr>
+                    </template>
 
-                                <template slot="option" slot-scope="option">
-                                    <div class="d-center">
-
-                                        {{ option.descripcion +' - '+ option.clave }}
-                                    </div>
-                                </template>
-                                <template slot="selected-option" slot-scope="option">
-                                    <div class="selected d-center">
-
-                                        {{ option.descripcion +' - '+ option.clave}}
-                                    </div>
-                                </template>
-                            </v-select>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
-                    <v-layout row wrap>
-                        <v-flex sm3 xs12>
-                            <v-subheader class="text-md-center">Grupo:</v-subheader>
-                        </v-flex>
-                        <v-flex sm9 xs12>
-
-                            <v-select placeholder="Grupo" :options="getGrupos" label="descripcion" id="id" required
-                                v-model="grupoSelected" :disabled="carreraSelected == '' || plantelSelected=='' "
-                                no-data-text="No se cuenta con registros">
-                                <span slot="no-options">
-                                    No se cuenta con registros.
-                                </span>
-                            </v-select>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-
-            </v-layout>
-
-
-            <v-layout row wrap>
-                <v-flex sm8 xs6 offset-sm3>
-                    <v-btn d-inline-flex :loading="loading3" color="primary" @click="probarModal" :disabled="dispositivos.length==0">
-                        Enviar notificación
-                        <v-icon right dark>fal fa-file</v-icon>
-                    </v-btn>
-
-                    <v-btn d-inline-flex :loading="loading3" color="primary" @click="generarReporte" :disabled="items.length==0">
-                        Generar reporte
-                        <v-icon right dark>picture_as_pdf</v-icon>
-                    </v-btn>
-                </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex sm8 xs6 offset-sm3>
-                    <v-btn d-inline-flex :loading="loading3" color="primary" @click="generarBusqueda" :disabled="!grupoSelected">
-                        Buscar
-                        <v-icon right dark>search</v-icon>
-                    </v-btn>
-
-                    <v-btn d-inline-flex :loading="loading3" color="primary" @click="limpiarForma">
-                        Limpiar
-                        <v-icon right dark>delete</v-icon>
-                    </v-btn>
-                </v-flex>
-
-
-
-            </v-layout>
-
-            <v-layout>
-                <v-flex xs12>
-                    <v-alert type="error" v-model="alertValidaDsipositivo" dismissible transition="scale-transition">
-                        Lo sentimos pero la persona no cuenta con dispositivo para recibir la notificación
-                    </v-alert>
-                </v-flex>
-            </v-layout>
-
-
-            <v-layout row wrap>
-                <v-flex xs12>
-                    <myDialog @cerrarModal="cerrarModal" @notificacionEnviada="notificacionEmitida" @notificacionErrada="notificacionErrada"
-                        v-if="getPorps.modelo" :imgs="catImges" :smart="getDispositivos" :propiedades="getPorps">
-                    </myDialog>
-                    <mensajeDlg @cerrarDlg="cerrarMensajeDlg" v-if="getMensajesProps.modelo" :propiedades="getMensajesProps"></mensajeDlg>
-
-                </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex md12 hidden-sm-and-down class="contenedorTabla">
-                    <v-data-table v-model="selected" ref="dataTable1" :headers="headers" :items="items"
-                        :pagination.sync="pagination" rows-per-page-text="Registros por página" item-key="name"
-                        :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' class="elevation-1">
-                        <template slot="headers" slot-scope="props">
-                            <tr>
-                                <th>
-                                </th>
-                                <th v-for="header in props.headers" :key="header.text">
-                                    {{ header.text }}
-                                </th>
-                            </tr>
-                        </template>
-
-                        <template slot="items" slot-scope="props">
-                            <tr :active="props.selected" @click="cambio( props)">
-                                <td class="text-xs-center">
-                                    <v-checkbox hide-details :input-value="props.selected"></v-checkbox>
-                                </td>
-                                <td class="text-xs-center">
-
-                                    <v-icon v-if="props.item.alumno.dispositivo != null" color="green"> phonelink_ring
-                                    </v-icon>
-                                    <v-icon v-if="props.item.alumno.dispositivo == null" color="red"> phonelink_erase
-                                    </v-icon>
-                                </td>
-                                <td class="text-xs-center"> {{ props.item.alumno.matricula }} </td>
-                                <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+
-                                    props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
-                                <td class="text-xs-center"> {{ props.item.colegiaturasAdeudadas }} </td>
-                                <td class="text-xs-center"> {{ props.item.recargos }} </td>
-                                <td class="text-xs-center"> {{ parseInt(props.item.importeRecargosColegiaturas * 100) /
-                                    100 | pesos}} </td>
-                                <td class="text-xs-center"> {{ parseInt(props.item.importeColegiaturas * 100) / 100 |
-                                    pesos}} </td>
-                                <td class="text-xs-center"> {{ props.item.reinscripcionesAdeudadas }} </td>
-                                <td class="text-xs-center"> {{ parseInt(props.item.importeReinscripciones * 100) / 100
-                                    | pesos}} </td>
-                                <td class="text-xs-center"> {{ parseInt(props.item.adeudoTotal * 100) / 100 | pesos}}
-                                </td>
-                            </tr>
-                        </template>
-                        <template slot="pageText" slot-scope="{ pageStart, pageStop }">
+                    <template slot="items" slot-scope="props">
+                        <tr :active="props.selected" @click="cambio( props)" >
+                            <td class="text-xs-center">
+                                <v-checkbox hide-details :input-value="props.selected"></v-checkbox>
+                            </td>
+                            <td class="text-xs-center">
+                                    
+                                <v-icon v-if="props.item.alumno.dispositivo != null" color="green"> phonelink_ring </v-icon>
+                                <v-icon v-if="props.item.alumno.dispositivo == null" color="red"> phonelink_erase </v-icon>
+                            </td>
+                            <td class="text-xs-center"> {{ props.item.alumno.matricula }} </td>
+                            <td class="text-xs-center"> {{ props.item.alumno.nombres + " "+ props.item.alumno.apaterno + " " + props.item.alumno.amaterno}} </td>
+                            <td class="text-xs-center"> {{ props.item.colegiaturasAdeudadas }} </td>
+                            <td class="text-xs-center"> {{ props.item.recargos }} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.importeRecargosColegiaturas * 100) / 100  | pesos}} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.importeColegiaturas * 100) / 100  | pesos}} </td>
+                            <td class="text-xs-center"> {{ props.item.reinscripcionesAdeudadas }} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.importeReinscripciones * 100) / 100  | pesos}} </td>
+                            <td class="text-xs-center"> {{ parseInt(props.item.adeudoTotal * 100) / 100 | pesos}} </td>
+                        </tr>
+                    </template>
+                    <template slot="pageText" slot-scope="{ pageStart, pageStop }">
                             {{ pageStart }} de {{ pageStop }}
-                        </template>
-                        <template slot="no-data">
-                            No existen registros
-                        </template>
-                    </v-data-table>
-                </v-flex>
-            </v-layout>
-
-        </v-container>
-
-    </v-form>
+                    </template>
+                    <template slot="no-data">
+                        No existen registros
+                    </template>
+                </v-data-table>
+            </v-flex>    
+        </v-layout>
+    </v-container>
+      </v-form>  
+          
 
 </template>
 <script>
@@ -311,7 +299,7 @@ export default {
       pagination: {},
       selected: [],
       headers: [
-        { text: "DISPOSITIVO", value: "dispositivo", class: "text-capitalize" },
+        { text: "DISPOSITIVO", value: "dispositivo", class:"text-capitalize" },
         { text: "MATRICULA", value: "matricula" },
         { text: "NOMBRE ALUMNO", value: "alumno" },
         { text: "NO. COLEGIATURAS", value: "colegiaturasAdeudadas" },
@@ -408,22 +396,24 @@ export default {
           ? prop.item.alumno.dispositivo
           : null;
       if (prop.item.alumno.dispositivo != null) {
-        prop.selected = !prop.selected;
-        if (!prop.selected) {
-          const demo = this.dispositivos.filter((item, index) => {
-            if (item === dispositivo.id) {
-              this.dispositivos.splice(index, 1);
+            prop.selected = !prop.selected;
+            if (!prop.selected) {
+                const demo = this.dispositivos.filter( (item, index) =>{
+                    if (item === dispositivo.id){
+                        this.dispositivos.splice(index, 1);
+                    }
+                })
+                        this.dispositivos.push(dispositivo.id);
+                
+                
+            } else {
+                this.dispositivos.splice(prop.index, 1);
             }
-          });
-          this.dispositivos.push(dispositivo.id);
         } else {
-          this.dispositivos.splice(prop.index, 1);
-        }
-      } else {
-        setTimeout(() => {
-          this.alertValidaDsipositivo = false;
-        }, 2000);
-        this.alertValidaDsipositivo = true;
+            setTimeout(() => {
+            this.alertValidaDsipositivo = false;
+            }, 2000);
+            this.alertValidaDsipositivo = true;
       }
     },
 
@@ -633,36 +623,39 @@ export default {
     },
     getDispositivos() {
       return this.dispositivos.length > 0 ? this.dispositivos : null;
+    },
+    binding () {
+      const binding = {}
+
+      if (this.$vuetify.breakpoint.mdAndUp) binding.column = true
+
+      return binding
     }
+  
   }
 };
 </script>
 
-<style>
-table.table tbody td {
-  font-size: 10px !important;
-}
-table.table thead th {
-  font-size: 11px !important;
-}
-.th-td-cell {
-  display: inline-block;
-  padding: 0px 25px;
-}
-.td-cell {
-  display: inline-block;
-  padding: 0px 22px;
-}
-tr td div.td-cell {
-  padding: 0px 21px !important;
-}
-table.table thead th.itemTh {
-  padding-top: 20px;
-}
-.text-capitalize {
-  text-transform: uppercase;
-}
-.subheader {
-  display: inline-block;
-}
+<style>.th-td-cell {
+        display: inline-block;
+        padding: 0px 25px;
+        
+    }
+    .td-cell {
+        display: inline-block;
+        padding: 0px 22px;
+        
+    }
+    tr td div.td-cell {
+        padding: 0px 21px !important;
+    }
+    table.table thead th.itemTh {
+        padding-top: 20px;
+    }
+    .text-capitalize{
+        text-transform:uppercase;
+    }
+    .subheader {
+        display: inline-block;
+    }
 </style>
