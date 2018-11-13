@@ -1,8 +1,8 @@
 <template>
         <v-form ref="form" lazy-validation>
-    <v-container grid-list-md text-xs-center>
+    <v-container grid-list-xs grid-list-sm grid-list-md  text-xs-center text-sm-center text-md-center  >
             <v-layout row wrap>
-                <v-flex>
+                <v-flex md12 sm12 xs4>
                     <v-card color="primary" dark>
                         <v-card-text>
                             <div>
@@ -15,9 +15,9 @@
                 </v-flex>
             </v-layout>
             <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
+                <v-flex sm8 offset-sm2 xs4>
                     <v-layout row wrap>
-                        <v-flex sm3 xs12>
+                        <v-flex sm3 xs12 hidden-xs-only>
                             <v-subheader :light="true">Plantel:</v-subheader>
                         </v-flex>
                         <v-flex sm9 xs12>
@@ -32,9 +32,9 @@
                 </v-flex>
             </v-layout>
             <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
+                <v-flex sm8 offset-sm2 xs4>
                     <v-layout row wrap>
-                        <v-flex sm3 xs12>
+                        <v-flex sm3 xs12 hidden-xs-only>
                             <v-subheader :light="true">Nivel academico:</v-subheader>
                         </v-flex>
                         <v-flex sm9 xs12>
@@ -50,9 +50,9 @@
                 </v-flex>
             </v-layout>
             <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
+                <v-flex sm8 offset-sm2 xs4>
                     <v-layout row wrap>
-                        <v-flex sm3 xs12>
+                        <v-flex sm3 xs12 hidden-xs-only>
                             <v-subheader class="text-lg-center">Carrera:</v-subheader>
                         </v-flex>
                         <v-flex sm9 xs12>
@@ -80,9 +80,9 @@
                 </v-flex>
             </v-layout>
             <v-layout row wrap>
-                <v-flex sm8 offset-sm2>
+                <v-flex sm8 offset-sm2 xs4>
                     <v-layout row wrap>
-                        <v-flex sm3 xs12>
+                        <v-flex sm3 xs12 hidden-xs-only>
                             <v-subheader class="text-xs-center">Grupo:</v-subheader>
                         </v-flex>
                         <v-flex sm9 xs12>
@@ -99,8 +99,8 @@
                 </v-flex>
             </v-layout>
 
-            <v-layout>
-                <v-flex xs12>
+            <v-layout row wrap>
+                <v-flex md12 xs4>
                     <v-btn :loading="loading3" color="primary" @click="generarBusqueda" :disabled="!grupoSelected">
                         Buscar
                         <v-icon right dark>search</v-icon>
@@ -113,80 +113,76 @@
                 </v-flex>
             </v-layout>
 
-
-        
-
-        <v-layout row>
-            <v-flex xs12>
-                <v-subheader class="text-lg-center" color="grey darken-4"> <span style="font-weight: bold; color: black;">Listado
-                        de alumnos:</span></v-subheader>
+        <v-layout row wrap>
+            <v-flex xs12 xs4>
+                <v-subheader class="text-lg-center" color="grey darken-4"> <span style="font-weight: bold; color: black;">
+                    Listado de alumnos:</span></v-subheader>
             </v-flex>
         </v-layout>
-        <v-layout row>
+        <v-layout row wrap>
 
-            <v-flex xs12>
-                <div>
+            <v-flex  md12 sm10 xs4>
+                
                     <v-data-table ref="dataTable1" :headers="headers" :items="items" :pagination.sync="pagination"
                         rows-per-page-text="Registros por página" item-key="name" class="elevation-1"
-                        :rows-per-page-items='[25, {"text":"ver todos","value":-1}]'>
-                        <template slot="headers" slot-scope="props">
-                            <tr>
-                                <th v-for="header in props.headers" :key="header.text" :class="['itemTh', 'text-capitalize']">
-                                    {{ header.text }}
-                                </th>
-                                <th class="text-xs-center"> Acceso a modulos
-                            <tr>
-                                <!--td class="text-xs-center" v-for="modulo in dataModulos" :key="modulo.id">
-                                              {{modulo.descripcion}}
-                                          </td-->
-                                <td class="text-xs-center">
-                                    <!--div class="th-td-cell" v-for="modulo in dataModulos" :key="modulo.id" >
-                                                  {{modulo.descripcion}}
-                                              </div-->
-                                    <div class="th-td-cell text-capitalize" v-for="modulo in dataModulos" :key="modulo.id">
-                                        {{modulo.descripcion}}
-                                    </div>
-                                </td>
-                            </tr>
-                            </th>
-                            </tr>
+                        :rows-per-page-items='[25, {"text":"ver todos","value":-1}]' xs12 sm12 >
+                        <template slot="headers" slot-scope="props" >
+
+                                <tr  xs12 sm12>
+                                    <th v-for="header in props.headers" :key="header.text" :class="['itemTh', 'text-capitalize']" xs2 sm2 style="font-size:11px !important">
+                                        {{ header.text }}
+                                    </th>
+                                    <th class="text-xs-center" xs8 sm8> 
+                                        Acceso a modulos
+                                        <tr>
+                                        <table class="th-td-cell" xs12 sm12>
+                                            <tr>
+                                                <td class="text-xs-center" xs2 sm2 style="font-size:11px !important">
+                                                    <div class="th-td-cell text-capitalize" v-for="modulo in dataModulos" :key="modulo.id">
+                                                        {{modulo.descripcion}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        </tr>
+                                    </th>
+                                </tr>
                         </template>
                         <template slot="items" slot-scope="props">
-                            <tr :active="props.selected">
-                                <!-- td class="text-xs-center" style="dislay:none;">
-                                      {{props.item.dispositivo}}                                
-                                  </td -->
-                                <td class="text-xs-center">
+                            <tr :active="props.selected"  xs12 sm12>
+
+                                <th :class="['itemTh', 'text-capitalize']" xs2 sm2>
                                     {{ props.item.matricula }}
-                                </td>
-                                <td class="text-xs-center">
+                                </th>
+                                <th :class="['itemTh', 'text-capitalize']" xs2 sm2>
                                     {{ props.item.nombres + " "+ props.item.apaterno + " " + props.item.amaterno}}
-                                </td>
+                                </th>
+                                <th :class="['text-xs-center']" xs8 sm8>
+                                    <tr>
+                                        <table  class="th-td-cell" xs12 sm12>
+                                            <tr>
+                                                <td  class="text-xs-center" xs2 sm2 >
+                                                    <div  class="th-td-cell text-capitalize"  v-for="modulo in props.item.modulos" :key="modulo.id" xs2 sm2>
+                                                        <span  class="demo007" style="font-size:11px">{{modulo.item2.descripcion}}
 
-                                <td class="text-xs-center">
-                            <tr>
-                                <td class="text-xs-center">
-                                    <div class="td-cell text-xs-center" v-for="modulo in props.item.modulos" :key="modulo.id">
-                                            <div class="text-capitalize" style="visibility:hidden"> {{modulo.item2.descripcion}} </div>
-                                            <div class="demo007" style="display:inherit">
-
-                                                <v-switch hide-details color="primary" v-model="modulo.estadoBloqueo" @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
-                                                                listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)">
-
-                                                </v-switch>
-                                            </div>
-                                            <v-tooltip top>
-                                                <div dark color="primary" slot="activator">
-                                                    <div v-bind:style="{visibility: !modulo.estadoBloqueo?'visible':'hidden'}">ver
-                                                        ..</div>
-                                                </div>
-                                                <div v-if="!modulo.estadoBloqueo" v-text="modulo.mensaje"></div>
-                                            </v-tooltip>
-
-                                    </div>
-                                </td>
-                            </tr>
-                            </td>
+                                                            <v-switch hide-details color="primary" v-model="modulo.estadoBloqueo" 
+                                                                @click="probarModal($event, modulo.estadoBloqueo, modulo.item2.nodoFirebase, props.item.uid, modulo.item2, props.item.dispositivo);
+                                                                listenerFireBase(modulo.item2.nodoFirebase, props.item.uid)" class="switches">
+                                                            </v-switch >
+                                                            <v-tooltip top>
+                                                                <div dark color="primary" slot="activator">
+                                                                    <div v-bind:style="{visibility: !modulo.estadoBloqueo?'visible':'hidden'}">ver
+                                                                        ..</div>
+                                                                </div>
+                                                                <div v-if="!modulo.estadoBloqueo" v-text="modulo.mensaje"></div>
+                                                            </v-tooltip>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </tr>
+                                </th>
                             </tr>
                         </template>
                         <template slot="pageText" slot-scope="{ pageStart, pageStop }">
@@ -197,7 +193,7 @@
                         </template>
                     </v-data-table>
 
-                </div>
+                
             </v-flex>
         </v-layout>
         
@@ -664,4 +660,14 @@ export default {
     .subheader {
         display: inline-block;
     }
+    .demo007{
+        font-size:11px;
+        visibility: hidden;
+    }
+    .demo007 .switches.input-group.input-group--selection-controls.switch{
+        padding-left: 20% !important;
+        visibility: visible;
+        min-width: min-content;
+    }
+    /*.switches.input-group.input-group--dirty.input-group--hide-details.input-group--selection-controls.switch.primary--text*/
 </style>

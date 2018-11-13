@@ -234,6 +234,15 @@
            
             
         },
+        limpiar(){
+            console.log("limpiar *")
+            this.alumnos=[];
+            this.queryString='';
+        }
+    },
+    created: function() {
+        console.log("created functtion")
+        this.$parent.$on('limpiarChild', this.limpiar);
     },
     computed:{
         loader(){

@@ -396,8 +396,8 @@ export default {
       this.dlg.modelo = !this.dlg.modelo;
     },
     limpiarForma() {
-      //this.plantelSelected = this.nivelAcademicoSelected = undefined;
-      //this.carreraSelected = this.grupoSelected ="";
+      this.plantelSelected = this.nivelAcademicoSelected = '';
+      this.carreraSelected = this.grupoSelected = '';
       this.selected = this.items = this.dispositivos = [];
       this.dataBusqueda = [];
       //resourcePdf:''

@@ -1,7 +1,7 @@
 <template>
     <v-flex>
         <v-card>
-            <v-dialog v-model="dialog" max-width="50%">
+            <v-dialog v-model="dialog" persistent max-width="50%">
                 <v-card>
                     <v-toolbar :color="conifg.tipo" dark>
                         <v-toolbar-title>{{conifg.titulo}}</v-toolbar-title>
@@ -68,6 +68,17 @@
                                     </v-flex>
                                 </v-layout>
                             </v-container>
+
+                            <v-container grid-list-md text-xs-center v-if="conifg.option ==='apply'" >
+                                <v-layout row wrap>
+                                <v-flex xs12 sm12>
+                                    <span>¿Éstas seguro de publicar los cambios?</span>
+                                </v-flex>
+                                
+                                </v-layout>
+                            </v-container>
+
+
                             <v-container grid-list-md text-xs-center v-else >
                                 <v-layout row wrap>
                                 <v-flex xs12 sm12>
@@ -87,6 +98,9 @@
                         <v-spacer></v-spacer>
                         <v-btn v-if="conifg.option ==='delete'" :color="conifg.tipo" dark @click="eliminar">Eliminar</v-btn>
                         <v-btn v-if="conifg.option ==='add'" :color="conifg.tipo" dark @click="cerrar">Aceptar</v-btn>
+                        <v-btn v-if="conifg.option ==='apply'" :color="conifg.tipo" dark @click="aplicarCambios">Aceptar</v-btn>
+                        <v-btn v-if="conifg.option ==='apply'" :color="conifg.tipo" dark @click="cerrar">Cancelar</v-btn>
+                        <!--v-btn v-if="conifg.option ==='add'" :color="conifg.tipo" dark @click="cerrar">Cancelar</v-btn-->
                         <v-btn v-if="conifg.option ==='delete'" :color="conifg.tipo" dark @click="cerrar">Cancelar</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -205,6 +219,12 @@
             eliminar(){
                 bannerServices.eliminaHeader(this.conifg.fileName, this.conifg.idFireBase).then((data)=>{
                     console.log("finaliza eliminado de header")
+                    this.$emit('cancelDlg')// llamar al padre para cerrar la modal
+                })
+            },
+            aplicarCambios(){
+                bannerServices.actualizarFechaHeaders().then( (data)=>{
+                    console.log("Se han aplicado con éxito los cambios" + data );
                     this.$emit('cancelDlg')// llamar al padre para cerrar la modal
                 })
             },

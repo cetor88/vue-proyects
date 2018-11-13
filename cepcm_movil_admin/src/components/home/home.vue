@@ -28,7 +28,7 @@
 
             <v-flex xs6 offset-xs3>
                 <v-flex>
-                    <autocomplete v-model="notificacion.dispositivos" :dispositivos="dispositivos" 
+                    <autocomplete v-model="notificacion.dispositivos" ref="autoComplete" :dispositivos="dispositivos" 
                     :personasSeleccionadas="personasSeleccionadas" :limpiarComp="limpiarComp"> </autocomplete>
                 </v-flex>
                 <v-flex>
@@ -77,11 +77,11 @@
                 </v-alert>
             </v-flex>
             <v-flex xs12>
-                <v-btn @click="limpiarNotificacion"  color="primary" dark >
-                    Limpiar
-                </v-btn>
                 <v-btn @click="enviarNotificacion" color="primary" dark >
                     Enviar
+                </v-btn>
+                <v-btn @click="limpiarNotificacion"  color="primary" dark >
+                    Limpiar
                 </v-btn>
             </v-flex>
             
@@ -261,6 +261,8 @@ export default {
 
         },
         limpiarNotificacion(){
+            console.log("limpiar componestes");
+            
             this.notificacion.titulo='';
             this.notificacion.contenido='';
             this.notificacion.dispositivos=[];
@@ -271,7 +273,8 @@ export default {
             this.catImges.filter((item)=>{
                 item.active = false;
             })
-
+            /*limpiar elementos del auto complete*/
+            this.$refs.autoComplete.limpiar();
         }
     },
     computed:{

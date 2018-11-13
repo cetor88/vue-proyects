@@ -20,10 +20,10 @@ export default {
             this.obtenerReferenciaFB().then((data)=>{
                 let ref = CONS.db.ref(CONS.rutaBannerTopFirebase + data);
                 ref.set({url:urlDowload, redirect:redirect, name:fileName})
-            }).then(()=>{
+            })/*.then(()=>{
                 this.actualizarFechaHeaders();
                 resolve("ok")
-            })
+            })*/
         })
     },
     obtenerReferenciaFB(param) {
@@ -38,8 +38,12 @@ export default {
     },
 
     actualizarFechaHeaders(){
-        let ref = CONS.db.ref(CONS.rutaBannerTopFB);
-        ref.update({fechaActualizacion:new Date().getTime()})
+        return new Promise((resolve) => {
+            let fecha = new Date().getTime();
+            let ref = CONS.db.ref(CONS.rutaBannerTopFB);
+            ref.update({fechaActualizacion: fecha })
+            resolve( { fechaActualizacion : fecha} );
+          })
     },
 
     eliminaHeader(fileName, idFirebase){
@@ -50,11 +54,11 @@ export default {
                 this.eliminaHeaderDataBase(idFirebase).then((data)=>{
                     console.log("eliminado de storage " + idFirebase);
                 })
-            }).then(()=>{
+            })/*.then(()=>{
                 console.log("finaliza delete")
                 this.actualizarFechaHeaders();
                 resolve("ok");
-            })
+            })*/
         })
     },
     eliminarHeaderStorage(fileName){

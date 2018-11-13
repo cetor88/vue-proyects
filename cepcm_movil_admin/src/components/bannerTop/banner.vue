@@ -20,12 +20,30 @@
                                             <v-icon>more_vert</v-icon>
                                             <v-icon>close</v-icon>
                                         </v-btn>
-                                        <v-btn dark icon class="mr-3" color="pink" @click="addHeader"> <!-- trigger($event, getNextDocument) -->
-                                            <v-icon>add</v-icon>
-                                        </v-btn>
-                                        <v-btn fab dark small color="red" @click="deleteHeader($event, watchUrl)">
-                                            <v-icon>delete</v-icon>
-                                        </v-btn>
+
+                                        <v-tooltip top>
+
+                                            <v-btn dark icon class="mr-3" color="green" slot="activator"  @click="aplicarCambios()"> <!-- trigger($event, getNextDocument) -->
+                                                <v-icon>play_arrow</v-icon>
+                                            </v-btn>
+                                            <span>Aplicar cambios</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip top>
+
+                                            <v-btn dark icon class="mr-3" color="pink" slot="activator"  @click="addHeader()"> <!-- trigger($event, getNextDocument) -->
+                                                <v-icon>add</v-icon>
+                                            </v-btn>
+                                            <span>Agregar header</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip top>
+                                            <v-btn fab dark small color="red" slot="activator" @click="deleteHeader($event, watchUrl)">
+                                                <v-icon>delete</v-icon>
+                                            </v-btn>
+                                            <span>Eliminar header</span>
+                                        </v-tooltip>
+
                                     </v-speed-dial>
                                 </v-card-title>
                                 <v-spacer></v-spacer>
@@ -141,6 +159,13 @@
                 this.headerConfig.modelo = !this.headerConfig.modelo;
                 
             },
+
+            aplicarCambios(){
+                console.log("aplicar cambios")
+                this.headerConfig.option='apply';
+                this.headerConfig.tipo = "green lighten-1";
+                this.headerConfig.modelo = !this.headerConfig.modelo;
+            },
             cerrarMensajeDlg(){
                 this.dialogo.contenido = "";
                 this.dialogo.tipo = "green";
@@ -193,7 +218,7 @@
 
 <style >
     .card__media__background:before {
-        content: 'This slide is active!';
+        /*content: 'This slide is active!';*/
         position: absolute;
         top: -18px;
         right: -18px;
