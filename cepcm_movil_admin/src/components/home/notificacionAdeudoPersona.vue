@@ -106,6 +106,19 @@
 
             <v-layout row wrap>
                 <v-flex sm8 xs6 offset-sm3>
+                  <v-btn d-inline-flex :loading="loading3" color="primary" @click="generarBusqueda" :disabled="!grupoSelected">
+                      Buscar
+                      <v-icon right dark>search</v-icon>
+                  </v-btn>
+
+                  <v-btn d-inline-flex :loading="loading3" color="primary" @click="limpiarForma">
+                      Limpiar
+                      <v-icon right dark>delete</v-icon>
+                  </v-btn>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap>
+                <v-flex sm8 xs6 offset-sm3>
                     <v-btn d-inline-flex :loading="loading3" color="primary" @click="probarModal" :disabled="dispositivos.length==0">
                         Enviar notificación
                         <v-icon right dark>fal fa-file</v-icon>
@@ -116,22 +129,6 @@
                         <v-icon right dark>picture_as_pdf</v-icon>
                     </v-btn>
                 </v-flex>
-            </v-layout>
-            <v-layout row wrap>
-                <v-flex sm8 xs6 offset-sm3>
-                    <v-btn d-inline-flex :loading="loading3" color="primary" @click="generarBusqueda" :disabled="!grupoSelected">
-                        Buscar
-                        <v-icon right dark>search</v-icon>
-                    </v-btn>
-
-                    <v-btn d-inline-flex :loading="loading3" color="primary" @click="limpiarForma">
-                        Limpiar
-                        <v-icon right dark>delete</v-icon>
-                    </v-btn>
-                </v-flex>
-
-
-
             </v-layout>
 
             <v-layout>

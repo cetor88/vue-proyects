@@ -11,8 +11,10 @@ import colors from 'vuetify/es5/util/colors'
 Vue.use(Vuetify, {
   theme: {
     secondary: colors.black,
-    primary: colors.pink.accent4,
-    primary_accent1 : colors.pink.lighten5,
+    /*primary: colors.pink.accent4,
+    primary_accent1 : colors.pink.lighten5,*/
+    primary: colors.blueGrey.accent4,
+    primary_accent1 : colors.grey.lighten5,
     accent: colors.indigo.base
   },
   options: {
